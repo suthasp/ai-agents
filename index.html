@@ -307,6 +307,9 @@ body {
           <stop offset="0%" stop-color="#1a0808"/>
           <stop offset="100%" stop-color="#0e0404"/>
         </linearGradient>
+        <pattern id="scanline" x="0" y="0" width="1" height="4" patternUnits="userSpaceOnUse">
+          <rect x="0" y="0" width="1" height="2" fill="#000" opacity="0.18"/>
+        </pattern>
       </defs>
 
       <!-- ===== ROOM SHELL ===== -->
@@ -465,20 +468,26 @@ body {
 
       <!-- windows complete — left wall done -->
 
-      <!-- ===== NEON SIGN — center back wall ===== -->
-      <rect x="385" y="38" width="150" height="128" rx="4" fill="#080608" stroke="#201018" stroke-width="2"/>
-      <rect x="388" y="41" width="144" height="122" rx="3" fill="#0c080c" opacity="0.95"/>
-      <!-- EAT - white neon -->
-      <text x="460" y="74" text-anchor="middle" fill="#ffffff" font-size="19" font-family="Courier New" font-weight="bold" filter="url(#fg)">EAT</text>
-      <!-- SLEEP - pink/red neon -->
-      <text x="460" y="97" text-anchor="middle" fill="#ff4477" font-size="19" font-family="Courier New" font-weight="bold" filter="url(#fg)">SLEEP</text>
-      <!-- CODE - cyan neon -->
-      <text x="460" y="120" text-anchor="middle" fill="#22ddff" font-size="19" font-family="Courier New" font-weight="bold" filter="url(#fg)">CODE</text>
-      <!-- REPEAT - orange neon -->
-      <text x="460" y="143" text-anchor="middle" fill="#ffaa22" font-size="19" font-family="Courier New" font-weight="bold" filter="url(#fg)">REPEAT</text>
-      <!-- neon frame glow -->
-      <rect x="385" y="38" width="150" height="128" rx="4" fill="none" stroke="#ff4477" stroke-width="0.6" opacity="0.25"/>
-      <rect x="385" y="38" width="150" height="128" rx="4" fill="none" stroke="#22ddff" stroke-width="0.4" opacity="0.15"/>
+      <!-- ===== DIGITAL CLOCK — center back wall ===== -->
+      <rect x="385" y="38" width="150" height="128" rx="4" fill="#04060c" stroke="#0a1428" stroke-width="2"/>
+      <rect x="388" y="41" width="144" height="122" rx="3" fill="#050810" opacity="0.97"/>
+      <!-- clock bezel inner -->
+      <rect x="392" y="45" width="136" height="114" rx="2" fill="#030608"/>
+      <!-- scan line overlay -->
+      <rect x="392" y="45" width="136" height="114" rx="2" fill="url(#scanline)" opacity="0.06"/>
+      <!-- top label -->
+      <text x="460" y="62" text-anchor="middle" fill="#0a2040" font-size="6.5" font-family="Courier New" letter-spacing="4">◈ CLOCK ◈</text>
+      <!-- time display HH:MM -->
+      <text id="svg-clk-hm" x="460" y="108" text-anchor="middle" fill="#00bbee" font-size="40" font-family="Courier New" font-weight="bold" filter="url(#fg)">00:00</text>
+      <!-- seconds -->
+      <text id="svg-clk-s" x="460" y="126" text-anchor="middle" fill="#006688" font-size="13" font-family="Courier New" font-weight="bold">:00</text>
+      <!-- date -->
+      <text id="svg-clk-d" x="460" y="143" text-anchor="middle" fill="#084a6a" font-size="8" font-family="Courier New">2025-06-01</text>
+      <!-- day of week -->
+      <text id="svg-clk-w" x="460" y="157" text-anchor="middle" fill="#073858" font-size="7.5" font-family="Courier New" letter-spacing="1.5">SUNDAY</text>
+      <!-- outer glow -->
+      <rect x="385" y="38" width="150" height="128" rx="4" fill="none" stroke="#00aadd" stroke-width="0.5" opacity="0.2"/>
+      <rect x="385" y="38" width="150" height="128" rx="4" fill="none" stroke="#0066aa" stroke-width="1" opacity="0.1"/>
 
       <!-- ===== PIXEL DREAM GAMES sign (right wall upper) ===== -->
       <rect x="698" y="150" width="94" height="76" rx="3" fill="#0a080e" stroke="#2a1838" stroke-width="2"/>
@@ -606,7 +615,47 @@ body {
       <!-- cup -->
       <rect x="449" y="265" width="5" height="6" rx="1" fill="#e8e0d0" opacity="0.8"/>
 
-      <!-- Chair 1 (ALEX) — rendered before desk so backrest peeks above -->
+      <!-- ===== CHAR 1 — ALEX (sitting at desk) ===== -->
+      <g class="chs" id="c1" onclick="openAgent(1)" transform="translate(0,-35)">
+        <ellipse cx="198" cy="312" rx="22" ry="8" class="cglow" fill="#4488ff" opacity="0"/>
+        <ellipse cx="198" cy="322" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
+        <rect x="190" y="306" width="7" height="15" rx="1" fill="#1e3a70" stroke="#08101a" stroke-width="1.2"/>
+        <rect x="200" y="306" width="7" height="15" rx="1" fill="#1e3a70" stroke="#08101a" stroke-width="1.2"/>
+        <rect x="188" y="318" width="10" height="5" rx="1" fill="#181c28" stroke="#040408" stroke-width="1"/>
+        <rect x="198" y="318" width="10" height="5" rx="1" fill="#181c28" stroke="#040408" stroke-width="1"/>
+        <rect x="186" y="285" width="24" height="24" rx="2" fill="#2255aa" stroke="#0a1a3a" stroke-width="1.5"/>
+        <rect x="196" y="285" width="4" height="6" fill="#e0c8a0"/>
+        <rect x="176" y="287" width="13" height="7" rx="3" fill="#1a4488" transform="rotate(-18 182 290)"/>
+        <rect x="207" y="288" width="12" height="7" rx="3" fill="#1a4488" transform="rotate(18 213 291)"/>
+        <ellipse cx="177" cy="295" rx="5" ry="4" fill="#cc9966"/>
+        <ellipse cx="220" cy="295" rx="5" ry="4" fill="#cc9966"/>
+        <rect x="193" y="280" width="10" height="7" rx="2" fill="#cc9966"/>
+        <rect x="185" y="260" width="26" height="23" rx="2" fill="#ddaa77" stroke="#553300" stroke-width="1.5"/>
+        <rect x="185" y="264" width="6" height="10" rx="2" fill="#2e1408"/>
+        <rect x="205" y="264" width="6" height="10" rx="2" fill="#2e1408"/>
+        <rect x="184" y="256" width="28" height="11" rx="2" fill="#12223a" stroke="#04091a" stroke-width="1.5"/>
+        <rect x="181" y="264" width="34" height="4" rx="1" fill="#0e1830" stroke="#04091a" stroke-width="1"/>
+        <rect x="196" y="257" width="5" height="3" rx="1" fill="#1a3458"/>
+        <line x1="198" y1="257" x2="198" y2="267" stroke="#1a3050" stroke-width="0.6"/>
+        <line x1="184" y1="262" x2="212" y2="262" stroke="#1a3050" stroke-width="0.5" opacity="0.5"/>
+        <rect x="191" y="271" width="4" height="4" rx="1" fill="#fff"/>
+        <rect x="201" y="271" width="4" height="4" rx="1" fill="#fff"/>
+        <rect x="192" y="272" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
+        <rect x="202" y="272" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
+        <rect x="190" y="269" width="5" height="1.5" rx="0.5" fill="#2e1408"/>
+        <rect x="200" y="269" width="5" height="1.5" rx="0.5" fill="#2e1408"/>
+        <rect x="193" y="278" width="9" height="2" rx="1" fill="#aa7755"/>
+        <rect x="188" y="290" width="20" height="7" rx="1.5" fill="#0e2860" stroke="#3a68cc" stroke-width="0.7"/>
+        <text x="198" y="295.5" text-anchor="middle" fill="#88bbff" font-size="4" font-family="Courier New">ALEX</text>
+        <g class="fb">
+          <rect x="138" y="228" width="84" height="26" rx="5" fill="#05101e" stroke="#1e3880" stroke-width="1.5"/>
+          <polygon points="178,254 183,263 188,254" fill="#05101e" stroke="#1e3880" stroke-width="1.2" stroke-linejoin="round"/>
+          <text x="180" y="240" text-anchor="middle" fill="#6699ff" font-size="7.5" font-family="Courier New">Analyzing</text>
+          <text x="180" y="251" text-anchor="middle" fill="#44dd88" font-size="7.5" font-family="Courier New">stocks... 📊</text>
+        </g>
+      </g>
+
+      <!-- Chair 1 (ALEX) -->
       <polygon points="183,248 213,232 213,264 183,280" fill="#22203a" stroke="#080814" stroke-width="1.5"/>
       <polygon points="213,232 221,236 221,268 213,264" fill="#1a1828" stroke="#080814" stroke-width="1"/>
       <polygon points="183,280 213,264 221,268 191,284" fill="#201e30" stroke="#080814" stroke-width="1.2"/>
@@ -617,106 +666,84 @@ body {
       <polygon points="213,252 221,249 221,261 213,257" fill="#201e38" stroke="#080814" stroke-width="0.8"/>
 
       <!-- ===== DESK 1 — top-left (ALEX, Stock Analyzer) ===== -->
-      <!-- desk top -->
       <polygon points="168,268 255,224 316,257 229,301" fill="#8a5220" stroke="#9a6030" stroke-width="1.2"/>
-      <!-- wood grain lines (desk 1) -->
       <line x1="180" y1="275" x2="267" y2="231" stroke="#6a3810" stroke-width="0.8" opacity="0.4"/>
       <line x1="192" y1="281" x2="279" y2="237" stroke="#6a3810" stroke-width="0.7" opacity="0.35"/>
       <line x1="205" y1="288" x2="292" y2="244" stroke="#6a3810" stroke-width="0.7" opacity="0.3"/>
       <line x1="217" y1="294" x2="304" y2="250" stroke="#6a3810" stroke-width="0.6" opacity="0.25"/>
-      <!-- desk left face -->
       <polygon points="168,268 168,300 229,333 229,301" fill="#5a3010" stroke="#3e1e08" stroke-width="1"/>
       <line x1="168" y1="284" x2="229" y2="317" stroke="#3e1e08" stroke-width="0.9" opacity="0.7"/>
       <rect x="191" y="274" width="10" height="3" rx="1.5" fill="#9a6840" stroke="#6a4420" stroke-width="0.6"/>
       <rect x="191" y="307" width="10" height="3" rx="1.5" fill="#9a6840" stroke="#6a4420" stroke-width="0.6"/>
-      <!-- desk right face -->
       <polygon points="229,301 229,333 316,289 316,257" fill="#6e3c18" stroke="#4a2808" stroke-width="1"/>
-      <!-- desk legs -->
       <rect x="222" y="330" width="5" height="12" rx="1" fill="#121214"/>
       <rect x="303" y="286" width="5" height="12" rx="1" fill="#121214"/>
-      <!-- monitor stand -->
       <polygon points="213,252 220,248 228,252 221,256" fill="#181818"/>
-      <!-- monitor base -->
       <polygon points="208,256 232,244 244,250 220,262" fill="#222226" stroke="#2e2e34" stroke-width="1"/>
-      <!-- monitor back -->
       <polygon points="208,256 208,261 220,267 220,262" fill="#1c1c20" stroke="#282830" stroke-width="0.7"/>
       <polygon points="220,262 220,267 244,255 244,250" fill="#202028" stroke="#282830" stroke-width="0.7"/>
-      <!-- screen -->
       <polygon points="210,257 230,246 242,251 222,262" fill="url(#mon1)" opacity="0.95"/>
-      <!-- chart bars -->
       <line x1="214" y1="261" x2="214" y2="255" stroke="#44dd88" stroke-width="1.5"/>
       <line x1="217" y1="261" x2="217" y2="253" stroke="#44dd88" stroke-width="1.5"/>
       <line x1="220" y1="261" x2="220" y2="257" stroke="#ff4466" stroke-width="1.5"/>
       <line x1="223" y1="261" x2="223" y2="251" stroke="#44dd88" stroke-width="1.5"/>
       <line x1="226" y1="261" x2="226" y2="254" stroke="#44dd88" stroke-width="1.5"/>
       <text x="221" y="249" text-anchor="middle" fill="#44dd88" font-size="3.5" font-family="Courier New" opacity="0.9">STOCK</text>
-      <!-- keyboard -->
       <polygon points="200,272 220,262 238,271 218,281" fill="#1e1e22" stroke="#2e2e32" stroke-width="0.7"/>
-      <!-- mouse -->
       <ellipse cx="246" cy="272" rx="5" ry="3" fill="#262628" stroke="#363638" stroke-width="0.5"/>
-      <!-- notepad -->
+      <!-- coffee cup desk 1 -->
+      <ellipse cx="290" cy="248" rx="5" ry="2.5" fill="#1a0e08"/>
+      <rect x="285" y="245" width="10" height="8" rx="2" fill="#7a3010"/>
+      <ellipse cx="290" cy="245" rx="5" ry="2" fill="#5a2008"/>
+      <path d="M 289 242 Q 287 239 289 236" fill="none" stroke="#8899cc" stroke-width="0.7" opacity="0.6"/>
       <polygon points="252,262 272,252 280,256 260,266" fill="#d0c090" opacity="0.7"/>
       <polygon points="254,260 274,250 282,254 262,264" fill="#e0d0a0" opacity="0.6"/>
 
-      <!-- ===== CHAR 1 — ALEX (Male, Stock) ===== -->
-      <g class="chs" id="c1" onclick="openAgent(1)">
-        <ellipse cx="198" cy="312" rx="22" ry="8" class="cglow" fill="#4488ff" opacity="0"/>
-        <!-- shadow -->
-        <ellipse cx="198" cy="322" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
-        <!-- legs -->
-        <rect x="190" y="306" width="7" height="15" rx="1" fill="#1e3a70" stroke="#08101a" stroke-width="1.2"/>
-        <rect x="200" y="306" width="7" height="15" rx="1" fill="#1e3a70" stroke="#08101a" stroke-width="1.2"/>
-        <!-- shoes -->
-        <rect x="188" y="318" width="10" height="5" rx="1" fill="#181c28" stroke="#040408" stroke-width="1"/>
-        <rect x="198" y="318" width="10" height="5" rx="1" fill="#181c28" stroke="#040408" stroke-width="1"/>
-        <!-- body shirt -->
-        <rect x="186" y="285" width="24" height="24" rx="2" fill="#2255aa" stroke="#0a1a3a" stroke-width="1.5"/>
-        <!-- collar -->
-        <rect x="196" y="285" width="4" height="6" fill="#e0c8a0"/>
-        <!-- arms -->
-        <rect x="176" y="287" width="13" height="7" rx="3" fill="#1a4488" transform="rotate(-18 182 290)"/>
-        <rect x="207" y="288" width="12" height="7" rx="3" fill="#1a4488" transform="rotate(18 213 291)"/>
-        <!-- hands -->
-        <ellipse cx="177" cy="295" rx="5" ry="4" fill="#cc9966"/>
-        <ellipse cx="220" cy="295" rx="5" ry="4" fill="#cc9966"/>
-        <!-- neck -->
-        <rect x="193" y="280" width="10" height="7" rx="2" fill="#cc9966"/>
-        <!-- head -->
-        <rect x="185" y="260" width="26" height="23" rx="2" fill="#ddaa77" stroke="#553300" stroke-width="1.5"/>
-        <!-- hair dark brown (under cap) -->
-        <rect x="185" y="264" width="6" height="10" rx="2" fill="#2e1408"/>
-        <rect x="205" y="264" width="6" height="10" rx="2" fill="#2e1408"/>
-        <!-- ALEX cap (navy blue) -->
-        <rect x="184" y="256" width="28" height="11" rx="2" fill="#12223a" stroke="#04091a" stroke-width="1.5"/>
-        <rect x="181" y="264" width="34" height="4" rx="1" fill="#0e1830" stroke="#04091a" stroke-width="1"/>
-        <rect x="196" y="257" width="5" height="3" rx="1" fill="#1a3458"/>
-        <!-- cap stitching -->
-        <line x1="198" y1="257" x2="198" y2="267" stroke="#1a3050" stroke-width="0.6"/>
-        <line x1="184" y1="262" x2="212" y2="262" stroke="#1a3050" stroke-width="0.5" opacity="0.5"/>
-        <!-- eyes -->
-        <rect x="191" y="271" width="4" height="4" rx="1" fill="#fff"/>
-        <rect x="201" y="271" width="4" height="4" rx="1" fill="#fff"/>
-        <rect x="192" y="272" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
-        <rect x="202" y="272" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
-        <!-- eyebrows -->
-        <rect x="190" y="269" width="5" height="1.5" rx="0.5" fill="#2e1408"/>
-        <rect x="200" y="269" width="5" height="1.5" rx="0.5" fill="#2e1408"/>
-        <!-- mouth -->
-        <rect x="193" y="278" width="9" height="2" rx="1" fill="#aa7755"/>
-        <!-- name tag -->
-        <rect x="188" y="290" width="20" height="7" rx="1.5" fill="#0e2860" stroke="#3a68cc" stroke-width="0.7"/>
-        <text x="198" y="295.5" text-anchor="middle" fill="#88bbff" font-size="4" font-family="Courier New">ALEX</text>
-
-        <!-- speech bubble -->
-        <g class="fb">
-          <rect x="138" y="228" width="84" height="26" rx="5" fill="#05101e" stroke="#1e3880" stroke-width="1.5"/>
-          <polygon points="178,254 183,263 188,254" fill="#05101e" stroke="#1e3880" stroke-width="1.2" stroke-linejoin="round"/>
-          <text x="180" y="240" text-anchor="middle" fill="#6699ff" font-size="7.5" font-family="Courier New">Analyzing</text>
-          <text x="180" y="251" text-anchor="middle" fill="#44dd88" font-size="7.5" font-family="Courier New">stocks... 📊</text>
+      <!-- ===== CHAR 2 — MAYA (sitting at desk) ===== -->
+      <g class="chs" id="c2" onclick="openAgent(2)" transform="translate(0,-35)">
+        <ellipse cx="583" cy="272" rx="22" ry="8" class="cglow" fill="#cc44ff" opacity="0"/>
+        <ellipse cx="583" cy="282" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
+        <rect x="575" y="266" width="7" height="15" rx="1" fill="#8a2880" stroke="#3a0838" stroke-width="1.2"/>
+        <rect x="585" y="266" width="7" height="15" rx="1" fill="#8a2880" stroke="#3a0838" stroke-width="1.2"/>
+        <rect x="572" y="278" width="11" height="5" rx="1" fill="#ff6699" stroke="#aa1144" stroke-width="1"/>
+        <rect x="583" y="278" width="11" height="5" rx="1" fill="#ff6699" stroke="#aa1144" stroke-width="1"/>
+        <rect x="570" y="244" width="26" height="25" rx="2" fill="#8a1a90" stroke="#3a0048" stroke-width="1.5"/>
+        <rect x="570" y="256" width="26" height="2" fill="#9a2299" opacity="0.5"/>
+        <rect x="559" y="246" width="13" height="7" rx="3" fill="#7a1280" transform="rotate(-22 565 249)"/>
+        <rect x="593" y="246" width="12" height="7" rx="3" fill="#7a1280" transform="rotate(22 599 249)"/>
+        <ellipse cx="560" cy="254" rx="5" ry="4" fill="#ddaa88"/>
+        <ellipse cx="605" cy="254" rx="5" ry="4" fill="#ddaa88"/>
+        <rect x="578" y="239" width="10" height="7" rx="2" fill="#ddaa88"/>
+        <rect x="570" y="218" width="26" height="24" rx="2" fill="#eebb99" stroke="#553300" stroke-width="1.5"/>
+        <rect x="566" y="220" width="7" height="25" rx="3" fill="#a84400"/>
+        <rect x="589" y="220" width="7" height="23" rx="3" fill="#a84400"/>
+        <rect x="568" y="212" width="28" height="11" rx="2" fill="#8a1840" stroke="#3a0818" stroke-width="1.5"/>
+        <rect x="565" y="220" width="34" height="4" rx="1" fill="#6e1030" stroke="#3a0818" stroke-width="1"/>
+        <rect x="580" y="213" width="5" height="3" rx="1" fill="#aa2050"/>
+        <line x1="582" y1="213" x2="582" y2="223" stroke="#6e1030" stroke-width="0.6"/>
+        <rect x="573" y="213" width="10" height="4" rx="1" fill="#aa2050" opacity="0.6"/>
+        <rect x="576" y="229" width="4" height="4" rx="1" fill="#fff"/>
+        <rect x="586" y="229" width="4" height="4" rx="1" fill="#fff"/>
+        <rect x="577" y="230" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
+        <rect x="587" y="230" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
+        <line x1="576" y1="229" x2="574" y2="227" stroke="#6a2800" stroke-width="0.8"/>
+        <line x1="579" y1="228" x2="579" y2="226" stroke="#6a2800" stroke-width="0.8"/>
+        <line x1="586" y1="229" x2="584" y2="227" stroke="#6a2800" stroke-width="0.8"/>
+        <line x1="589" y1="228" x2="589" y2="226" stroke="#6a2800" stroke-width="0.8"/>
+        <path d="M 575 227 Q 578 225 581 227" fill="none" stroke="#6a2800" stroke-width="1"/>
+        <path d="M 585 227 Q 588 225 591 227" fill="none" stroke="#6a2800" stroke-width="1"/>
+        <path d="M 578 237 Q 583 241 588 237" fill="none" stroke="#aa7755" stroke-width="1.3"/>
+        <rect x="573" y="249" width="20" height="7" rx="1.5" fill="#400860" stroke="#9944cc" stroke-width="0.7"/>
+        <text x="583" y="254.5" text-anchor="middle" fill="#cc88ff" font-size="4" font-family="Courier New">MAYA</text>
+        <g class="fb2">
+          <rect x="520" y="173" width="86" height="26" rx="5" fill="#100520" stroke="#601888" stroke-width="1.5"/>
+          <polygon points="558,199 563,208 568,199" fill="#100520" stroke="#601888" stroke-width="1.2" stroke-linejoin="round"/>
+          <text x="563" y="185" text-anchor="middle" fill="#bb77ff" font-size="7.5" font-family="Courier New">Scanning</text>
+          <text x="563" y="196" text-anchor="middle" fill="#ff88cc" font-size="7.5" font-family="Courier New">market... 🔍</text>
         </g>
       </g>
 
-      <!-- Chair 2 (MAYA) — rendered before desk so backrest peeks above -->
+      <!-- Chair 2 (MAYA) -->
       <polygon points="567,207 597,191 597,223 567,239" fill="#22203a" stroke="#080814" stroke-width="1.5"/>
       <polygon points="597,191 605,195 605,227 597,223" fill="#1a1828" stroke="#080814" stroke-width="1"/>
       <polygon points="567,239 597,223 605,227 575,243" fill="#201e30" stroke="#080814" stroke-width="1.2"/>
@@ -728,7 +755,6 @@ body {
 
       <!-- ===== DESK 2 — top-right (MAYA, Market Scout) ===== -->
       <polygon points="554,228 641,184 702,217 615,261" fill="#8a5220" stroke="#9a6030" stroke-width="1.2"/>
-      <!-- wood grain lines (desk 2) -->
       <line x1="566" y1="235" x2="653" y2="191" stroke="#6a3810" stroke-width="0.8" opacity="0.4"/>
       <line x1="578" y1="241" x2="665" y2="197" stroke="#6a3810" stroke-width="0.7" opacity="0.35"/>
       <line x1="591" y1="248" x2="678" y2="204" stroke="#6a3810" stroke-width="0.7" opacity="0.3"/>
@@ -740,85 +766,65 @@ body {
       <polygon points="615,261 615,293 702,249 702,217" fill="#6e3c18" stroke="#4a2808" stroke-width="1"/>
       <rect x="608" y="290" width="5" height="12" rx="1" fill="#121214"/>
       <rect x="695" y="246" width="5" height="12" rx="1" fill="#121214"/>
-      <!-- monitor -->
       <polygon points="590,200 614,188 630,196 606,208" fill="#222226" stroke="#2e2e34" stroke-width="1"/>
       <polygon points="590,200 590,205 606,213 606,208" fill="#1c1c20" stroke="#282830" stroke-width="0.7"/>
       <polygon points="606,208 606,213 630,201 630,196" fill="#202028" stroke="#282830" stroke-width="0.7"/>
       <polygon points="592,201 612,190 628,197 608,208" fill="url(#mon2)" opacity="0.95"/>
-      <!-- market trend lines -->
       <polyline points="595,206 599,202 603,204 607,199 611,201 615,197 619,199 623,195" fill="none" stroke="#cc66ff" stroke-width="1.2"/>
       <text x="607" y="191" text-anchor="middle" fill="#cc66ff" font-size="4" font-family="Courier New" opacity="0.9">MARKET</text>
-      <!-- keyboard -->
       <polygon points="580,216 600,206 618,215 598,225" fill="#1e1e22" stroke="#2e2e32" stroke-width="0.7"/>
-      <!-- mouse -->
       <ellipse cx="626" cy="216" rx="5" ry="3" fill="#262628" stroke="#363638" stroke-width="0.5"/>
-      <!-- coffee cup -->
+      <!-- coffee cup desk 2 -->
       <ellipse cx="665" cy="233" rx="6" ry="3" fill="#1a0e08"/>
       <rect x="659" y="230" width="12" height="10" rx="2" fill="#8a3808"/>
       <ellipse cx="665" cy="230" rx="6" ry="2.5" fill="#6a2808"/>
       <path d="M 664 228 Q 662 224 664 220" fill="none" stroke="#8899bb" stroke-width="0.8" opacity="0.6"/>
 
-      <!-- ===== CHAR 2 — MAYA (Female, Market) ===== -->
-      <g class="chs" id="c2" onclick="openAgent(2)">
-        <ellipse cx="583" cy="272" rx="22" ry="8" class="cglow" fill="#cc44ff" opacity="0"/>
-        <ellipse cx="583" cy="282" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
-        <!-- legs -->
-        <rect x="575" y="266" width="7" height="15" rx="1" fill="#8a2880" stroke="#3a0838" stroke-width="1.2"/>
-        <rect x="585" y="266" width="7" height="15" rx="1" fill="#8a2880" stroke="#3a0838" stroke-width="1.2"/>
-        <!-- shoes (heels) -->
-        <rect x="572" y="278" width="11" height="5" rx="1" fill="#ff6699" stroke="#aa1144" stroke-width="1"/>
-        <rect x="583" y="278" width="11" height="5" rx="1" fill="#ff6699" stroke="#aa1144" stroke-width="1"/>
-        <!-- body dress -->
-        <rect x="570" y="244" width="26" height="25" rx="2" fill="#8a1a90" stroke="#3a0048" stroke-width="1.5"/>
-        <!-- waist detail -->
-        <rect x="570" y="256" width="26" height="2" fill="#9a2299" opacity="0.5"/>
-        <!-- arms -->
-        <rect x="559" y="246" width="13" height="7" rx="3" fill="#7a1280" transform="rotate(-22 565 249)"/>
-        <rect x="593" y="246" width="12" height="7" rx="3" fill="#7a1280" transform="rotate(22 599 249)"/>
-        <ellipse cx="560" cy="254" rx="5" ry="4" fill="#ddaa88"/>
-        <ellipse cx="605" cy="254" rx="5" ry="4" fill="#ddaa88"/>
-        <!-- neck -->
-        <rect x="578" y="239" width="10" height="7" rx="2" fill="#ddaa88"/>
-        <!-- head -->
-        <rect x="570" y="218" width="26" height="24" rx="2" fill="#eebb99" stroke="#553300" stroke-width="1.5"/>
-        <!-- hair long auburn (sides visible under cap) -->
-        <rect x="566" y="220" width="7" height="25" rx="3" fill="#a84400"/>
-        <rect x="589" y="220" width="7" height="23" rx="3" fill="#a84400"/>
-        <!-- MAYA cap (rose/pink) -->
-        <rect x="568" y="212" width="28" height="11" rx="2" fill="#8a1840" stroke="#3a0818" stroke-width="1.5"/>
-        <rect x="565" y="220" width="34" height="4" rx="1" fill="#6e1030" stroke="#3a0818" stroke-width="1"/>
-        <rect x="580" y="213" width="5" height="3" rx="1" fill="#aa2050"/>
-        <!-- cap stitching -->
-        <line x1="582" y1="213" x2="582" y2="223" stroke="#6e1030" stroke-width="0.6"/>
-        <rect x="573" y="213" width="10" height="4" rx="1" fill="#aa2050" opacity="0.6"/>
-        <!-- eyes with lashes -->
-        <rect x="576" y="229" width="4" height="4" rx="1" fill="#fff"/>
-        <rect x="586" y="229" width="4" height="4" rx="1" fill="#fff"/>
-        <rect x="577" y="230" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
-        <rect x="587" y="230" width="2.5" height="2.5" rx="0.5" fill="#1a1840"/>
-        <line x1="576" y1="229" x2="574" y2="227" stroke="#6a2800" stroke-width="0.8"/>
-        <line x1="579" y1="228" x2="579" y2="226" stroke="#6a2800" stroke-width="0.8"/>
-        <line x1="586" y1="229" x2="584" y2="227" stroke="#6a2800" stroke-width="0.8"/>
-        <line x1="589" y1="228" x2="589" y2="226" stroke="#6a2800" stroke-width="0.8"/>
-        <!-- eyebrows arched -->
-        <path d="M 575 227 Q 578 225 581 227" fill="none" stroke="#6a2800" stroke-width="1"/>
-        <path d="M 585 227 Q 588 225 591 227" fill="none" stroke="#6a2800" stroke-width="1"/>
-        <!-- smile -->
-        <path d="M 578 237 Q 583 241 588 237" fill="none" stroke="#aa7755" stroke-width="1.3"/>
-        <!-- name tag -->
-        <rect x="573" y="249" width="20" height="7" rx="1.5" fill="#400860" stroke="#9944cc" stroke-width="0.7"/>
-        <text x="583" y="254.5" text-anchor="middle" fill="#cc88ff" font-size="4" font-family="Courier New">MAYA</text>
-
-        <!-- speech bubble -->
-        <g class="fb2">
-          <rect x="520" y="173" width="86" height="26" rx="5" fill="#100520" stroke="#601888" stroke-width="1.5"/>
-          <polygon points="558,199 563,208 568,199" fill="#100520" stroke="#601888" stroke-width="1.2" stroke-linejoin="round"/>
-          <text x="563" y="185" text-anchor="middle" fill="#bb77ff" font-size="7.5" font-family="Courier New">Scanning</text>
-          <text x="563" y="196" text-anchor="middle" fill="#ff88cc" font-size="7.5" font-family="Courier New">market... 🔍</text>
+      <!-- ===== CHAR 3 — KEN (sitting at desk) ===== -->
+      <g class="chs" id="c3" onclick="openAgent(3)" transform="translate(0,-38)">
+        <ellipse cx="258" cy="402" rx="22" ry="8" class="cglow" fill="#44ff88" opacity="0"/>
+        <ellipse cx="258" cy="412" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
+        <rect x="250" y="396" width="7" height="15" rx="1" fill="#2e4430" stroke="#0c1410" stroke-width="1.2"/>
+        <rect x="260" y="396" width="7" height="15" rx="1" fill="#2e4430" stroke="#0c1410" stroke-width="1.2"/>
+        <rect x="248" y="408" width="10" height="5" rx="1" fill="#1a2418" stroke="#060808" stroke-width="1"/>
+        <rect x="258" y="408" width="10" height="5" rx="1" fill="#1a2418" stroke="#060808" stroke-width="1"/>
+        <rect x="246" y="375" width="24" height="24" rx="2" fill="#1a6a2a" stroke="#082010" stroke-width="1.5"/>
+        <rect x="248" y="380" width="7" height="6" rx="1" fill="#0e4820" stroke="#2a7840" stroke-width="0.5"/>
+        <rect x="235" y="377" width="13" height="7" rx="3" fill="#165a26" transform="rotate(-20 241 380)"/>
+        <rect x="267" y="378" width="12" height="7" rx="3" fill="#165a26" transform="rotate(20 273 381)"/>
+        <ellipse cx="236" cy="385" rx="5" ry="4" fill="#bb8855"/>
+        <ellipse cx="279" cy="385" rx="5" ry="4" fill="#bb8855"/>
+        <rect x="253" y="370" width="10" height="7" rx="2" fill="#bb8855"/>
+        <rect x="245" y="349" width="26" height="24" rx="2" fill="#cc9966" stroke="#553300" stroke-width="1.5"/>
+        <rect x="245" y="353" width="5" height="10" rx="2" fill="#161616"/>
+        <rect x="266" y="353" width="5" height="10" rx="2" fill="#161616"/>
+        <rect x="244" y="342" width="28" height="13" rx="2" fill="#0e3018" stroke="#041008" stroke-width="1.5"/>
+        <rect x="241" y="352" width="34" height="4" rx="1" fill="#0a2412" stroke="#041008" stroke-width="1"/>
+        <text x="258" y="351" text-anchor="middle" fill="#22cc44" font-size="6" font-family="Courier New" font-weight="bold">M</text>
+        <line x1="258" y1="343" x2="258" y2="356" stroke="#0a2412" stroke-width="0.6"/>
+        <rect x="248" y="359" width="8" height="6" rx="1.5" fill="none" stroke="#99ddcc" stroke-width="1.2"/>
+        <rect x="259" y="359" width="8" height="6" rx="1.5" fill="none" stroke="#99ddcc" stroke-width="1.2"/>
+        <line x1="256" y1="362" x2="259" y2="362" stroke="#99ddcc" stroke-width="1"/>
+        <line x1="247" y1="362" x2="244" y2="363" stroke="#99ddcc" stroke-width="1"/>
+        <line x1="268" y1="362" x2="271" y2="363" stroke="#99ddcc" stroke-width="1"/>
+        <rect x="250" y="360" width="3.5" height="3.5" rx="0.5" fill="#fff"/>
+        <rect x="261" y="360" width="3.5" height="3.5" rx="0.5" fill="#fff"/>
+        <rect x="251" y="361" width="2" height="2" rx="0.5" fill="#1a1840"/>
+        <rect x="262" y="361" width="2" height="2" rx="0.5" fill="#1a1840"/>
+        <rect x="249" y="357" width="7" height="1.5" rx="0.5" fill="#161616"/>
+        <rect x="260" y="357" width="7" height="1.5" rx="0.5" fill="#161616"/>
+        <rect x="253" y="368" width="8" height="2" rx="1" fill="#996644"/>
+        <rect x="249" y="380" width="18" height="7" rx="1.5" fill="#062014" stroke="#38aa66" stroke-width="0.7"/>
+        <text x="258" y="385.5" text-anchor="middle" fill="#66cc88" font-size="4" font-family="Courier New">KEN</text>
+        <g class="fb3">
+          <rect x="188" y="320" width="88" height="26" rx="5" fill="#021208" stroke="#185830" stroke-width="1.5"/>
+          <polygon points="230,346 235,355 240,346" fill="#021208" stroke="#185830" stroke-width="1.2" stroke-linejoin="round"/>
+          <text x="232" y="332" text-anchor="middle" fill="#55cc88" font-size="7.5" font-family="Courier New">Processing</text>
+          <text x="232" y="343" text-anchor="middle" fill="#44ffaa" font-size="7.5" font-family="Courier New">data... 📂</text>
         </g>
       </g>
 
-      <!-- Chair 3 (KEN) — rendered before desk so backrest peeks above -->
+      <!-- Chair 3 (KEN) -->
       <polygon points="243,338 273,322 273,354 243,370" fill="#22203a" stroke="#080814" stroke-width="1.5"/>
       <polygon points="273,322 281,326 281,358 273,354" fill="#1a1828" stroke="#080814" stroke-width="1"/>
       <polygon points="243,370 273,354 281,358 251,374" fill="#201e30" stroke="#080814" stroke-width="1.2"/>
@@ -830,7 +836,6 @@ body {
 
       <!-- ===== DESK 3 — bottom-left (KEN, Data Analyst) ===== -->
       <polygon points="220,378 307,334 368,367 281,411" fill="#8a5220" stroke="#9a6030" stroke-width="1.2"/>
-      <!-- wood grain lines (desk 3) -->
       <line x1="232" y1="385" x2="319" y2="341" stroke="#6a3810" stroke-width="0.8" opacity="0.4"/>
       <line x1="244" y1="391" x2="331" y2="347" stroke="#6a3810" stroke-width="0.7" opacity="0.35"/>
       <line x1="257" y1="398" x2="344" y2="354" stroke="#6a3810" stroke-width="0.7" opacity="0.3"/>
@@ -842,84 +847,68 @@ body {
       <polygon points="281,411 281,443 368,399 368,367" fill="#6e3c18" stroke="#4a2808" stroke-width="1"/>
       <rect x="274" y="440" width="5" height="12" rx="1" fill="#121214"/>
       <rect x="361" y="396" width="5" height="12" rx="1" fill="#121214"/>
-      <!-- monitor -->
       <polygon points="266,348 290,336 306,344 282,356" fill="#222226" stroke="#2e2e34" stroke-width="1"/>
       <polygon points="266,348 266,353 282,361 282,356" fill="#1c1c20" stroke="#282830" stroke-width="0.7"/>
       <polygon points="282,356 282,361 306,349 306,344" fill="#202028" stroke="#282830" stroke-width="0.7"/>
       <polygon points="268,349 288,338 304,345 284,356" fill="url(#mon3)" opacity="0.95"/>
-      <!-- data on screen -->
       <text x="284" y="349" text-anchor="middle" fill="#44dd88" font-size="4.5" font-family="Courier New" opacity="0.9">DATA▓▒░</text>
       <line x1="270" y1="353" x2="302" y2="340" stroke="#33aa66" stroke-width="0.7" opacity="0.6"/>
-      <!-- keyboard -->
       <polygon points="256,362 276,352 294,361 274,371" fill="#1e1e22" stroke="#2e2e32" stroke-width="0.7"/>
-      <!-- files/papers -->
+      <!-- coffee cup desk 3 -->
+      <ellipse cx="340" cy="351" rx="5" ry="2.5" fill="#1a0e08"/>
+      <rect x="335" y="348" width="10" height="8" rx="2" fill="#7a3010"/>
+      <ellipse cx="340" cy="348" rx="5" ry="2" fill="#5a2008"/>
+      <path d="M 339 345 Q 337 342 339 339" fill="none" stroke="#8899cc" stroke-width="0.7" opacity="0.6"/>
       <polygon points="318,354 342,342 352,347 328,359" fill="#c0a060" opacity="0.75"/>
       <polygon points="320,352 344,340 354,345 330,357" fill="#d8b870" opacity="0.65"/>
       <polygon points="322,350 346,338 356,343 332,355" fill="#e8c880" opacity="0.55"/>
 
-      <!-- ===== CHAR 3 — KEN (Male, Data Analyst) ===== -->
-      <g class="chs" id="c3" onclick="openAgent(3)">
-        <ellipse cx="258" cy="402" rx="22" ry="8" class="cglow" fill="#44ff88" opacity="0"/>
-        <ellipse cx="258" cy="412" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
-        <!-- legs -->
-        <rect x="250" y="396" width="7" height="15" rx="1" fill="#2e4430" stroke="#0c1410" stroke-width="1.2"/>
-        <rect x="260" y="396" width="7" height="15" rx="1" fill="#2e4430" stroke="#0c1410" stroke-width="1.2"/>
-        <!-- shoes -->
-        <rect x="248" y="408" width="10" height="5" rx="1" fill="#1a2418" stroke="#060808" stroke-width="1"/>
-        <rect x="258" y="408" width="10" height="5" rx="1" fill="#1a2418" stroke="#060808" stroke-width="1"/>
-        <!-- body -->
-        <rect x="246" y="375" width="24" height="24" rx="2" fill="#1a6a2a" stroke="#082010" stroke-width="1.5"/>
-        <!-- pocket -->
-        <rect x="248" y="380" width="7" height="6" rx="1" fill="#0e4820" stroke="#2a7840" stroke-width="0.5"/>
-        <!-- arms -->
-        <rect x="235" y="377" width="13" height="7" rx="3" fill="#165a26" transform="rotate(-20 241 380)"/>
-        <rect x="267" y="378" width="12" height="7" rx="3" fill="#165a26" transform="rotate(20 273 381)"/>
-        <ellipse cx="236" cy="385" rx="5" ry="4" fill="#bb8855"/>
-        <ellipse cx="279" cy="385" rx="5" ry="4" fill="#bb8855"/>
-        <!-- neck -->
-        <rect x="253" y="370" width="10" height="7" rx="2" fill="#bb8855"/>
-        <!-- head -->
-        <rect x="245" y="349" width="26" height="24" rx="2" fill="#cc9966" stroke="#553300" stroke-width="1.5"/>
-        <!-- hair dark/spiky (sides under cap) -->
-        <rect x="245" y="353" width="5" height="10" rx="2" fill="#161616"/>
-        <rect x="266" y="353" width="5" height="10" rx="2" fill="#161616"/>
-        <!-- KEN cap (dark green with M logo) -->
-        <rect x="244" y="342" width="28" height="13" rx="2" fill="#0e3018" stroke="#041008" stroke-width="1.5"/>
-        <rect x="241" y="352" width="34" height="4" rx="1" fill="#0a2412" stroke="#041008" stroke-width="1"/>
-        <!-- M logo -->
-        <text x="258" y="351" text-anchor="middle" fill="#22cc44" font-size="6" font-family="Courier New" font-weight="bold">M</text>
-        <!-- cap stitching -->
-        <line x1="258" y1="343" x2="258" y2="356" stroke="#0a2412" stroke-width="0.6"/>
-        <!-- glasses -->
-        <rect x="248" y="359" width="8" height="6" rx="1.5" fill="none" stroke="#99ddcc" stroke-width="1.2"/>
-        <rect x="259" y="359" width="8" height="6" rx="1.5" fill="none" stroke="#99ddcc" stroke-width="1.2"/>
-        <line x1="256" y1="362" x2="259" y2="362" stroke="#99ddcc" stroke-width="1"/>
-        <line x1="247" y1="362" x2="244" y2="363" stroke="#99ddcc" stroke-width="1"/>
-        <line x1="268" y1="362" x2="271" y2="363" stroke="#99ddcc" stroke-width="1"/>
-        <!-- eyes behind glasses -->
-        <rect x="250" y="360" width="3.5" height="3.5" rx="0.5" fill="#fff"/>
-        <rect x="261" y="360" width="3.5" height="3.5" rx="0.5" fill="#fff"/>
-        <rect x="251" y="361" width="2" height="2" rx="0.5" fill="#1a1840"/>
-        <rect x="262" y="361" width="2" height="2" rx="0.5" fill="#1a1840"/>
-        <!-- eyebrows -->
-        <rect x="249" y="357" width="7" height="1.5" rx="0.5" fill="#161616"/>
-        <rect x="260" y="357" width="7" height="1.5" rx="0.5" fill="#161616"/>
-        <!-- mouth straight -->
-        <rect x="253" y="368" width="8" height="2" rx="1" fill="#996644"/>
-        <!-- name tag -->
-        <rect x="249" y="380" width="18" height="7" rx="1.5" fill="#062014" stroke="#38aa66" stroke-width="0.7"/>
-        <text x="258" y="385.5" text-anchor="middle" fill="#66cc88" font-size="4" font-family="Courier New">KEN</text>
-
-        <!-- speech bubble -->
-        <g class="fb3">
-          <rect x="188" y="320" width="88" height="26" rx="5" fill="#021208" stroke="#185830" stroke-width="1.5"/>
-          <polygon points="230,346 235,355 240,346" fill="#021208" stroke="#185830" stroke-width="1.2" stroke-linejoin="round"/>
-          <text x="232" y="332" text-anchor="middle" fill="#55cc88" font-size="7.5" font-family="Courier New">Processing</text>
-          <text x="232" y="343" text-anchor="middle" fill="#44ffaa" font-size="7.5" font-family="Courier New">data... 📂</text>
+      <!-- ===== CHAR 4 — LUNA (sitting at desk) ===== -->
+      <g class="chs" id="c4" onclick="openAgent(4)" transform="translate(0,-30)">
+        <ellipse cx="568" cy="392" rx="22" ry="8" class="cglow" fill="#ff9f1c" opacity="0"/>
+        <ellipse cx="568" cy="402" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
+        <rect x="560" y="386" width="7" height="15" rx="1" fill="#4a1068" stroke="#180428" stroke-width="1.2"/>
+        <rect x="570" y="386" width="7" height="15" rx="1" fill="#4a1068" stroke="#180428" stroke-width="1.2"/>
+        <rect x="558" y="398" width="11" height="5" rx="1" fill="#ff55aa" stroke="#aa1155" stroke-width="1"/>
+        <rect x="568" y="398" width="11" height="5" rx="1" fill="#ff55aa" stroke="#aa1155" stroke-width="1"/>
+        <rect x="556" y="364" width="24" height="25" rx="2" fill="#7a0898" stroke="#2a0048" stroke-width="1.5"/>
+        <polygon points="566,364 568,374 564,380" fill="#ffbbdd" opacity="0.5"/>
+        <polygon points="570,364 568,374 572,380" fill="#ffbbdd" opacity="0.5"/>
+        <rect x="544" y="366" width="14" height="7" rx="3" fill="#6a0888" transform="rotate(-25 551 369)"/>
+        <rect x="578" y="367" width="13" height="7" rx="3" fill="#6a0888" transform="rotate(25 584 370)"/>
+        <ellipse cx="545" cy="374" rx="5" ry="4" fill="#ddaa88"/>
+        <ellipse cx="590" cy="374" rx="5" ry="4" fill="#ddaa88"/>
+        <rect x="563" y="358" width="10" height="8" rx="2" fill="#ddaa88"/>
+        <rect x="555" y="336" width="26" height="25" rx="2" fill="#eebb99" stroke="#553300" stroke-width="1.5"/>
+        <rect x="550" y="339" width="8" height="27" rx="3" fill="#180830"/>
+        <rect x="578" y="339" width="8" height="25" rx="3" fill="#180830"/>
+        <rect x="553" y="328" width="30" height="13" rx="2" fill="#220840" stroke="#0a0418" stroke-width="1.5"/>
+        <rect x="549" y="338" width="38" height="4" rx="1" fill="#180630" stroke="#0a0418" stroke-width="1"/>
+        <rect x="566" y="329" width="5" height="3" rx="1" fill="#3a0a60"/>
+        <text x="568" y="337" text-anchor="middle" fill="#9944dd" font-size="6" font-family="Courier New">★</text>
+        <line x1="568" y1="329" x2="568" y2="342" stroke="#180630" stroke-width="0.6"/>
+        <rect x="561" y="347" width="5" height="5" rx="1.5" fill="#fff"/>
+        <rect x="571" y="347" width="5" height="5" rx="1.5" fill="#fff"/>
+        <rect x="562" y="348" width="3" height="3" rx="0.7" fill="#1a1840"/>
+        <rect x="572" y="348" width="3" height="3" rx="0.7" fill="#1a1840"/>
+        <line x1="561" y1="347" x2="558" y2="345" stroke="#180830" stroke-width="0.9"/>
+        <line x1="564" y1="346" x2="564" y2="344" stroke="#180830" stroke-width="0.9"/>
+        <line x1="571" y1="347" x2="568" y2="345" stroke="#180830" stroke-width="0.9"/>
+        <line x1="575" y1="346" x2="575" y2="344" stroke="#180830" stroke-width="0.9"/>
+        <path d="M 560 345 Q 563 342 566 345" fill="none" stroke="#180830" stroke-width="1.1"/>
+        <path d="M 570 345 Q 573 342 576 345" fill="none" stroke="#180830" stroke-width="1.1"/>
+        <path d="M 562 356 Q 568 361 574 356" fill="none" stroke="#aa7755" stroke-width="1.4"/>
+        <rect x="559" y="369" width="20" height="7" rx="1.5" fill="#300660" stroke="#9922cc" stroke-width="0.7"/>
+        <text x="569" y="374.5" text-anchor="middle" fill="#ff9f1c" font-size="4" font-family="Courier New">LUNA</text>
+        <g class="fb4">
+          <rect x="504" y="305" width="88" height="26" rx="5" fill="#0e0218" stroke="#601888" stroke-width="1.5"/>
+          <polygon points="542,331 547,340 552,331" fill="#0e0218" stroke="#601888" stroke-width="1.2" stroke-linejoin="round"/>
+          <text x="548" y="317" text-anchor="middle" fill="#cc77ff" font-size="7.5" font-family="Courier New">Building</text>
+          <text x="548" y="328" text-anchor="middle" fill="#ff9f1c" font-size="7.5" font-family="Courier New">slides... 🎨</text>
         </g>
       </g>
 
-      <!-- Chair 4 (LUNA) — rendered before desk so backrest peeks above -->
+      <!-- Chair 4 (LUNA) -->
       <polygon points="553,322 583,306 583,338 553,354" fill="#22203a" stroke="#080814" stroke-width="1.5"/>
       <polygon points="583,306 591,310 591,342 583,338" fill="#1a1828" stroke="#080814" stroke-width="1"/>
       <polygon points="553,354 583,338 591,342 561,358" fill="#201e30" stroke="#080814" stroke-width="1.2"/>
@@ -931,7 +920,6 @@ body {
 
       <!-- ===== DESK 4 — bottom-right (LUNA, Presentation) ===== -->
       <polygon points="536,358 623,314 684,347 597,391" fill="#8a5220" stroke="#9a6030" stroke-width="1.2"/>
-      <!-- wood grain lines (desk 4) -->
       <line x1="548" y1="365" x2="635" y2="321" stroke="#6a3810" stroke-width="0.8" opacity="0.4"/>
       <line x1="560" y1="371" x2="647" y2="327" stroke="#6a3810" stroke-width="0.7" opacity="0.35"/>
       <line x1="573" y1="378" x2="660" y2="334" stroke="#6a3810" stroke-width="0.7" opacity="0.3"/>
@@ -943,86 +931,24 @@ body {
       <polygon points="597,391 597,423 684,379 684,347" fill="#6e3c18" stroke="#4a2808" stroke-width="1"/>
       <rect x="590" y="420" width="5" height="12" rx="1" fill="#121214"/>
       <rect x="677" y="376" width="5" height="12" rx="1" fill="#121214"/>
-      <!-- wide monitor -->
       <polygon points="564,323 600,305 628,319 592,337" fill="#222226" stroke="#2e2e34" stroke-width="1.5"/>
       <polygon points="564,323 564,329 592,343 592,337" fill="#1c1c20" stroke="#282830" stroke-width="0.7"/>
       <polygon points="592,337 592,343 628,325 628,319" fill="#202028" stroke="#282830" stroke-width="0.7"/>
       <polygon points="566,324 598,307 626,320 594,337" fill="url(#mon4)" opacity="0.95"/>
-      <!-- slide preview on screen -->
       <rect x="569" y="313" width="40" height="18" rx="1" fill="#200808" opacity="0.7"/>
       <text x="589" y="322" text-anchor="middle" fill="#ff9f1c" font-size="5" font-family="Courier New" opacity="0.9">SLIDE 1</text>
       <line x1="571" y1="326" x2="607" y2="309" stroke="#ff9f1c" stroke-width="0.6" opacity="0.4"/>
-      <!-- tablet/notes -->
+      <!-- coffee cup desk 4 -->
+      <ellipse cx="618" cy="324" rx="5" ry="2.5" fill="#1a0e08"/>
+      <rect x="613" y="321" width="10" height="8" rx="2" fill="#7a3010"/>
+      <ellipse cx="618" cy="321" rx="5" ry="2" fill="#5a2008"/>
+      <path d="M 617 318 Q 615 315 617 312" fill="none" stroke="#8899cc" stroke-width="0.7" opacity="0.6"/>
       <rect x="638" y="332" width="22" height="30" rx="2" fill="#1a1a1e" stroke="#2e2e34" stroke-width="1"/>
       <rect x="640" y="334" width="18" height="4" rx="1" fill="#ff9f1c" opacity="0.6"/>
       <rect x="640" y="340" width="14" height="2" rx="1" fill="#6655aa" opacity="0.5"/>
       <rect x="640" y="344" width="16" height="2" rx="1" fill="#6655aa" opacity="0.4"/>
       <rect x="640" y="348" width="12" height="2" rx="1" fill="#6655aa" opacity="0.3"/>
-      <!-- keyboard -->
       <polygon points="572,343 592,333 610,342 590,352" fill="#1e1e22" stroke="#2e2e32" stroke-width="0.7"/>
-
-      <!-- ===== CHAR 4 — LUNA (Female, Presentation) ===== -->
-      <g class="chs" id="c4" onclick="openAgent(4)">
-        <ellipse cx="568" cy="392" rx="22" ry="8" class="cglow" fill="#ff9f1c" opacity="0"/>
-        <ellipse cx="568" cy="402" rx="13" ry="4" fill="#04021a" opacity="0.5"/>
-        <!-- legs -->
-        <rect x="560" y="386" width="7" height="15" rx="1" fill="#4a1068" stroke="#180428" stroke-width="1.2"/>
-        <rect x="570" y="386" width="7" height="15" rx="1" fill="#4a1068" stroke="#180428" stroke-width="1.2"/>
-        <!-- heels -->
-        <rect x="558" y="398" width="11" height="5" rx="1" fill="#ff55aa" stroke="#aa1155" stroke-width="1"/>
-        <rect x="568" y="398" width="11" height="5" rx="1" fill="#ff55aa" stroke="#aa1155" stroke-width="1"/>
-        <!-- body blazer/dress -->
-        <rect x="556" y="364" width="24" height="25" rx="2" fill="#7a0898" stroke="#2a0048" stroke-width="1.5"/>
-        <!-- lapels -->
-        <polygon points="566,364 568,374 564,380" fill="#ffbbdd" opacity="0.5"/>
-        <polygon points="570,364 568,374 572,380" fill="#ffbbdd" opacity="0.5"/>
-        <!-- arms -->
-        <rect x="544" y="366" width="14" height="7" rx="3" fill="#6a0888" transform="rotate(-25 551 369)"/>
-        <rect x="578" y="367" width="13" height="7" rx="3" fill="#6a0888" transform="rotate(25 584 370)"/>
-        <ellipse cx="545" cy="374" rx="5" ry="4" fill="#ddaa88"/>
-        <ellipse cx="590" cy="374" rx="5" ry="4" fill="#ddaa88"/>
-        <!-- neck -->
-        <rect x="563" y="358" width="10" height="8" rx="2" fill="#ddaa88"/>
-        <!-- head -->
-        <rect x="555" y="336" width="26" height="25" rx="2" fill="#eebb99" stroke="#553300" stroke-width="1.5"/>
-        <!-- hair dark purple long (sides under cap) -->
-        <rect x="550" y="339" width="8" height="27" rx="3" fill="#180830"/>
-        <rect x="578" y="339" width="8" height="25" rx="3" fill="#180830"/>
-        <!-- LUNA cap (dark purple) -->
-        <rect x="553" y="328" width="30" height="13" rx="2" fill="#220840" stroke="#0a0418" stroke-width="1.5"/>
-        <rect x="549" y="338" width="38" height="4" rx="1" fill="#180630" stroke="#0a0418" stroke-width="1"/>
-        <rect x="566" y="329" width="5" height="3" rx="1" fill="#3a0a60"/>
-        <!-- star logo -->
-        <text x="568" y="337" text-anchor="middle" fill="#9944dd" font-size="6" font-family="Courier New">★</text>
-        <!-- cap stitching -->
-        <line x1="568" y1="329" x2="568" y2="342" stroke="#180630" stroke-width="0.6"/>
-        <!-- eyes large -->
-        <rect x="561" y="347" width="5" height="5" rx="1.5" fill="#fff"/>
-        <rect x="571" y="347" width="5" height="5" rx="1.5" fill="#fff"/>
-        <rect x="562" y="348" width="3" height="3" rx="0.7" fill="#1a1840"/>
-        <rect x="572" y="348" width="3" height="3" rx="0.7" fill="#1a1840"/>
-        <!-- lashes -->
-        <line x1="561" y1="347" x2="558" y2="345" stroke="#180830" stroke-width="0.9"/>
-        <line x1="564" y1="346" x2="564" y2="344" stroke="#180830" stroke-width="0.9"/>
-        <line x1="571" y1="347" x2="568" y2="345" stroke="#180830" stroke-width="0.9"/>
-        <line x1="575" y1="346" x2="575" y2="344" stroke="#180830" stroke-width="0.9"/>
-        <!-- eyebrows -->
-        <path d="M 560 345 Q 563 342 566 345" fill="none" stroke="#180830" stroke-width="1.1"/>
-        <path d="M 570 345 Q 573 342 576 345" fill="none" stroke="#180830" stroke-width="1.1"/>
-        <!-- smile -->
-        <path d="M 562 356 Q 568 361 574 356" fill="none" stroke="#aa7755" stroke-width="1.4"/>
-        <!-- name tag -->
-        <rect x="559" y="369" width="20" height="7" rx="1.5" fill="#300660" stroke="#9922cc" stroke-width="0.7"/>
-        <text x="569" y="374.5" text-anchor="middle" fill="#ff9f1c" font-size="4" font-family="Courier New">LUNA</text>
-
-        <!-- speech bubble -->
-        <g class="fb4">
-          <rect x="504" y="305" width="88" height="26" rx="5" fill="#0e0218" stroke="#601888" stroke-width="1.5"/>
-          <polygon points="542,331 547,340 552,331" fill="#0e0218" stroke="#601888" stroke-width="1.2" stroke-linejoin="round"/>
-          <text x="548" y="317" text-anchor="middle" fill="#cc77ff" font-size="7.5" font-family="Courier New">Building</text>
-          <text x="548" y="328" text-anchor="middle" fill="#ff9f1c" font-size="7.5" font-family="Courier New">slides... 🎨</text>
-        </g>
-      </g>
 
       <!-- Central coffee table -->
       <polygon points="408,318 440,302 462,313 430,329" fill="#1a1218" stroke="#3a2838" stroke-width="1"/>
@@ -1035,25 +961,25 @@ body {
       <path d="M 428 303 Q 426 299 428 295" fill="none" stroke="#8899cc" stroke-width="0.9" opacity="0.6"/>
       <path d="M 432 302 Q 430 298 432 294" fill="none" stroke="#8899cc" stroke-width="0.9" opacity="0.5"/>
 
-      <!-- Click hint indicators -->
+      <!-- Click hint indicators (adjusted for seated positions) -->
       <g id="hint1" opacity="0.5" filter="url(#fg)">
-        <ellipse cx="198" cy="315" rx="28" ry="10" fill="none" stroke="#4488ff" stroke-width="1" stroke-dasharray="4,3"/>
+        <ellipse cx="198" cy="278" rx="28" ry="10" fill="none" stroke="#4488ff" stroke-width="1" stroke-dasharray="4,3"/>
       </g>
       <g id="hint2" opacity="0.5" filter="url(#fg)">
-        <ellipse cx="583" cy="275" rx="28" ry="10" fill="none" stroke="#cc44ff" stroke-width="1" stroke-dasharray="4,3"/>
+        <ellipse cx="583" cy="240" rx="28" ry="10" fill="none" stroke="#cc44ff" stroke-width="1" stroke-dasharray="4,3"/>
       </g>
       <g id="hint3" opacity="0.5" filter="url(#fg)">
-        <ellipse cx="258" cy="405" rx="28" ry="10" fill="none" stroke="#44ff88" stroke-width="1" stroke-dasharray="4,3"/>
+        <ellipse cx="258" cy="367" rx="28" ry="10" fill="none" stroke="#44ff88" stroke-width="1" stroke-dasharray="4,3"/>
       </g>
       <g id="hint4" opacity="0.5" filter="url(#fg)">
-        <ellipse cx="568" cy="395" rx="28" ry="10" fill="none" stroke="#ff9f1c" stroke-width="1" stroke-dasharray="4,3"/>
+        <ellipse cx="568" cy="362" rx="28" ry="10" fill="none" stroke="#ff9f1c" stroke-width="1" stroke-dasharray="4,3"/>
       </g>
 
       <!-- Click prompts -->
-      <text x="198" y="336" text-anchor="middle" fill="#4488ff" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
-      <text x="583" y="296" text-anchor="middle" fill="#cc44ff" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
-      <text x="258" y="426" text-anchor="middle" fill="#44ff88" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
-      <text x="568" y="416" text-anchor="middle" fill="#ff9f1c" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
+      <text x="198" y="298" text-anchor="middle" fill="#4488ff" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
+      <text x="583" y="260" text-anchor="middle" fill="#cc44ff" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
+      <text x="258" y="387" text-anchor="middle" fill="#44ff88" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
+      <text x="568" y="382" text-anchor="middle" fill="#ff9f1c" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
 
     </svg>
 
@@ -1439,6 +1365,30 @@ setInterval(() => {
     if (el) el.setAttribute('opacity', o);
   });
 }, 50);
+
+// ===== DIGITAL CLOCK =====
+const DAYS_TH = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+function updateSVGClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  const yr = now.getFullYear();
+  const mo = String(now.getMonth()+1).padStart(2,'0');
+  const dy = String(now.getDate()).padStart(2,'0');
+  const el1 = document.getElementById('svg-clk-hm');
+  const el2 = document.getElementById('svg-clk-s');
+  const el3 = document.getElementById('svg-clk-d');
+  const el4 = document.getElementById('svg-clk-w');
+  if(el1) el1.textContent = `${h}:${m}`;
+  if(el2) el2.textContent = `:${s}`;
+  if(el3) el3.textContent = `${yr}-${mo}-${dy}`;
+  if(el4) el4.textContent = DAYS_TH[now.getDay()];
+  // blink colon on odd seconds
+  if(el1) el1.setAttribute('opacity', now.getSeconds()%2===0 ? '1' : '0.7');
+}
+updateSVGClock();
+setInterval(updateSVGClock, 1000);
 
 // ===== WEATHER WIDGET =====
 const WMO = {
