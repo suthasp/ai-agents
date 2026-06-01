@@ -178,6 +178,53 @@ body {
 .key-status { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
   background: #444466; vertical-align: middle; margin-right: 5px; transition: background 0.3s; }
 .key-status.ok { background: #44cc77; }
+
+/* ===== PIXEL WIDGET PANEL ===== */
+.pixel-widget {
+  position: absolute; z-index: 20;
+  width: 188px; min-width: 188px;
+  background: #080a18;
+  border: 1.5px solid #1a2450;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px; color: #b8c4dc;
+  box-shadow: 0 0 18px #00000099, 0 0 6px #1a3a6830, inset 0 0 30px #04060f40;
+  user-select: none;
+}
+.pw-header {
+  background: linear-gradient(90deg, #0c1028, #101430);
+  border-bottom: 1px solid #1a2450;
+  padding: 5px 8px;
+  display: flex; align-items: center; gap: 5px;
+  cursor: move;
+}
+.pw-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.pw-title { flex: 1; font-size: 9px; color: #6677aa; letter-spacing: 1px; text-transform: uppercase; }
+.pw-title b { color: #22ddff; }
+.pw-time { font-size: 8px; color: #3a4a66; }
+.pw-btns { display: flex; gap: 1px; }
+.pw-btn { background: none; border: none; cursor: pointer; color: #3a4a66; font-size: 11px; padding: 0 3px; line-height: 1; }
+.pw-btn:hover { color: #ff5577; }
+.pw-body { padding: 8px 10px 6px; }
+
+/* weather specific */
+.w-city { font-size: 10px; color: #ffcc44; margin-bottom: 5px; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-main { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.w-icon-big { font-size: 26px; line-height: 1; }
+.w-temp-val { font-size: 30px; font-weight: bold; color: #fff; line-height: 1; }
+.w-temp-val span { font-size: 14px; color: #7788aa; }
+.w-feels { font-size: 8.5px; color: #667799; margin-top: 2px; }
+.w-cond { font-size: 9.5px; color: #99aabb; margin-bottom: 7px; }
+.w-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #0c1020; }
+.w-row:last-child { border-bottom: none; }
+.w-lbl { color: #445566; font-size: 8.5px; }
+.w-val { font-size: 10px; font-weight: bold; color: #88aacc; }
+.w-val.g { color: #44dd88; }
+.w-val.y { color: #ffcc22; }
+.w-val.r { color: #ff5577; }
+.w-update { font-size: 7.5px; color: #2a3a50; text-align: right; margin-top: 5px; padding-top: 3px; border-top: 1px solid #0c1020; }
+.w-msg { font-size: 9px; color: #445577; padding: 10px 0; text-align: center; }
+.w-err { font-size: 9px; color: #ff5577; padding: 6px 0; }
 </style>
 </head>
 <body>
@@ -1009,6 +1056,23 @@ body {
       <text x="568" y="416" text-anchor="middle" fill="#ff9f1c" font-size="8" font-family="Courier New" opacity="0.7">[ click ]</text>
 
     </svg>
+
+    <!-- ===== WEATHER WIDGET ===== -->
+    <div id="weather-widget" class="pixel-widget" style="top:14px;left:14px;">
+      <div class="pw-header" id="ww-hdr">
+        <span class="pw-dot" style="background:#22ddff;box-shadow:0 0 5px #22ddff80"></span>
+        <span class="pw-title">อากาศ <b>TODAY</b></span>
+        <span class="pw-time" id="ww-time">--:--</span>
+        <div class="pw-btns">
+          <button class="pw-btn" title="ย่อ/ขยาย" onclick="toggleWW()">▂</button>
+          <button class="pw-btn" title="โหลดใหม่" onclick="loadWeather()">↻</button>
+        </div>
+      </div>
+      <div class="pw-body" id="ww-body">
+        <div class="w-msg">📡 กำลังโหลด...</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ===== AGENT PANEL ===== -->
@@ -1375,6 +1439,120 @@ setInterval(() => {
     if (el) el.setAttribute('opacity', o);
   });
 }, 50);
+
+// ===== WEATHER WIDGET =====
+const WMO = {
+  0:['☀️','แจ่มใส'],1:['🌤','เมฆบางส่วน'],2:['⛅','เมฆครึ้ม'],3:['☁️','มีเมฆมาก'],
+  45:['🌫','หมอก'],48:['🌫','หมอกน้ำค้าง'],
+  51:['🌦','ฝนปรอยเบา'],53:['🌦','ฝนปรอย'],55:['🌦','ฝนปรอยหนัก'],
+  61:['🌧','ฝนเบา'],63:['🌧','ฝนปานกลาง'],65:['🌧','ฝนหนัก'],
+  71:['🌨','หิมะเบา'],73:['🌨','หิมะ'],75:['❄️','หิมะหนัก'],
+  77:['🌨','เกล็ดหิมะ'],
+  80:['🌦','ฝนสั้นเบา'],81:['🌧','ฝนสั้น'],82:['⛈','ฝนสั้นหนัก'],
+  85:['🌨','หิมะสั้น'],86:['❄️','หิมะสั้นหนัก'],
+  95:['⛈','พายุฝนฟ้าคะนอง'],96:['⛈','พายุลูกเห็บ'],99:['⛈','พายุลูกเห็บหนัก']
+};
+
+function wmoInfo(code){
+  return WMO[code] || WMO[Math.round(code/10)*10] || ['🌡','ไม่ทราบ'];
+}
+
+function uvColor(v){ return v<=2?'g':v<=5?'':v<=7?'y':'r'; }
+function windColor(v){ return v<20?'g':v<50?'y':'r'; }
+function humidColor(v){ return v<60?'g':v<80?'y':'r'; }
+
+async function loadWeather(){
+  const body = document.getElementById('ww-body');
+  const timeEl = document.getElementById('ww-time');
+  if(!body) return;
+  const now = new Date();
+  if(timeEl) timeEl.textContent = now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+  if(!navigator.geolocation){
+    body.innerHTML='<div class="w-err">ไม่รองรับ GPS</div>'; return;
+  }
+  body.innerHTML='<div class="w-msg">📡 ระบุตำแหน่ง...</div>';
+
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const {latitude:lat,longitude:lon}=pos.coords;
+    body.innerHTML='<div class="w-msg">🌐 โหลดข้อมูลอากาศ...</div>';
+    try{
+      const [wRes,gRes]=await Promise.all([
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,uv_index&wind_speed_unit=kmh&timezone=auto`),
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=th`)
+      ]);
+      const w=await wRes.json(), g=await gRes.json();
+      const c=w.current;
+      const [ico,cond]=wmoInfo(c.weather_code);
+      const city=g.address?.city||g.address?.town||g.address?.county||g.address?.state||'ตำแหน่งปัจจุบัน';
+      const temp=Math.round(c.temperature_2m);
+      const feels=Math.round(c.apparent_temperature);
+      const humid=c.relative_humidity_2m;
+      const wind=Math.round(c.wind_speed_10m);
+      const uv=(c.uv_index??0).toFixed(1);
+      const upd=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+      body.innerHTML=`
+<div class="w-city">📍 ${city}</div>
+<div class="w-main">
+  <div class="w-icon-big">${ico}</div>
+  <div>
+    <div class="w-temp-val">${temp}<span>°C</span></div>
+    <div class="w-feels">รู้สึกเหมือน ${feels}°C</div>
+  </div>
+</div>
+<div class="w-cond">${cond}</div>
+<div class="w-row">
+  <span class="w-lbl">ความชื้น</span>
+  <span class="w-val ${humidColor(humid)}">${humid}%</span>
+</div>
+<div class="w-row">
+  <span class="w-lbl">ลม</span>
+  <span class="w-val ${windColor(wind)}">${wind} km/h</span>
+</div>
+<div class="w-row">
+  <span class="w-lbl">UV Index</span>
+  <span class="w-val ${uvColor(parseFloat(uv))}">${uv}</span>
+</div>
+<div class="w-update">อัปเดต ${upd}</div>`;
+    }catch(e){
+      body.innerHTML=`<div class="w-err">❌ ${e.message}</div>`;
+    }
+  }, err=>{
+    body.innerHTML=`<div class="w-err">❌ ไม่อนุญาต GPS<br><span style="font-size:8px;color:#334">กรุณาอนุญาต Location</span></div>`;
+  },{timeout:12000});
+}
+
+// widget drag
+(function(){
+  const w=document.getElementById('weather-widget');
+  const h=document.getElementById('ww-hdr');
+  if(!w||!h) return;
+  let mx=0,my=0;
+  h.addEventListener('mousedown',e=>{
+    e.preventDefault();
+    mx=e.clientX; my=e.clientY;
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
+    const mv=e2=>{
+      w.style.left=(w.offsetLeft+(e2.clientX-mx))+'px';
+      w.style.top=(w.offsetTop+(e2.clientY-my))+'px';
+      mx=e2.clientX; my=e2.clientY;
+    };
+    document.addEventListener('mousemove',mv);
+    document.addEventListener('mouseup',up);
+  });
+})();
+
+let _wwOpen=true;
+function toggleWW(){
+  const b=document.getElementById('ww-body');
+  if(!b) return;
+  _wwOpen=!_wwOpen;
+  b.style.display=_wwOpen?'block':'none';
+}
+
+loadWeather();
+setInterval(loadWeather, 15*60*1000);
 </script>
 </body>
 </html>
