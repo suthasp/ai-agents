@@ -48,8 +48,8 @@
     }
 
     .sidebar {
-      width: 280px;
-      min-width: 280px;
+      width: 220px;
+      min-width: 220px;
       background: transparent;
       border: none !important;
       display: flex;
@@ -59,6 +59,17 @@
       overflow-y: auto;
       z-index: 10;
       backdrop-filter: none;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s, opacity 0.3s;
+    }
+
+    .sidebar.collapsed {
+      width: 0;
+      min-width: 0;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
     }
 
     .right-sidebar {
@@ -98,7 +109,7 @@
     }
 
     .panel-title {
-      font-size: 11.5px;
+      font-size: 9.5px;
       font-weight: 700;
       color: #38bdf8;
       letter-spacing: 1.5px;
@@ -111,7 +122,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 10px;
       padding: 4px 0;
     }
 
@@ -119,7 +130,7 @@
       color: #94a3b8;
       font-weight: 600;
       text-transform: uppercase;
-      font-size: 10px;
+      font-size: 8px;
       letter-spacing: 0.5px;
       font-family: var(--font-tech);
     }
@@ -128,7 +139,7 @@
       font-weight: 700;
       color: #f8fafc;
       font-family: monospace;
-      font-size: 12.5px;
+      font-size: 10.5px;
     }
 
     .stat-value.highlight {
@@ -146,20 +157,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
+      font-size: 9px;
     }
 
     .agent-status-name {
       color: #e2e8f0;
       font-weight: 500;
-      font-size: 11.5px;
+      font-size: 9.5px;
     }
 
     .status-select {
       background: #090912;
       border: 1px solid rgba(16, 185, 129, 0.4);
       color: #10b981;
-      font-size: 9px;
+      font-size: 7px;
       font-weight: 700;
       padding: 2px 4px;
       border-radius: 4px;
@@ -209,7 +220,7 @@
       color: #cbd5e0;
       padding: 4px 10px;
       border-radius: 4px;
-      font-size: 10px;
+      font-size: 8px;
       font-weight: 700;
       font-family: var(--font-tech);
       cursor: pointer;
@@ -230,7 +241,7 @@
 
     .action-hint {
       color: #64748b;
-      font-size: 11px;
+      font-size: 9px;
       font-family: var(--font-tech);
       margin-left: 8px;
       letter-spacing: 0.5px;
@@ -243,7 +254,7 @@
       color: #22d3ee;
       padding: 3px 8px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 9px;
       font-family: monospace;
       display: flex;
       align-items: center;
@@ -269,7 +280,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.15s;
-      font-size: 11px;
+      font-size: 9px;
       outline: none;
     }
 
@@ -310,7 +321,7 @@
       text-align: center;
       padding: 8px;
       border-radius: 4px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
       font-family: monospace;
       margin-top: 4px;
@@ -333,7 +344,7 @@
       border-left: 3px solid #475569;
       padding: 6px 8px;
       border-radius: 0 4px 4px 0;
-      font-size: 11px;
+      font-size: 9px;
     }
 
     .team-chat-meta {
@@ -345,7 +356,7 @@
 
     .team-chat-sender {
       font-weight: 700;
-      font-size: 9.5px;
+      font-size: 7.5px;
       letter-spacing: 0.5px;
       font-family: var(--font-tech);
     }
@@ -355,7 +366,7 @@
     .team-chat-sender.maya { color: #8b5cf6; }
 
     .team-chat-badge {
-      font-size: 8px;
+      font-size: 6px;
       font-weight: 700;
       background: rgba(16, 185, 129, 0.12);
       border: 1px solid #10b981;
@@ -367,7 +378,7 @@
     .team-chat-text {
       color: #cbd5e0;
       line-height: 1.4;
-      font-size: 11px;
+      font-size: 9px;
     }
 
     /* Office Canvas & Draggable Engine */
@@ -446,7 +457,7 @@
     }
 
     .agent-tag-text {
-      font-size: 9px;
+      font-size: 7px;
       font-weight: 700;
       color: #f1f5f9;
       font-family: var(--font-tech);
@@ -493,7 +504,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .drawer-info {
@@ -501,14 +512,14 @@
     }
 
     .drawer-info h2 {
-      font-size: 13px;
+      font-size: 11px;
       color: #fff;
       font-family: var(--font-tech);
       letter-spacing: 1px;
     }
 
     .drawer-info p {
-      font-size: 9px;
+      font-size: 7px;
       color: #64748b;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -520,7 +531,7 @@
       border: none;
       color: #64748b;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       transition: color 0.15s;
     }
 
@@ -547,7 +558,7 @@
     .msg {
       padding: 8px 12px;
       border-radius: 8px;
-      font-size: 11.5px;
+      font-size: 9.5px;
       line-height: 1.5;
       max-width: 85%;
       word-break: break-word;
@@ -582,7 +593,7 @@
       color: #cbd5e0;
       padding: 3px 8px;
       border-radius: 12px;
-      font-size: 9.5px;
+      font-size: 7.5px;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -611,7 +622,7 @@
       border-radius: 6px;
       color: #fff;
       padding: 8px 12px;
-      font-size: 12px;
+      font-size: 10px;
       outline: none;
     }
 
@@ -626,7 +637,7 @@
       border-radius: 6px;
       padding: 0 14px;
       font-weight: 700;
-      font-size: 11px;
+      font-size: 9px;
       font-family: var(--font-tech);
       cursor: pointer;
       transition: all 0.15s;
@@ -654,7 +665,7 @@
     }
 
     .file-drop-area p {
-      font-size: 10px;
+      font-size: 8px;
       color: #94a3b8;
       margin-top: 4px;
     }
@@ -679,7 +690,7 @@
     }
 
     .slide-card h4 {
-      font-size: 11px;
+      font-size: 9px;
       font-family: var(--font-tech);
       color: #fff;
       margin-bottom: 4px;
@@ -687,13 +698,13 @@
 
     .slide-card ul {
       margin-left: 14px;
-      font-size: 10.5px;
+      font-size: 8.5px;
       color: #94a3b8;
     }
 
     .layout-note {
       margin-top: 6px;
-      font-size: 9.5px;
+      font-size: 7.5px;
       color: #f43f5e;
       font-style: italic;
     }
@@ -708,7 +719,7 @@
       align-items: center;
       justify-content: space-between;
       font-family: monospace;
-      font-size: 11px;
+      font-size: 9px;
       color: #64748b;
       position: absolute;
       bottom: 0;
@@ -771,14 +782,14 @@
 
     .modal-box h3 {
       font-family: var(--font-tech);
-      font-size: 14px;
+      font-size: 12px;
       color: #fff;
       margin-bottom: 8px;
       letter-spacing: 1px;
     }
 
     .modal-box p {
-      font-size: 11px;
+      font-size: 9px;
       color: #64748b;
       line-height: 1.5;
       margin-bottom: 16px;
@@ -790,7 +801,7 @@
 
     .form-group label {
       display: block;
-      font-size: 10px;
+      font-size: 8px;
       font-family: monospace;
       color: #94a3b8;
       margin-bottom: 4px;
@@ -804,7 +815,7 @@
       border-radius: 6px;
       color: #fff;
       padding: 8px 10px;
-      font-size: 12px;
+      font-size: 10px;
       outline: none;
     }
 
@@ -817,7 +828,7 @@
 
     .modal-actions button {
       padding: 6px 14px;
-      font-size: 11px;
+      font-size: 9px;
       font-family: var(--font-tech);
       border-radius: 6px;
       cursor: pointer;
@@ -870,7 +881,7 @@
     }
 
     .agent-bubble-title {
-      font-size: 7.5px;
+      font-size: 5.5px;
       color: #94a3b8;
       text-transform: uppercase;
       font-family: var(--font-tech);
@@ -878,7 +889,7 @@
     }
 
     .agent-bubble-text {
-      font-size: 9px;
+      font-size: 7px;
       color: #fff;
       font-weight: 700;
       white-space: nowrap;
@@ -901,7 +912,7 @@
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">AI AGENTS</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
+          <span style="color: #64748b; font-size: 6px;">●●</span>
         </div>
         <div class="agent-status-list">
           <div class="agent-status-row">
@@ -953,6 +964,7 @@
       <!-- Top Action Bar -->
       <div class="action-bar">
         <div class="action-group-left">
+          <button class="action-btn" id="btn-toggle-left" onclick="toggleLeftSidebar()" style="font-weight: bold; background: rgba(34, 211, 238, 0.1); border-color: rgba(34, 211, 238, 0.4); color: #22d3ee; margin-right: 4px;">◀ HIDE</button>
           <button class="action-btn" id="btn-move-mode" onclick="toggleMoveMode()">MOVE MODE</button>
           <button class="action-btn" onclick="resetPositions()">RESET</button>
           <button class="action-btn" onclick="deleteSelected()">DELETE</button>
@@ -977,6 +989,7 @@
           <button class="action-icon-btn" onclick="openSettings()" title="Settings">
             ⚙️
           </button>
+          <button class="action-btn" id="btn-toggle-right" onclick="toggleRightSidebar()" style="font-weight: bold; background: rgba(34, 211, 238, 0.1); border-color: rgba(34, 211, 238, 0.4); color: #22d3ee; margin-left: 4px;">HIDE ▶</button>
         </div>
       </div>
 
@@ -1774,7 +1787,7 @@
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">MARKET INDICES</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
+          <span style="color: #64748b; font-size: 6px;">●●</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">SET INDEX</span>
@@ -1798,7 +1811,7 @@
       <div class="panel" style="flex: 1; min-height: 200px; display: flex; flex-direction: column;">
         <div class="panel-header">
           <span class="panel-title">ANALYST CHAT LOGS</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
+          <span style="color: #64748b; font-size: 6px;">●●</span>
         </div>
         <div class="team-chat-logs" id="team-chat-logs">
           <div class="team-chat-msg">
@@ -2330,6 +2343,42 @@
       currentAgentId = null;
     }
 
+    function toggleLeftSidebar() {
+      playClickSound();
+      const sidebar = document.querySelector('.left-sidebar');
+      const btn = document.getElementById('btn-toggle-left');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        btn.textContent = '▶ SHOW';
+        btn.style.color = '#38bdf8';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+        logActivity("Left sidebar collapsed");
+      } else {
+        btn.textContent = '◀ HIDE';
+        btn.style.color = '#22d3ee';
+        btn.style.borderColor = 'rgba(34, 211, 238, 0.4)';
+        logActivity("Left sidebar expanded");
+      }
+    }
+
+    function toggleRightSidebar() {
+      playClickSound();
+      const sidebar = document.querySelector('.right-sidebar');
+      const btn = document.getElementById('btn-toggle-right');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        btn.textContent = 'SHOW ◀';
+        btn.style.color = '#38bdf8';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+        logActivity("Right sidebar collapsed");
+      } else {
+        btn.textContent = 'HIDE ▶';
+        btn.style.color = '#22d3ee';
+        btn.style.borderColor = 'rgba(34, 211, 238, 0.4)';
+        logActivity("Right sidebar expanded");
+      }
+    }
+
     function logActivity(text) {
       const now = new Date();
       const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
@@ -2343,14 +2392,14 @@
 
       if (id === 1) { // SAM (News summarizer)
         wrapper.innerHTML = `
-          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: monospace">
+          <div style="font-size: 9px; color: #718096; margin-bottom: 8px; font-family: monospace">
             ตัวเลือกด่วน: ข่าวหุ้นเด่นเช้านี้, ข่าวภาคบ่าย, ข่าวกลุ่มแบงก์
           </div>
         `;
       }
       else if (id === 2) { // ALEX (Ticker Buy/Sell/Hold)
         wrapper.innerHTML = `
-          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: monospace">
+          <div style="font-size: 9px; color: #718096; margin-bottom: 8px; font-family: monospace">
             หุ้นตัวอย่าง: AAPL, MSFT, TSLA, PTT.BK, SCB.BK, BDMS.BK
           </div>
         `;
@@ -2358,9 +2407,9 @@
       else if (id === 3) { // MAYA (Scanner SET/NASDAQ/NYSE)
         wrapper.innerHTML = `
           <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด SET 🇹🇭')">🇹🇭 SET</button>
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด NASDAQ 🇺🇸')">🇺🇸 NASDAQ</button>
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด NYSE 🏛️')">🏛️ NYSE</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 9px;" onclick="submitQuery('สแกนตลาด SET 🇹🇭')">🇹🇭 SET</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 9px;" onclick="submitQuery('สแกนตลาด NASDAQ 🇺🇸')">🇺🇸 NASDAQ</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 9px;" onclick="submitQuery('สแกนตลาด NYSE 🏛️')">🏛️ NYSE</button>
           </div>
         `;
       } 
@@ -2369,12 +2418,12 @@
           <div class="file-drop-area" id="drop-area" onclick="triggerFileInput()"
                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
             <input type="file" id="csv-file-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
-            <span style="font-size: 24px;">📁</span>
+            <span style="font-size: 22px;">📁</span>
             <p><strong>คลิกเพื่ออัปโหลดไฟล์</strong> หรือลากและวางไฟล์ข้อมูลพอร์ต <strong>.CSV / .XLSX</strong></p>
           </div>
           <div style="margin-bottom: 10px;">
-            <textarea id="csv-paste-area" placeholder="หรือวางข้อความตารางสถิติ/CSV ตรงนี้ แล้วกดปุ่มวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: monospace; outline: none; resize: none;"></textarea>
-            <button class="action-btn" style="font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">📊 วิเคราะห์ประมวลสถิติผลงาน</button>
+            <textarea id="csv-paste-area" placeholder="หรือวางข้อความตารางสถิติ/CSV ตรงนี้ แล้วกดปุ่มวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 10px; font-family: monospace; outline: none; resize: none;"></textarea>
+            <button class="action-btn" style="font-size: 9px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">📊 วิเคราะห์ประมวลสถิติผลงาน</button>
           </div>
         `;
       } 
@@ -2383,10 +2432,10 @@
         const color = hasData ? '#10b981' : '#ff5555';
         
         wrapper.innerHTML = `
-          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(16,185,129,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 11.5px;">
+          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(16,185,129,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 9.5px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>ข้อมูล Insights จาก Ken: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งาน (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
-              ${hasData ? `<button class="btn-pill" style="font-size: 9px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
+              ${hasData ? `<button class="btn-pill" style="font-size: 7px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
             </div>
           </div>
         `;
@@ -2906,7 +2955,7 @@
       
       const color = sig === 'BUY' ? '#10b981' : sig === 'SELL' ? '#ef4444' : '#f59e0b';
       const border = sig === 'BUY' ? 'rgba(16,185,129,0.3)' : sig === 'SELL' ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)';
-      return `<div style="margin-bottom: 10px;"><span style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-weight:700; font-size:10px; color:${color}; background:${border}; border:1px solid ${color}">${tagText}</span></div>`;
+      return `<div style="margin-bottom: 10px;"><span style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-weight:700; font-size:8px; color:${color}; background:${border}; border:1px solid ${color}">${tagText}</span></div>`;
     }
 
     /* Presentation Slide Deck Formatter */
