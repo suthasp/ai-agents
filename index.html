@@ -898,26 +898,6 @@
   <div class="dashboard">
     <!-- Left Sidebar (Revenue / Agents List / Automation) -->
     <aside class="sidebar left-sidebar">
-      <!-- Portfolio Performance Panel -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">PORTFOLIO RETURN</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">TODAY</span>
-          <span class="stat-value highlight" id="stat-revenue-today">+ ฿ 14,900</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">MONTH</span>
-          <span class="stat-value highlight" id="stat-revenue-month">+ ฿ 89,000</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">TOTAL CAPITAL</span>
-          <span class="stat-value" id="stat-top-product" style="font-size: 11px; font-family: monospace; color: #38bdf8;">฿ 1,245,900</span>
-        </div>
-      </div>
-      
       <!-- AI Agents Config Selector -->
       <div class="panel">
         <div class="panel-header">
@@ -963,44 +943,6 @@
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
               <option value="OFFLINE">OFFLINE</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Automations Config Panel -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">FINANCIAL AUTOMATION</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
-        </div>
-        <div class="agent-status-list">
-          <div class="agent-status-row">
-            <span class="agent-status-name">News Monitor</span>
-            <select class="status-select" onchange="logActivity('News Monitor set to ' + this.value)">
-              <option value="RUNNING" selected>RUNNING</option>
-              <option value="IDLE">IDLE</option>
-            </select>
-          </div>
-          <div class="agent-status-row">
-            <span class="agent-status-name">Ticker Watch</span>
-            <select class="status-select" onchange="logActivity('Ticker Watch set to ' + this.value)">
-              <option value="ON" selected>ON</option>
-              <option value="OFF">OFF</option>
-            </select>
-          </div>
-          <div class="agent-status-row">
-            <span class="agent-status-name">VIX Auditor</span>
-            <select class="status-select" onchange="logActivity('VIX Auditor set to ' + this.value)">
-              <option value="RUNNING" selected>RUNNING</option>
-              <option value="IDLE">IDLE</option>
-            </select>
-          </div>
-          <div class="agent-status-row">
-            <span class="agent-status-name">AI Portfolio Bot</span>
-            <select class="status-select" onchange="logActivity('AI Portfolio Bot set to ' + this.value)">
-              <option value="ON" selected>ON</option>
-              <option value="OFF">OFF</option>
             </select>
           </div>
         </div>
@@ -1299,25 +1241,6 @@
         <!-- Progress Bar -->
         <div class="progress-bar-container">
           <div class="progress-bar-fill" style="width: 72%;"></div>
-        </div>
-      </div>
-
-      <!-- Portfolio Value Panel -->
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">PORTFOLIO VALUATION</span>
-          <span style="color: #64748b; font-size: 8px;">●●</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">TOTAL ASSET</span>
-          <span class="stat-value">฿ 1,245,900</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">UNREALIZED P&L</span>
-          <span class="stat-value highlight">+ ฿ 14,900</span>
-        </div>
-        <div class="revenue-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #22c55e;">
-          + ฿14,900
         </div>
       </div>
 
