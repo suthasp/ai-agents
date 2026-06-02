@@ -3,613 +3,752 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyber Pixel Virtual Office</title>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  
-  <!-- SheetJS for Excel/CSV parsing -->
+  <title>AI Affiliate Co-Working Dashboard</title>
+  <!-- Google Fonts for modern retro tech aesthetic -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- SheetJS for Ken's Excel imports -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
+  
   <style>
-    /* Design Tokens & Theme Variables */
     :root {
-      --bg-dark: #06060c;
-      --bg-card: rgba(13, 13, 25, 0.75);
-      --border-glow: rgba(100, 80, 220, 0.3);
-      --font-pixel: 'Press Start 2P', monospace;
-      --font-sans: 'Outfit', sans-serif;
-      --font-mono: 'Fira Code', monospace;
+      --color-shopee: #ea580c;
+      --color-tiktok: #10b981;
+      --color-reels: #3b82f6;
+      --color-youtube: #ef4444;
+      --color-ebook: #059669;
+      --color-marketing: #8b5cf6;
+      --color-chatbot: #2563eb;
+      --color-gm: #0f172a;
       
-      /* Department Glows & Accents */
-      --color-finance: #00d2ff;
-      --color-scout: #ff3b93;
-      --color-bi: #39ff14;
-      --color-creative: #ff9f1c;
-      
-      --glow-finance: drop-shadow(0 0 12px rgba(0, 210, 255, 0.6));
-      --glow-scout: drop-shadow(0 0 12px rgba(255, 59, 147, 0.6));
-      --glow-bi: drop-shadow(0 0 12px rgba(57, 255, 20, 0.6));
-      --glow-creative: drop-shadow(0 0 12px rgba(255, 159, 28, 0.6));
+      --panel-border: rgba(80, 70, 160, 0.25);
+      --font-sans: 'Inter', sans-serif;
+      --font-tech: 'Rajdhani', sans-serif;
     }
 
-    /* Core Styles */
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      user-select: none;
     }
 
     body {
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 20% 30%, rgba(30, 20, 70, 0.4) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(10, 40, 60, 0.3) 0%, transparent 50%),
-        linear-gradient(rgba(18, 16, 32, 0.5) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(18, 16, 32, 0.5) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-      color: #e2e8f0;
+      background: #06060c;
+      color: #cbd5e0;
       font-family: var(--font-sans);
       height: 100vh;
       overflow: hidden;
       display: flex;
+    }
+
+    /* Main Grid Layout */
+    .dashboard {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 280px;
+      min-width: 280px;
+      background: rgba(10, 11, 24, 0.85);
+      border-right: 1px solid var(--panel-border);
+      display: flex;
       flex-direction: column;
+      gap: 12px;
+      padding: 12px;
+      overflow-y: auto;
+      z-index: 10;
+      backdrop-filter: blur(12px);
     }
 
-    /* Header Styling */
-    header {
-      background: linear-gradient(180deg, rgba(15, 12, 30, 0.95) 0%, rgba(6, 6, 12, 0.8) 100%);
-      backdrop-filter: blur(10px);
-      border-bottom: 2px solid rgba(80, 60, 180, 0.35);
-      padding: 12px 24px;
+    .right-sidebar {
+      border-right: none;
+      border-left: 1px solid var(--panel-border);
+    }
+
+    .main-content {
+      flex: 1;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      background: #020205;
+    }
+
+    /* Panels styling (Glassmorphism & neon glows) */
+    .panel {
+      background: rgba(15, 17, 36, 0.6);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-header {
+      display: flex;
       justify-content: space-between;
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 15px;
-    }
-
-    .brand-logo {
-      font-size: 24px;
-      animation: neonPulse 2s infinite ease-in-out;
-    }
-
-    .brand h1 {
-      font-family: var(--font-pixel);
-      font-size: 13px;
-      letter-spacing: 2px;
-      color: #fff;
-      text-shadow: 0 0 8px rgba(100, 80, 255, 0.8);
+      border-bottom: 1px solid rgba(80, 70, 160, 0.2);
+      padding-bottom: 6px;
       margin-bottom: 4px;
     }
 
-    .brand p {
-      font-size: 9px;
-      color: #718096;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-family: var(--font-mono);
-    }
-
-    .header-widgets {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    /* Weather widget styling */
-    .weather-chip {
-      background: rgba(15, 20, 45, 0.6);
-      border: 1px solid rgba(0, 210, 255, 0.3);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .weather-chip:hover {
-      border-color: rgba(0, 210, 255, 0.7);
-      background: rgba(15, 20, 45, 0.8);
-      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
-    }
-    .weather-temp {
-      color: var(--color-finance);
+    .panel-title {
+      font-size: 11.5px;
       font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: var(--font-tech);
     }
 
-    /* Sound and Settings Buttons */
-    .icon-btn {
-      background: rgba(30, 25, 55, 0.6);
-      border: 1px solid rgba(120, 90, 220, 0.4);
-      color: #a0aec0;
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
+    /* Stats rows */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .stat-label {
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      font-family: var(--font-tech);
+    }
+
+    .stat-value {
+      font-weight: 700;
+      color: #f8fafc;
+      font-family: monospace;
+      font-size: 12.5px;
+    }
+
+    .stat-value.highlight {
+      color: #f97316;
+    }
+
+    /* Agent status selectors */
+    .agent-status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .agent-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .agent-status-name {
+      color: #e2e8f0;
+      font-weight: 500;
+      font-size: 11.5px;
+    }
+
+    .status-select {
+      background: #090912;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      font-family: var(--font-tech);
+    }
+
+    .status-select:has(option[value="IDLE"]:checked) {
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .status-select:has(option[value="OFFLINE"]:checked), .status-select:has(option[value="OFF"]:checked) {
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+
+    /* Action bar */
+    .action-bar {
+      height: 48px;
+      background: rgba(13, 14, 30, 0.9);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+
+    .action-group-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-group-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: rgba(80, 70, 160, 0.2);
+      border: 1px solid var(--panel-border);
+      color: #cbd5e0;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-tech);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: rgba(80, 70, 160, 0.35);
+      color: #fff;
+    }
+
+    .action-btn.active {
+      background: rgba(57, 255, 20, 0.15);
+      border-color: #39ff14;
+      color: #39ff14;
+      box-shadow: 0 0 10px rgba(57, 255, 20, 0.25);
+    }
+
+    .action-hint {
+      color: #64748b;
+      font-size: 11px;
+      font-family: var(--font-tech);
+      margin-left: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Weather chip and utility triggers */
+    .weather-chip {
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      color: #22d3ee;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .weather-chip:hover {
+      background: rgba(34, 211, 238, 0.18);
+      border-color: #22d3ee;
+    }
+
+    .action-icon-btn {
+      background: rgba(80, 70, 160, 0.15);
+      border: 1px solid var(--panel-border);
+      color: #cbd5e0;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s;
+      transition: all 0.15s;
+      font-size: 11px;
+      outline: none;
     }
-    .icon-btn:hover {
-      color: #fff;
-      border-color: rgba(120, 90, 220, 0.8);
-      box-shadow: 0 0 10px rgba(120, 90, 220, 0.3);
-      transform: translateY(-2px);
-    }
-    .icon-btn.active {
-      background: rgba(100, 80, 220, 0.3);
-      border-color: rgba(100, 80, 220, 0.8);
+
+    .action-icon-btn:hover {
+      background: rgba(80, 70, 160, 0.3);
       color: #fff;
     }
 
-    /* Main Workspace */
-    #main-container {
-      flex: 1;
-      display: flex;
-      position: relative;
+    .action-icon-btn.active {
+      background: rgba(57, 255, 20, 0.15);
+      border-color: #39ff14;
+      color: #39ff14;
+      box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+    }
+
+    /* TikTok Queue Progress Bar */
+    .progress-bar-container {
+      background: #0f172a;
+      border: 1px solid rgba(80, 70, 160, 0.2);
+      height: 8px;
+      border-radius: 4px;
+      margin-top: 6px;
       overflow: hidden;
     }
 
-    /* Office Map Wrapper */
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #22d3ee);
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+    }
+
+    /* Course Sales Badge */
+    .revenue-badge {
+      background: rgba(234, 88, 12, 0.2);
+      border: 1px solid #ea580c;
+      color: #f97316;
+      text-align: center;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: monospace;
+      margin-top: 4px;
+      box-shadow: 0 0 10px rgba(234, 88, 12, 0.2);
+    }
+
+    /* Team Chat Panel */
+    .team-chat-logs {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+      font-family: var(--font-sans);
+    }
+
+    .team-chat-msg {
+      background: rgba(30, 41, 59, 0.3);
+      border-left: 3px solid #475569;
+      padding: 6px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 11px;
+    }
+
+    .team-chat-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .team-chat-sender {
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: 0.5px;
+      font-family: var(--font-tech);
+    }
+
+    .team-chat-sender.shopee { color: #f97316; }
+    .team-chat-sender.tiktok { color: #10b981; }
+    .team-chat-sender.marketing { color: #8b5cf6; }
+
+    .team-chat-badge {
+      font-size: 8px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid #10b981;
+      color: #10b981;
+      padding: 0px 4px;
+      border-radius: 3px;
+    }
+
+    .team-chat-text {
+      color: #cbd5e0;
+      line-height: 1.4;
+      font-size: 11px;
+    }
+
+    /* Office Canvas & Draggable Engine */
     #office-canvas {
       flex: 1;
+      position: relative;
+      background-image: url('office_background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .move-mode #office-canvas {
+      cursor: crosshair;
+    }
+
+    .draggable {
+      position: absolute;
+      transition: transform 0.05s ease-out, filter 0.2s;
+      z-index: 5;
+      user-select: none;
+      transform: translate(-50%, -85%); /* Offset pivot point for isometric base standing */
+    }
+
+    /* Desks use a different offset so they align center */
+    .draggable[data-type="desk"] {
+      transform: translate(-50%, -50%);
+    }
+
+    .draggable:hover {
+      filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.8));
+    }
+
+    .draggable.dragging {
+      z-index: 9999 !important;
+      opacity: 0.85;
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6)) brightness(1.1);
+    }
+
+    /* Selection border */
+    .draggable.selected {
+      filter: drop-shadow(0 0 10px rgba(255, 159, 28, 0.9));
+    }
+
+    /* Agent Name Tags */
+    .agent-tag {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(5, 5, 10, 0.9);
+      border: 1px solid rgba(80, 70, 160, 0.6);
+      border-radius: 4px;
+      padding: 1px 6px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      padding: 20px;
-    }
-
-    #office-canvas::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(20, 15, 50, 0.2) 0%, transparent 70%);
+      gap: 4px;
+      white-space: nowrap;
       pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
-    /* SVG Isometric Map styling */
-    .isometric-map {
-      width: 100%;
-      height: 100%;
-      max-width: 960px;
-      max-height: 600px;
-      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+    .agent-tag-dot {
+      width: 5px;
+      height: 5px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #10b981;
     }
 
-    /* SVG Hover States & Animations */
-    .room-floor {
-      transition: fill 0.3s, filter 0.3s;
-      cursor: pointer;
+    .agent-tag-dot.idle {
+      background: #f59e0b;
+      box-shadow: 0 0 6px #f59e0b;
     }
 
-    .room-group:hover .room-floor {
-      filter: brightness(1.25);
+    .agent-tag-dot.offline {
+      background: #ef4444;
+      box-shadow: 0 0 6px #ef4444;
     }
 
-    .room-group:hover .room-border {
-      stroke-width: 2.5px;
-      opacity: 0.9;
-    }
-
-    .room-group:hover .char-avatar {
-      transform: translateY(-8px);
-    }
-
-    .room-group[data-dept="1"] { --glow-col: var(--color-finance); }
-    .room-group[data-dept="2"] { --glow-col: var(--color-scout); }
-    .room-group[data-dept="3"] { --glow-col: var(--color-bi); }
-    .room-group[data-dept="4"] { --glow-col: var(--color-creative); }
-
-    .room-group:hover .room-glow {
-      opacity: 0.15;
-    }
-
-    /* Floating labels */
-    .dept-label {
-      font-family: var(--font-pixel);
-      font-size: 8px;
-      fill: #fff;
-      pointer-events: none;
-      opacity: 0.75;
-      transition: opacity 0.2s, font-size 0.2s;
-    }
-    .room-group:hover .dept-label {
-      opacity: 1;
+    .agent-tag-text {
       font-size: 9px;
+      font-weight: 700;
+      color: #f1f5f9;
+      font-family: var(--font-tech);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    /* CSS Animations for SVG elements */
-    @keyframes idleBreathe {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    
-    @keyframes bubbleBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    @keyframes neonPulse {
-      0%, 100% { opacity: 0.8; text-shadow: 0 0 4px rgba(100, 80, 255, 0.5); }
-      50% { opacity: 1; text-shadow: 0 0 12px rgba(100, 80, 255, 0.9); }
-    }
-
-    @keyframes radarScan {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .char-avatar {
-      transform-origin: bottom center;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      animation: idleBreathe 3s ease-in-out infinite;
-      cursor: pointer;
-    }
-    .char-avatar-1 { animation-delay: 0s; }
-    .char-avatar-2 { animation-delay: 0.6s; }
-    .char-avatar-3 { animation-delay: 1.2s; }
-    .char-avatar-4 { animation-delay: 1.8s; }
-
-    .speech-bubble {
-      animation: bubbleBounce 2.5s ease-in-out infinite;
-      cursor: pointer;
-    }
-    .bubble-1 { animation-delay: 0.2s; }
-    .bubble-2 { animation-delay: 0.8s; }
-    .bubble-3 { animation-delay: 1.4s; }
-    .bubble-4 { animation-delay: 2.0s; }
-
-    .radar-beam {
-      transform-origin: 460px 170px;
-      animation: radarScan 4s linear infinite;
-    }
-
-    .screen-flicker {
-      animation: flicker 4s infinite;
-    }
-    @keyframes flicker {
-      0%, 100% { opacity: 0.95; }
-      45% { opacity: 0.95; }
-      46% { opacity: 0.4; }
-      47% { opacity: 0.9; }
-      50% { opacity: 0.95; }
-      92% { opacity: 0.95; }
-      93% { opacity: 0.5; }
-      94% { opacity: 0.9; }
-    }
-
-    /* Details Drawer */
+    /* Detail Drawer & Chat overlaying right sidebar */
     #detail-drawer {
-      width: 420px;
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      border-left: 2px solid rgba(80, 60, 180, 0.3);
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 360px;
+      background: #090912;
+      border-left: 2px solid var(--theme-color, #503cb4);
       display: flex;
       flex-direction: column;
       transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
-      z-index: 90;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
     }
+
     #detail-drawer.open {
       transform: translateX(0);
     }
 
     .drawer-header {
-      padding: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px;
+      border-bottom: 1px solid var(--panel-border);
       display: flex;
       align-items: center;
-      gap: 15px;
-      position: relative;
+      gap: 12px;
     }
 
     .drawer-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: rgba(30, 20, 60, 0.6);
-      border: 2px solid var(--theme-color, #718096);
+      width: 40px;
+      height: 40px;
+      background: rgba(80, 70, 160, 0.2);
+      border: 1px solid var(--theme-color, #503cb4);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 0 10px var(--theme-color-glow);
+      font-size: 20px;
+    }
+
+    .drawer-info {
+      flex: 1;
     }
 
     .drawer-info h2 {
-      font-size: 16px;
+      font-size: 13px;
       color: #fff;
-      font-weight: 700;
-      margin-bottom: 2px;
+      font-family: var(--font-tech);
+      letter-spacing: 1px;
     }
 
     .drawer-info p {
-      font-size: 11px;
-      color: var(--theme-color, #a0aec0);
-      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #64748b;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      margin-top: 2px;
     }
 
     .close-drawer {
-      position: absolute;
-      right: 20px;
-      top: 20px;
       background: none;
       border: none;
-      color: #718096;
-      font-size: 18px;
+      color: #64748b;
       cursor: pointer;
-      transition: color 0.2s;
-    }
-    .close-drawer:hover {
-      color: #fff;
+      font-size: 16px;
+      transition: color 0.15s;
     }
 
-    /* Chat Section inside Drawer */
+    .close-drawer:hover {
+      color: #f43f5e;
+    }
+
     .chat-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: rgba(8, 8, 16, 0.5);
     }
 
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .msg {
-      max-width: 85%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 13.5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
       line-height: 1.5;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-      animation: msgAppear 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes msgAppear {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      max-width: 85%;
+      word-break: break-word;
     }
 
     .msg.agent {
-      align-self: flex-start;
       background: rgba(30, 30, 50, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(80, 70, 160, 0.3);
       color: #e2e8f0;
-      border-bottom-left-radius: 2px;
+      align-self: flex-start;
     }
 
     .msg.user {
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      color: #e0f2fe;
       align-self: flex-end;
-      background: var(--theme-color-op, rgba(100, 80, 220, 0.3));
-      border: 1px solid var(--theme-color-glow-solid, rgba(100, 80, 220, 0.6));
-      color: #fff;
-      border-bottom-right-radius: 2px;
     }
 
-    .msg.system {
-      align-self: center;
-      background: rgba(15, 30, 20, 0.7);
-      border: 1px solid rgba(57, 255, 20, 0.3);
-      color: #58d68d;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      border-radius: 6px;
-      max-width: 95%;
-      text-align: center;
-    }
-
-    /* Message form options */
     .quick-bar {
-      padding: 8px 16px;
+      padding: 8px 12px;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      background: rgba(6, 6, 12, 0.3);
+      border-top: 1px solid var(--panel-border);
+      background: rgba(13, 14, 30, 0.5);
     }
 
     .btn-pill {
-      background: rgba(35, 35, 60, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(80, 70, 160, 0.12);
+      border: 1px solid var(--panel-border);
       color: #cbd5e0;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 9.5px;
       cursor: pointer;
       transition: all 0.15s;
     }
+
     .btn-pill:hover {
       background: var(--theme-color-op);
       border-color: var(--theme-color);
       color: #fff;
     }
 
-    /* Custom Module Input Area */
     .input-panel {
-      padding: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(10, 10, 20, 0.8);
+      padding: 12px;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(9, 9, 18, 0.95);
     }
 
     .input-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .input-row input, .input-row textarea {
+    .input-row input {
       flex: 1;
       background: rgba(5, 5, 10, 0.8);
-      border: 1px solid rgba(100, 80, 255, 0.3);
-      border-radius: 8px;
+      border: 1px solid rgba(80, 70, 160, 0.4);
+      border-radius: 6px;
       color: #fff;
-      padding: 10px 14px;
-      font-family: var(--font-sans);
-      font-size: 13px;
+      padding: 8px 12px;
+      font-size: 12px;
       outline: none;
-      transition: border-color 0.2s;
-    }
-    .input-row input:focus, .input-row textarea:focus {
-      border-color: var(--theme-color);
     }
 
-    .input-row textarea {
-      resize: none;
-      height: 54px;
+    .input-row input:focus {
+      border-color: var(--theme-color, #38bdf8);
     }
 
-    /* Button styles */
-    .btn {
+    .input-row button {
       background: var(--theme-color, #503cb4);
       border: 1px solid var(--theme-color-glow-solid, #6e58d6);
       color: #fff;
-      border-radius: 8px;
-      padding: 10px 18px;
-      font-weight: 600;
-      font-size: 13px;
+      border-radius: 6px;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 11px;
+      font-family: var(--font-tech);
       cursor: pointer;
       transition: all 0.15s;
-      font-family: var(--font-sans);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 0 10px var(--theme-color-op);
-    }
-    .btn:hover {
-      filter: brightness(1.15);
-      box-shadow: 0 0 15px var(--theme-color);
-      transform: translateY(-1px);
-    }
-    .btn:active {
-      transform: translateY(1px);
-    }
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
     }
 
-    /* File Drop Zone for KEN */
+    .input-row button:hover {
+      filter: brightness(1.2);
+    }
+
+    /* Custom dropzone inside input-panel */
     .file-drop-area {
-      border: 2px dashed rgba(57, 255, 20, 0.3);
-      background: rgba(57, 255, 20, 0.04);
-      border-radius: 10px;
-      padding: 24px;
+      border: 2px dashed rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.03);
+      border-radius: 6px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
+
     .file-drop-area:hover, .file-drop-area.dragover {
-      border-color: var(--color-bi);
-      background: rgba(57, 255, 20, 0.1);
-      box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.08);
     }
+
     .file-drop-area p {
-      font-size: 12px;
-      color: #a0aec0;
-      margin-top: 8px;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 4px;
     }
+
     .file-drop-area strong {
-      color: var(--color-bi);
+      color: #10b981;
     }
 
-    /* Custom Stock Badges */
-    .signal-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      margin-right: 6px;
-    }
-    .sig-buy { background: rgba(57, 255, 20, 0.15); border: 1px solid var(--color-bi); color: var(--color-bi); }
-    .sig-sell { background: rgba(255, 59, 147, 0.15); border: 1px solid var(--color-scout); color: var(--color-scout); }
-    .sig-hold { background: rgba(255, 159, 28, 0.15); border: 1px solid var(--color-creative); color: var(--color-creative); }
-
-    /* Custom Loading Indicator */
-    .loading-container {
+    /* Slide display cards */
+    .slide-deck {
       display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-    }
-    .loading-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--theme-color, #718096);
-      border-radius: 50%;
-      animation: dotPulse 1.2s infinite ease-in-out;
-    }
-    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes dotPulse {
-      0%, 100% { transform: scale(0.6); opacity: 0.4; }
-      50% { transform: scale(1.1); opacity: 1; }
+      flex-direction: column;
+      gap: 12px;
+      margin: 8px 0;
     }
 
-    /* Activity Feed / Console Log (Bottom Section) */
+    .slide-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #8b5cf6;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .slide-card h4 {
+      font-size: 11px;
+      font-family: var(--font-tech);
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .slide-card ul {
+      margin-left: 14px;
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+
+    .layout-note {
+      margin-top: 6px;
+      font-size: 9.5px;
+      color: #8b5cf6;
+      font-style: italic;
+    }
+
+    /* Realtime Console Feed at Bottom */
     #activity-feed {
-      height: 48px;
+      height: 38px;
       background: #040408;
-      border-top: 1px solid rgba(80, 60, 180, 0.25);
-      padding: 0 20px;
+      border-top: 1px solid var(--panel-border);
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: var(--font-mono);
+      font-family: monospace;
       font-size: 11px;
-      color: #6a6a9b;
-      z-index: 80;
+      color: #64748b;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
     }
 
     .feed-text {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #8f8fbf;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      color: #94a3b8;
     }
 
     .feed-dot {
       width: 6px;
       height: 6px;
-      background: var(--color-bi);
+      background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--color-bi);
-      animation: neonPulse 1.5s infinite;
+      box-shadow: 0 0 6px #10b981;
     }
 
-    /* Modals (API Key / Settings) */
+    /* Audio music indicators */
+    .audio-active-bar {
+      width: 2px;
+      background: #39ff14;
+      animation: audioBounce 0.8s ease infinite alternate;
+    }
+
+    @keyframes audioBounce {
+      from { height: 2px; }
+      to { height: 12px; }
+    }
+
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -619,8 +758,8 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
     }
+
     .modal-overlay.show {
       display: flex;
     }
@@ -629,42 +768,36 @@
       background: #0d0d1a;
       border: 2px solid rgba(120, 90, 220, 0.5);
       border-radius: 12px;
-      padding: 28px;
+      padding: 24px;
       width: 100%;
-      max-width: 440px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(120, 90, 220, 0.25);
-      animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes modalScale {
-      from { transform: scale(0.9) translateY(10px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
+      max-width: 400px;
     }
 
     .modal-box h3 {
-      font-family: var(--font-pixel);
-      font-size: 11px;
+      font-family: var(--font-tech);
+      font-size: 14px;
       color: #fff;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       letter-spacing: 1px;
     }
 
     .modal-box p {
-      font-size: 12px;
-      color: #718096;
-      line-height: 1.6;
-      margin-bottom: 20px;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .form-group label {
       display: block;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: #a0aec0;
-      margin-bottom: 6px;
+      font-size: 10px;
+      font-family: monospace;
+      color: #94a3b8;
+      margin-bottom: 4px;
       text-transform: uppercase;
     }
 
@@ -672,485 +805,622 @@
       width: 100%;
       background: rgba(5, 5, 10, 0.8);
       border: 1px solid rgba(120, 90, 220, 0.4);
-      border-radius: 8px;
+      border-radius: 6px;
       color: #fff;
-      padding: 10px 12px;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
+      padding: 8px 10px;
+      font-size: 12px;
       outline: none;
-      transition: all 0.2s;
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color: rgba(120, 90, 220, 0.8);
-      box-shadow: 0 0 8px rgba(120, 90, 220, 0.2);
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 24px;
+      margin-top: 20px;
     }
 
-    /* Scrollbars */
+    .modal-actions button {
+      padding: 6px 14px;
+      font-size: 11px;
+      font-family: var(--font-tech);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Custom scrollbars */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
       background: rgba(6, 6, 12, 0.5);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(80, 60, 180, 0.4);
-      border-radius: 4px;
+      background: rgba(80, 70, 180, 0.4);
+      border-radius: 2px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(80, 60, 180, 0.7);
+      background: rgba(80, 70, 180, 0.7);
     }
 
-    /* Slide Card Decks for LUNA's Output */
-    .slide-deck {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin: 10px 0;
-    }
-    .slide-card {
-      background: rgba(255, 255, 255, 0.03);
-      border-left: 3px solid var(--color-creative);
+    /* Speech bubbles above agents */
+    .agent-bubble {
+      position: absolute;
+      top: -65px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(9, 9, 20, 0.95);
+      border: 1.5px solid var(--theme-color, #10b981);
       border-radius: 6px;
-      padding: 12px 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    .slide-card h4 {
-      font-size: 13px;
-      font-family: var(--font-pixel);
-      font-size: 7.5px;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-    .slide-card ul {
-      margin-left: 16px;
-      font-size: 12px;
-      color: #cbd5e0;
-    }
-    .slide-card li {
-      margin-bottom: 4px;
-    }
-    .slide-card .layout-note {
-      margin-top: 8px;
-      font-size: 10.5px;
-      color: var(--color-creative);
-      font-style: italic;
+      padding: 5px 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+      width: 100px;
+      text-align: center;
+      pointer-events: none;
+      animation: floatBubble 2.5s ease-in-out infinite alternate;
     }
 
-    /* Responsive Styles */
-    @media (max-width: 900px) {
-      #main-container {
-        flex-direction: column;
-      }
-      
-      #detail-drawer {
-        width: 100%;
-        height: 65vh;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        transform: translateY(100%);
-        border-left: none;
-        border-top: 2px solid rgba(80, 60, 180, 0.35);
-      }
-      #detail-drawer.open {
-        transform: translateY(0);
-      }
-      
-      #office-canvas {
-        flex: 1;
-        height: 35vh;
-        min-height: 280px;
-        padding: 5px;
-      }
+    .agent-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: rgba(9, 9, 20, 0.95) transparent;
+      display: block;
+      width: 0;
+    }
+
+    .agent-bubble-title {
+      font-size: 7.5px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-family: var(--font-tech);
+      margin-bottom: 2px;
+    }
+
+    .agent-bubble-text {
+      font-size: 9px;
+      color: #fff;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @keyframes floatBubble {
+      from { transform: translate(-50%, 0); }
+      to { transform: translate(-50%, -4px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- App Header -->
-  <header>
-    <div class="brand">
-      <div class="brand-logo">🏢</div>
-      <div>
-        <h1>PIXEL VIRTUAL OFFICE</h1>
-        <p>3D ISOMETRIC AI COLLABORATION CO-WORKING SPACE</p>
+  <div class="dashboard">
+    <!-- Left Sidebar (Revenue / Agents List / Automation) -->
+    <aside class="sidebar left-sidebar">
+      <!-- Affiliate Revenue Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">AFFILIATE REVENUE</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">TODAY</span>
+          <span class="stat-value highlight" id="stat-revenue-today">฿ 4,590</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">MONTH</span>
+          <span class="stat-value" id="stat-revenue-month">฿ 89,000</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">TOP PRODUCT</span>
+          <span class="stat-value" id="stat-top-product" style="font-size: 10px; font-family: sans-serif; color: #38bdf8;">AI Affiliate Starter I</span>
+        </div>
       </div>
-    </div>
-
-    <div class="header-widgets">
-      <!-- Weather Widget -->
-      <div class="weather-chip" id="weather-widget" onclick="refreshWeather()" title="Click to refresh location weather">
-        <span id="weather-icon">🌤</span>
-        <span class="weather-temp" id="weather-temp">--°C</span>
-        <span id="weather-desc">Loading...</span>
-        <span id="weather-city" style="color: #718096; font-size: 11px;"></span>
-      </div>
-
-      <!-- Audio Toggle Button -->
-      <button class="icon-btn" id="audio-toggle" onclick="toggleAudio()" title="Toggle Background Chiptune & SFX">
-        🔇
-      </button>
-
-      <!-- Settings Button -->
-      <button class="icon-btn" onclick="openSettings()" title="Settings & API Keys">
-        ⚙️
-      </button>
       
-      <!-- Online Badge -->
-      <div style="background: rgba(57, 255, 20, 0.1); border: 1px solid var(--color-bi); color: var(--color-bi); font-family: var(--font-pixel); font-size: 8px; padding: 6px 10px; border-radius: 6px; letter-spacing: 0.5px;">
-        ● 4 ONLINE
-      </div>
-    </div>
-  </header>
-
-  <!-- Workspace Container -->
-  <div id="main-container">
-    
-    <!-- 3D Isometric Office Map -->
-    <div id="office-canvas">
-      <svg class="isometric-map" viewBox="0 0 920 600" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- Neon Filters -->
-          <filter id="neon-glow-blue" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          
-          <!-- Floors Gradients -->
-          <linearGradient id="grad-finance" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#041830"/>
-            <stop offset="100%" stop-color="#020814"/>
-          </linearGradient>
-          <linearGradient id="grad-scout" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#2d0a33"/>
-            <stop offset="100%" stop-color="#0f0212"/>
-          </linearGradient>
-          <linearGradient id="grad-bi" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#05240c"/>
-            <stop offset="100%" stop-color="#010a04"/>
-          </linearGradient>
-          <linearGradient id="grad-creative" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#2c1704"/>
-            <stop offset="100%" stop-color="#0e0701"/>
-          </linearGradient>
-          
-          <!-- Scanline overlay pattern -->
-          <pattern id="pat-scanline" width="4" height="4" patternUnits="userSpaceOnUse">
-            <rect width="4" height="2" fill="#000000" opacity="0.15"/>
-          </pattern>
-        </defs>
-
-        <!-- Floor Plate Base Outline -->
-        <polygon points="115,440 460,295 805,440 460,585" fill="#181826" stroke="#2c2c44" stroke-width="3" />
-
-        <!-- ==================== ROOM 1: FINANCE DEPT (ALEX) - TOP-LEFT ==================== -->
-        <g class="room-group" data-dept="1" onclick="openAgent(1)" onmouseenter="playHoverSound()">
-          <!-- Floor Tile -->
-          <polygon class="room-floor" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="url(#grad-finance)" />
-          <polygon class="room-border" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="none" stroke="var(--color-finance)" stroke-width="1.5" opacity="0.5" />
-          
-          <!-- Room Glow Overlay -->
-          <polygon class="room-glow" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="var(--color-finance)" opacity="0" style="transition: opacity 0.3s;" />
-
-          <!-- Office Assets: Server Rack -->
-          <g transform="translate(160, 360)">
-            <polygon points="0,20 25,-10 50,0 25,30" fill="#2d3748" stroke="#1a202c" />
-            <polygon points="0,20 25,30 25,60 0,50" fill="#1a202c" />
-            <polygon points="25,30 50,0 50,30 25,60" fill="#4a5568" />
-            <!-- Server blinking LEDs -->
-            <circle cx="10" cy="30" r="1.5" fill="#00d2ff" />
-            <circle cx="10" cy="36" r="1.5" fill="#39ff14" class="screen-flicker" />
-            <circle cx="18" cy="32" r="1.5" fill="#ff9f1c" />
-            <circle cx="18" cy="40" r="1.5" fill="#00d2ff" class="screen-flicker" />
-          </g>
-
-          <!-- Office Assets: Desk -->
-          <g transform="translate(230, 390)">
-            <polygon points="0,15 35,-15 70,0 35,30" fill="#8a5220" stroke="#4a2a0a" />
-            <polygon points="0,15 35,30 35,50 0,35" fill="#4a2a0a" />
-            <polygon points="35,30 70,0 70,20 35,50" fill="#6a3a10" />
-            
-            <!-- Monitor -->
-            <polygon points="20,-5 35,-15 50,-5 35,5" fill="#1a202c" />
-            <polygon points="22,-4 35,-12 48,-4 35,4" fill="#0d1e36" stroke="#00d2ff" stroke-width="0.8" />
-            <!-- Stock chart lines on monitor -->
-            <polyline points="26,1 32,-5 38,-2 44,-8" fill="none" stroke="#39ff14" stroke-width="1.2" class="screen-flicker" />
-          </g>
-
-          <!-- ALEX character avatar -->
-          <g class="char-avatar char-avatar-1" transform="translate(250, 410)">
-            <!-- Head & hair -->
-            <rect x="-10" y="-45" width="20" height="20" rx="3" fill="#e2c499" />
-            <rect x="-12" y="-47" width="24" height="8" rx="2" fill="#2d3748" /> <!-- Cool dark hair -->
-            <rect x="-10" y="-40" width="4" height="6" fill="#2d3748" />
-            <!-- Glasses -->
-            <rect x="-8" y="-37" width="6" height="4" fill="none" stroke="#00d2ff" stroke-width="1" />
-            <rect x="2" y="-37" width="6" height="4" fill="none" stroke="#00d2ff" stroke-width="1" />
-            <!-- Eyes -->
-            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
-            <circle cx="5" cy="-35" r="1.2" fill="#000" />
-            <!-- Body / Suits -->
-            <rect x="-14" y="-25" width="28" height="26" rx="4" fill="#1a365d" stroke="#0a1d37" stroke-width="1" /> <!-- Blue blazer -->
-            <polygon points="-4,-25 4,-25 0,-15" fill="#fff" /> <!-- Shirt tie area -->
-            <polygon points="-1,-25 1,-25 0,-20" fill="#e53e3e" /> <!-- Red tie -->
-            <!-- Hands -->
-            <circle cx="-16" cy="-12" r="3" fill="#e2c499" />
-            <circle cx="16" cy="-12" r="3" fill="#e2c499" />
-            
-            <!-- Laptop screen glow -->
-            <polygon points="-8,-12 0,-18 8,-12 0,-6" fill="rgba(0, 210, 255, 0.4)" filter="url(#neon-glow-blue)" />
-          </g>
-
-          <!-- Speech bubble / Status badge -->
-          <g class="speech-bubble bubble-1" transform="translate(260, 310)">
-            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#0b132b" stroke="var(--color-finance)" stroke-width="1.5" />
-            <polygon points="-5,12 0,18 5,12" fill="#0b132b" stroke="var(--color-finance)" stroke-width="1.5" />
-            <!-- Cover inside stroke -->
-            <polygon points="-4,11 0,16 4,11" fill="#0b132b" />
-            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">ALEX 📊 [ซื้อ/ขาย]</text>
-          </g>
-          
-          <text x="210" y="475" class="dept-label">FINANCE</text>
-        </g>
-
-        <!-- ==================== ROOM 2: MARKET SCOUT (MAYA) - TOP-RIGHT ==================== -->
-        <g class="room-group" data-dept="2" onclick="openAgent(2)" onmouseenter="playHoverSound()">
-          <!-- Floor Tile -->
-          <polygon class="room-floor" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="url(#grad-scout)" />
-          <polygon class="room-border" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="none" stroke="var(--color-scout)" stroke-width="1.5" opacity="0.5" />
-
-          <!-- Room Glow Overlay -->
-          <polygon class="room-glow" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="var(--color-scout)" opacity="0" style="transition: opacity 0.3s;" />
-
-          <!-- Office Assets: Big Radar Screen/Hologram Map -->
-          <g transform="translate(460, 170)">
-            <!-- Radar Base -->
-            <ellipse cx="0" cy="180" rx="35" ry="12" fill="#1a202c" stroke="#2d3748" />
-            <!-- Radar screen vertical grid -->
-            <ellipse cx="0" cy="180" rx="30" ry="10" fill="#2d0a33" stroke="var(--color-scout)" stroke-width="1" />
-            <!-- Rotating radar beam -->
-            <polygon class="radar-beam" points="0,180 30,175 25,183" fill="rgba(255, 59, 147, 0.4)" />
-            <!-- Blinking stock scouts -->
-            <circle cx="-10" cy="182" r="2.5" fill="#39ff14" class="screen-flicker" />
-            <circle cx="15" cy="178" r="2" fill="var(--color-scout)" />
-          </g>
-
-          <!-- Office Assets: Desk -->
-          <g transform="translate(400, 330)">
-            <polygon points="0,15 35,-15 70,0 35,30" fill="#2d3748" stroke="#1a202c" />
-            <polygon points="0,15 35,30 35,50 0,35" fill="#1a202c" />
-            <polygon points="35,30 70,0 70,20 35,50" fill="#4a5568" />
-            
-            <!-- Dual Monitors -->
-            <polygon points="12,-5 25,-12 38,-5 25,4" fill="#000" />
-            <polygon points="14,-4 25,-10 36,-4 25,3" fill="#16041c" stroke="var(--color-scout)" stroke-width="0.8" />
-            
-            <polygon points="40,-5 53,-12 66,-5 53,4" fill="#000" />
-            <polygon points="42,-4 53,-10 64,-4 53,3" fill="#16041c" stroke="var(--color-scout)" stroke-width="0.8" />
-          </g>
-
-          <!-- MAYA character avatar -->
-          <g class="char-avatar char-avatar-2" transform="translate(425, 350)">
-            <!-- Head & Hair (Long brown hair) -->
-            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#dca980" />
-            <rect x="-11" y="-48" width="22" height="12" rx="3" fill="#78341a" /> <!-- Hair top -->
-            <!-- Hair bangs down sides -->
-            <rect x="-11" y="-42" width="3" height="15" fill="#78341a" />
-            <rect x="8" y="-42" width="3" height="15" fill="#78341a" />
-            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
-            <circle cx="5" cy="-35" r="1.2" fill="#000" />
-            <rect x="-4" y="-31" width="8" height="1.5" fill="#e05a88" /> <!-- Lips -->
-            
-            <!-- Body / Clothes -->
-            <rect x="-13" y="-27" width="26" height="28" rx="5" fill="#5b21b6" stroke="#4c1d95" stroke-width="1" /> <!-- Purple sweater -->
-            <circle cx="-14" cy="-12" r="3" fill="#dca980" />
-            <circle cx="14" cy="-12" r="3" fill="#dca980" />
-          </g>
-
-          <!-- Speech bubble -->
-          <g class="speech-bubble bubble-2" transform="translate(440, 255)">
-            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#1d0a25" stroke="var(--color-scout)" stroke-width="1.5" />
-            <polygon points="-5,12 0,18 5,12" fill="#1d0a25" stroke="var(--color-scout)" stroke-width="1.5" />
-            <polygon points="-4,11 0,16 4,11" fill="#1d0a25" />
-            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">MAYA 🔍 [สแกน SET]</text>
-          </g>
-          
-          <text x="420" y="335" class="dept-label">SCOUT</text>
-        </g>
-
-        <!-- ==================== ROOM 3: CREATIVE STUDIO (LUNA) - BOTTOM-RIGHT ==================== -->
-        <g class="room-group" data-dept="4" onclick="openAgent(4)" onmouseenter="playHoverSound()">
-          <!-- Floor Tile -->
-          <polygon class="room-floor" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="url(#grad-creative)" />
-          <polygon class="room-border" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="none" stroke="var(--color-creative)" stroke-width="1.5" opacity="0.5" />
-
-          <!-- Room Glow Overlay -->
-          <polygon class="room-glow" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="var(--color-creative)" opacity="0" style="transition: opacity 0.3s;" />
-
-          <!-- Office Assets: Bookshelf / Display -->
-          <g transform="translate(710, 360)">
-            <polygon points="0,20 20,-10 40,0 20,30" fill="#5c3a21" stroke="#2e1a0b" />
-            <polygon points="0,20 20,30 20,60 0,50" fill="#2e1a0b" />
-            <polygon points="20,30 40,0 40,30 20,60" fill="#462c19" />
-            <!-- Colorful books -->
-            <rect x="5" y="32" width="3" height="15" fill="#f56565" transform="skewY(26)" />
-            <rect x="10" y="29" width="3" height="17" fill="#4299e1" transform="skewY(26)" />
-            <rect x="15" y="26" width="3" height="19" fill="#48bb78" transform="skewY(26)" />
-          </g>
-
-          <!-- Office Assets: Creative Presentation Easel -->
-          <g transform="translate(560, 440)">
-            <line x1="0" y1="0" x2="-10" y2="40" stroke="#4a5568" stroke-width="3" />
-            <line x1="0" y1="0" x2="10" y2="40" stroke="#4a5568" stroke-width="3" />
-            <line x1="0" y1="0" x2="0" y2="45" stroke="#718096" stroke-width="2" />
-            <!-- Board canvas -->
-            <polygon points="-25,-15 25,-25 25,-5 -25,5" fill="#edf2f7" stroke="#2d3748" stroke-width="2" />
-            <polygon points="-23,-13 23,-23 23,-7 -23,3" fill="#ff9f1c" opacity="0.8" class="screen-flicker" />
-            <text x="0" y="-8" text-anchor="middle" fill="#fff" font-family="var(--font-pixel)" font-size="5" transform="rotate(-11)">SLIDE</text>
-          </g>
-
-          <!-- LUNA character avatar -->
-          <g class="char-avatar char-avatar-4" transform="translate(635, 430)">
-            <!-- Head & hair (Purple/pink hair) -->
-            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#f7fafc" /> <!-- pale skin -->
-            <rect x="-12" y="-47" width="24" height="12" rx="4" fill="#d53f8c" /> <!-- Pink hair top -->
-            <!-- Twin pony tails -->
-            <circle cx="-13" cy="-40" r="4.5" fill="#d53f8c" />
-            <circle cx="13" cy="-40" r="4.5" fill="#d53f8c" />
-            <!-- Eyes -->
-            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
-            <circle cx="5" cy="-35" r="1.2" fill="#000" />
-            
-            <!-- Body / Clothing -->
-            <rect x="-13" y="-27" width="26" height="28" rx="5" fill="#e53e3e" stroke="#9b2c2c" stroke-width="1" /> <!-- Red dress -->
-            <circle cx="-14" cy="-12" r="3" fill="#f7fafc" />
-            <circle cx="14" cy="-12" r="3" fill="#f7fafc" />
-          </g>
-
-          <!-- Speech bubble -->
-          <g class="speech-bubble bubble-4" transform="translate(650, 335)">
-            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#2d1105" stroke="var(--color-creative)" stroke-width="1.5" />
-            <polygon points="-5,12 0,18 5,12" fill="#2d1105" stroke="var(--color-creative)" stroke-width="1.5" />
-            <polygon points="-4,11 0,16 4,11" fill="#2d1105" />
-            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">LUNA 🎨 [สไลด์ PPT]</text>
-          </g>
-
-          <text x="650" y="475" class="dept-label">CREATIVE</text>
-        </g>
-
-        <!-- ==================== ROOM 4: DATA INSIGHTS DEPT (KEN) - BOTTOM-LEFT ==================== -->
-        <g class="room-group" data-dept="3" onclick="openAgent(3)" onmouseenter="playHoverSound()">
-          <!-- Floor Tile -->
-          <polygon class="room-floor" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="url(#grad-bi)" />
-          <polygon class="room-border" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="none" stroke="var(--color-bi)" stroke-width="1.5" opacity="0.5" />
-
-          <!-- Room Glow Overlay -->
-          <polygon class="room-glow" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="var(--color-bi)" opacity="0" style="transition: opacity 0.3s;" />
-
-          <!-- Office Assets: Plant -->
-          <g transform="translate(360, 480)">
-            <ellipse cx="0" cy="30" rx="10" ry="5" fill="#3b2314" stroke="#221107" />
-            <!-- Plant stems -->
-            <path d="M 0,25 Q -10,10 -8,2" fill="none" stroke="#2f855a" stroke-width="3" />
-            <path d="M 0,25 Q 10,8 8,0" fill="none" stroke="#2f855a" stroke-width="2.5" />
-            <!-- Leaves -->
-            <ellipse cx="-8" cy="2" rx="4" ry="7" fill="#48bb78" transform="rotate(-30 -8 2)" />
-            <ellipse cx="8" cy="0" rx="4" ry="7" fill="#38a169" transform="rotate(30 8 0)" />
-          </g>
-
-          <!-- Office Assets: Big Screen Console -->
-          <g transform="translate(460, 455)">
-            <!-- Main base -->
-            <polygon points="-30,10 30,10 40,20 -20,20" fill="#2d3748" stroke="#1a202c" />
-            <!-- Tall monitor panel -->
-            <polygon points="-25,-25 25,-25 25,10 -25,10" fill="#1a202c" />
-            <polygon points="-23,-23 23,-23 23,8 -23,8" fill="#041006" stroke="var(--color-bi)" stroke-width="0.8" />
-            <text x="0" y="-8" text-anchor="middle" fill="#39ff14" font-family="var(--font-mono)" font-size="5" class="screen-flicker">01101011</text>
-            <line x1="-15" y1="2" x2="15" y2="2" stroke="#39ff14" stroke-width="1" class="screen-flicker" />
-          </g>
-
-          <!-- KEN character avatar -->
-          <g class="char-avatar char-avatar-3" transform="translate(460, 520)">
-            <!-- Head & hair (Spiky blonde hair) -->
-            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#f3d9b1" />
-            <!-- Spiky hair lines -->
-            <polygon points="-12,-43 -9,-50 -6,-44" fill="#ecc94b" />
-            <polygon points="-6,-44 -2,-52 2,-44" fill="#ecc94b" />
-            <polygon points="2,-44 6,-50 10,-43" fill="#ecc94b" />
-            <rect x="-9" y="-46" width="18" height="5" fill="#ecc94b" />
-            <!-- Glasses -->
-            <rect x="-9" y="-36" width="18" height="3" fill="rgba(255, 255, 255, 0.4)" stroke="#2b6cb0" stroke-width="0.8" />
-            <!-- Eyes -->
-            <circle cx="-5" cy="-34" r="1" fill="#000" />
-            <circle cx="5" cy="-34" r="1" fill="#000" />
-            
-            <!-- Body / Clothing (Green vest over shirt) -->
-            <rect x="-13" y="-27" width="26" height="28" rx="4" fill="#2f855a" stroke="#22543d" stroke-width="1" />
-            <polygon points="-4,-27 4,-27 0,-20" fill="#fff" /> <!-- Shirt collar V -->
-            <circle cx="-14" cy="-12" r="3" fill="#f3d9b1" />
-            <circle cx="14" cy="-12" r="3" fill="#f3d9b1" />
-          </g>
-
-          <!-- Speech bubble -->
-          <g class="speech-bubble bubble-3" transform="translate(460, 420)">
-            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#051c09" stroke="var(--color-bi)" stroke-width="1.5" />
-            <polygon points="-5,12 0,18 5,12" fill="#051c09" stroke="var(--color-bi)" stroke-width="1.5" />
-            <polygon points="-4,11 0,16 4,11" fill="#051c09" />
-            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">KEN 📂 [วิเคราะห์ Data]</text>
-          </g>
-
-          <text x="445" y="565" class="dept-label">ANALYTICS</text>
-        </g>
-      </svg>
-    </div>
-
-    <!-- Agent Detail Drawer -->
-    <div id="detail-drawer">
-      <div class="drawer-header">
-        <div class="drawer-avatar" id="agent-icon">📊</div>
-        <div class="drawer-info">
-          <h2 id="agent-name">ALEX</h2>
-          <p id="agent-role">FINANCIAL ANALYSIS DEPT</p>
+      <!-- AI Agents Config Selector -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">AI AGENTS</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
-        <button class="close-drawer" onclick="closeDrawer()">✕</button>
-      </div>
-
-      <!-- Live Chat Interface -->
-      <div class="chat-container">
-        <div class="chat-messages" id="chat-box">
-          <!-- Messages will load dynamically -->
-        </div>
-
-        <!-- Quick selection bar -->
-        <div class="quick-bar" id="quick-bar-options">
-          <!-- Dynamic options based on agent -->
-        </div>
-
-        <!-- Text Input Panel -->
-        <div class="input-panel">
-          <!-- Dynamic inputs like Dropzone or Input fields based on agent -->
-          <div id="agent-custom-controls"></div>
-          
-          <div class="input-row" style="margin-top: 10px;" id="text-input-row">
-            <input type="text" id="chat-input" placeholder="Type a message or command..." onkeydown="handleChatKey(event)">
-            <button class="btn" id="send-btn" onclick="sendChatMessage()">
-              <span>ส่ง</span> ➔
-            </button>
+        <div class="agent-status-list">
+          <div class="agent-status-row">
+            <span class="agent-status-name">Shopee Affiliate Ag...</span>
+            <select class="status-select" onchange="changeAgentStatus(1, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">TikTok Affiliate Agent</span>
+            <select class="status-select" onchange="changeAgentStatus(2, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">Facebook Reels Ag...</span>
+            <select class="status-select" onchange="changeAgentStatus(5, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">YouTube Agent</span>
+            <select class="status-select" onchange="changeAgentStatus(6, this.value)">
+              <option value="RUNNING">RUNNING</option>
+              <option value="IDLE" selected>IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">Ebook Agent</span>
+            <select class="status-select" onchange="changeAgentStatus(7, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">Marketing Agent</span>
+            <select class="status-select" onchange="changeAgentStatus(4, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Automations Config Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">AUTOMATION</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
+        </div>
+        <div class="agent-status-list">
+          <div class="agent-status-row">
+            <span class="agent-status-name">Viral Hunter</span>
+            <select class="status-select" onchange="logActivity('Viral Hunter set to ' + this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">Auto Salespage</span>
+            <select class="status-select" onchange="logActivity('Auto Salespage set to ' + this.value)">
+              <option value="ON" selected>ON</option>
+              <option value="OFF">OFF</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">Short VDO Auto</span>
+            <select class="status-select" onchange="logActivity('Short VDO Auto set to ' + this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">AI Chatbot</span>
+            <select class="status-select" onchange="changeAgentStatus(3, this.value === 'ON' ? 'RUNNING' : 'OFFLINE')">
+              <option value="ON" selected>ON</option>
+              <option value="OFF">OFF</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="main-content">
+      <!-- Top Action Bar -->
+      <div class="action-bar">
+        <div class="action-group-left">
+          <button class="action-btn" id="btn-move-mode" onclick="toggleMoveMode()">MOVE MODE</button>
+          <button class="action-btn" onclick="resetPositions()">RESET</button>
+          <button class="action-btn" onclick="deleteSelected()">DELETE</button>
+          <span class="action-hint">Drag agents or desks</span>
+        </div>
+
+        <div class="action-group-right">
+          <!-- Weather Widget -->
+          <div class="weather-chip" id="weather-widget" onclick="refreshWeather()" title="Click to refresh local weather">
+            <span id="weather-icon">🌤</span>
+            <span class="weather-temp" id="weather-temp">--°C</span>
+            <span id="weather-desc">กำลังโหลด...</span>
+            <span id="weather-city" style="display: none;"></span>
+          </div>
+
+          <!-- Audio Toggle Button -->
+          <button class="action-icon-btn" id="audio-toggle" onclick="toggleAudio()" title="Toggle Background Chiptune">
+            🔇
+          </button>
+
+          <!-- Settings Button -->
+          <button class="action-icon-btn" onclick="openSettings()" title="Settings">
+            ⚙️
+          </button>
+        </div>
+      </div>
+
+      <!-- Office Map Container -->
+      <div id="office-canvas">
+        
+        <!-- ==================== DESKS ==================== -->
+        <!-- Desk Left (Reels/TikTok Area) -->
+        <div class="draggable" data-type="desk" data-id="1" style="left: 18%; top: 46%;">
+          <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="-45,-5 0,-27 45,-5 0,17" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+            <polygon points="-45,-5 0,17 -3,19 -45,-3" fill="#0f172a" />
+            <polygon points="45,-5 0,17 -3,19 42,-3" fill="#020617" />
+            <line x1="-40" y1="2" x2="-40" y2="28" stroke="#000" stroke-width="2.5" />
+            <line x1="40" y1="2" x2="40" y2="28" stroke="#000" stroke-width="2.5" />
+            <line x1="0" y1="16" x2="0" y2="34" stroke="#000" stroke-width="3" />
+            <line x1="0" y1="-23" x2="0" y2="0" stroke="#000" stroke-width="1.5" opacity="0.6" />
+            <polygon points="-28,-18 -18,-23 -8,-18 -18,-13" fill="#020617" />
+            <polygon points="-27,-17 -19,-21 -10,-17 -18,-13" fill="#064e3b" stroke="#10b981" stroke-width="0.8" />
+            <polyline points="-25,-15 -21,-18 -17,-15 -13,-19" stroke="#10b981" stroke-width="1.2" fill="none" />
+            <polygon points="8,-18 18,-23 28,-18 18,-13" fill="#020617" />
+            <polygon points="9,-17 17,-21 26,-17 18,-13" fill="#083344" stroke="#06b6d4" stroke-width="0.8" />
+            <polyline points="11,-15 15,-18 19,-14 24,-20" stroke="#06b6d4" stroke-width="1.2" fill="none" />
+          </svg>
+        </div>
+
+        <!-- Desk GM (Back Area) -->
+        <div class="draggable" data-type="desk" data-id="2" style="left: 34%; top: 22%;">
+          <svg width="100" height="75" viewBox="-50 -35 100 75" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="-40,-5 0,-25 40,-5 0,15" fill="#3f2f21" stroke="#241b13" stroke-width="1.5" />
+            <polygon points="-40,-5 0,15 -3,17 -40,-3" fill="#241b13" />
+            <polygon points="40,-5 0,15 -3,17 37,-3" fill="#1b140e" />
+            <line x1="-35" y1="2" x2="-35" y2="28" stroke="#111" stroke-width="2" />
+            <line x1="35" y1="2" x2="35" y2="28" stroke="#111" stroke-width="2" />
+            <polygon points="-15,-12 -5,-17 5,-12 -5,-7" fill="#f8fafc" opacity="0.9" />
+            <polygon points="10,-12 18,-16 26,-12 18,-8" fill="#ef4444" />
+          </svg>
+        </div>
+
+        <!-- Desk Center (Marketing Area) -->
+        <div class="draggable" data-type="desk" data-id="3" style="left: 35%; top: 48%;">
+          <svg width="120" height="90" viewBox="-60 -45 120 90" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="-50,-5 0,-30 50,-5 0,20" fill="#7c2d12" stroke="#451a03" stroke-width="1.5" />
+            <polygon points="-50,-5 0,20 -4,22 -50,-3" fill="#451a03" />
+            <polygon points="50,-5 0,20 -4,22 46,-3" fill="#2d0f02" />
+            <line x1="-45" y1="2" x2="-45" y2="30" stroke="#000" stroke-width="3" />
+            <line x1="45" y1="2" x2="45" y2="30" stroke="#000" stroke-width="3" />
+            <line x1="0" y1="18" x2="0" y2="36" stroke="#000" stroke-width="3" />
+            <polygon points="-15,-12 -5,-17 5,-12 -5,-7" fill="#64748b" />
+            <polygon points="-5,-7 -12,-20 2,-20 5,-7" fill="rgba(6, 182, 212, 0.4)" stroke="#06b6d4" stroke-width="1" />
+            <polyline points="-10,-15 -7,-18 -4,-13 0,-17" stroke="#34d399" stroke-width="1.2" fill="none" />
+          </svg>
+        </div>
+
+        <!-- Desk Right (Ebook Area) -->
+        <div class="draggable" data-type="desk" data-id="4" style="left: 66%; top: 52%;">
+          <svg width="100" height="80" viewBox="-50 -40 100 80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="-40,-5 0,-25 40,-5 0,15" fill="#5c3a21" stroke="#372213" stroke-width="1.5" />
+            <polygon points="-40,-5 0,15 -3,17 -40,-3" fill="#372213" />
+            <polygon points="40,-5 0,15 -3,17 37,-3" fill="#24160c" />
+            <line x1="-35" y1="2" x2="-35" y2="28" stroke="#111" stroke-width="2.5" />
+            <line x1="35" y1="2" x2="35" y2="28" stroke="#111" stroke-width="2.5" />
+            <line x1="0" y1="14" x2="0" y2="32" stroke="#111" stroke-width="2.5" />
+            <circle cx="20" cy="-14" r="7" fill="#1d4ed8" stroke="#d97706" stroke-width="1.5" />
+            <path d="M 15 -14 Q 20 -18 25 -14" stroke="#22c55e" stroke-width="1.5" fill="none" />
+            <polygon points="-20,-12 -10,-17 0,-12 -10,-7" fill="#94a3b8" />
+          </svg>
+        </div>
+
+        <!-- Desk Bottom (Chatbot Area) -->
+        <div class="draggable" data-type="desk" data-id="5" style="left: 56%; top: 68%;">
+          <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="-45,-5 0,-27 45,-5 0,17" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+            <polygon points="-45,-5 0,17 -3,19 -45,-3" fill="#020617" />
+            <polygon points="45,-5 0,17 -3,19 42,-3" fill="#020617" />
+            <line x1="-40" y1="2" x2="-40" y2="28" stroke="#000" stroke-width="2.5" />
+            <line x1="40" y1="2" x2="40" y2="28" stroke="#000" stroke-width="2.5" />
+            <polygon points="-22,-18 -12,-23 -2,-18 -12,-13" fill="#020617" />
+            <polygon points="-21,-17 -13,-21 -4,-17 -12,-13" fill="#18181b" stroke="#22c55e" stroke-width="0.8" />
+            <line x1="-18" y1="-17" x2="-8" y2="-17" stroke="#22c55e" stroke-width="1" opacity="0.8" />
+            <line x1="-16" y1="-15" x2="-6" y2="-15" stroke="#22c55e" stroke-width="1" opacity="0.8" />
+            <polygon points="2,-18 12,-23 22,-18 12,-13" fill="#020617" />
+            <polygon points="3,-17 11,-21 20,-17 12,-13" fill="#18181b" stroke="#22c55e" stroke-width="0.8" />
+            <line x1="6" y1="-17" x2="16" y2="-17" stroke="#22c55e" stroke-width="1" opacity="0.8" />
+            <line x1="8" y1="-15" x2="18" y2="-15" stroke="#22c55e" stroke-width="1" opacity="0.8" />
+          </svg>
+        </div>
+
+
+        <!-- ==================== AGENTS ==================== -->
+        <!-- Shopee Affiliate Agent (ID: 1) -->
+        <div class="draggable" data-type="agent" data-id="1" style="left: 59%; top: 21%;" onclick="handleAgentClick(1)">
+          <!-- Speech Bubble dynamic trigger -->
+          <div class="agent-bubble" id="bubble-1" style="--theme-color: var(--color-shopee); display:none;">
+            <div class="agent-bubble-title">Shopee Agent</div>
+            <div class="agent-bubble-text" id="bubble-text-1">วิเคราะห์เทรนด์...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#78350f" />
+            <rect x="-9" y="-34" width="3" height="10" fill="#78350f" />
+            <rect x="6" y="-34" width="3" height="10" fill="#78350f" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#ea580c" stroke="#c2410c" stroke-width="1" />
+            <rect x="-6" y="-12" width="12" height="10" fill="#b45309" stroke="#78350f" stroke-width="1" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-1"></div>
+            <div class="agent-tag-text">Shopee</div>
+          </div>
+        </div>
+
+        <!-- TikTok Affiliate Agent (ID: 2) -->
+        <div class="draggable" data-type="agent" data-id="2" style="left: 22%; top: 38%;" onclick="handleAgentClick(2)">
+          <div class="agent-bubble" id="bubble-2" style="--theme-color: var(--color-tiktok); display:none;">
+            <div class="agent-bubble-title">TikTok Agent</div>
+            <div class="agent-bubble-text" id="bubble-text-2">ทำสคริปต์วิดีโอ...</div>
+          </div>
+          <svg width="60" height="75" viewBox="-30 -45 60 75" xmlns="http://www.w3.org/2000/svg">
+            <line x1="-18" y1="-5" x2="-18" y2="25" stroke="#475569" stroke-width="2" />
+            <line x1="-18" y1="25" x2="-24" y2="32" stroke="#475569" stroke-width="2" />
+            <line x1="-18" y1="25" x2="-12" y2="32" stroke="#475569" stroke-width="2" />
+            <circle cx="-18" cy="-12" r="7" fill="none" stroke="#22d3ee" stroke-width="3" filter="drop-shadow(0 0 4px #22d3ee)" />
+            <circle cx="-18" cy="-12" r="2" fill="#000" />
+            <rect x="-6" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-7" y="-40" width="18" height="6" fill="#0891b2" />
+            <circle cx="-2" cy="-30" r="1" fill="#000" />
+            <circle cx="6" cy="-30" r="1" fill="#000" />
+            <rect x="-9" y="-22" width="22" height="24" rx="4" fill="#10b981" stroke="#047857" stroke-width="1" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-2"></div>
+            <div class="agent-tag-text">TikTok</div>
+          </div>
+        </div>
+
+        <!-- AI Chatbot (ID: 3) -->
+        <div class="draggable" data-type="agent" data-id="3" style="left: 53%; top: 68%;" onclick="handleAgentClick(3)">
+          <div class="agent-bubble" id="bubble-3" style="--theme-color: var(--color-chatbot); display:none;">
+            <div class="agent-bubble-title">Chatbot</div>
+            <div class="agent-bubble-text" id="bubble-text-3">ตอบลูกค้า...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-13" y="-26" width="26" height="18" rx="2" fill="#18181b" stroke="#09090b" stroke-width="1" />
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#18181b" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="22" rx="4" fill="#2563eb" stroke="#1d4ed8" stroke-width="1" />
+            <rect x="5" y="-10" width="5" height="9" rx="1" fill="#000" stroke="#3b82f6" stroke-width="0.5" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-3"></div>
+            <div class="agent-tag-text">Chatbot</div>
+          </div>
+        </div>
+
+        <!-- Marketing Agent (ID: 4) -->
+        <div class="draggable" data-type="agent" data-id="4" style="left: 30%; top: 50%;" onclick="handleAgentClick(4)">
+          <div class="agent-bubble" id="bubble-4" style="--theme-color: var(--color-marketing); display:none;">
+            <div class="agent-bubble-title">Marketing</div>
+            <div class="agent-bubble-text" id="bubble-text-4">เขียนคำโฆษณา...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#78350f" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#1e293b" stroke="#0f172a" stroke-width="1" />
+            <polygon points="-3,-22 3,-22 0,-15" fill="#ffffff" />
+            <polygon points="-1,-22 1,-22 0,-18" fill="#10b981" />
+            <rect x="4" y="-10" width="8" height="11" fill="#b45309" stroke="#000" stroke-width="0.8" />
+            <rect x="5" y="-8" width="6" height="7" fill="#f8fafc" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-4"></div>
+            <div class="agent-tag-text">Marketing</div>
+          </div>
+        </div>
+
+        <!-- Facebook Reels Agent (ID: 5) -->
+        <div class="draggable" data-type="agent" data-id="5" style="left: 29%; top: 28%;" onclick="handleAgentClick(5)">
+          <div class="agent-bubble" id="bubble-5" style="--theme-color: var(--color-reels); display:none;">
+            <div class="agent-bubble-title">Reels Agent</div>
+            <div class="agent-bubble-text" id="bubble-text-5">ไอเดียคลิปสั้น...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#2563eb" />
+            <rect x="-9" y="-34" width="3" height="10" fill="#2563eb" />
+            <rect x="6" y="-34" width="3" height="10" fill="#2563eb" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />
+            <rect x="3" y="-12" width="8" height="10" fill="#000" stroke="#60a5fa" stroke-width="0.8" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-5"></div>
+            <div class="agent-tag-text">Reels</div>
+          </div>
+        </div>
+
+        <!-- YouTube Agent (ID: 6) -->
+        <div class="draggable" data-type="agent" data-id="6" style="left: 45%; top: 17%;" onclick="handleAgentClick(6)">
+          <div class="agent-bubble" id="bubble-6" style="--theme-color: var(--color-youtube); display:none;">
+            <div class="agent-bubble-title">YouTube</div>
+            <div class="agent-bubble-text" id="bubble-text-6">สคริปต์คลิปยาว...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#7c2d12" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#ea580c" stroke="#9a3412" stroke-width="1" />
+            <circle cx="-13" cy="-10" r="3" fill="#1e293b" />
+            <rect x="-16" y="-15" width="8" height="6" fill="#0f172a" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-6" class="agent-tag-dot idle"></div>
+            <div class="agent-tag-text">YouTube</div>
+          </div>
+        </div>
+
+        <!-- Ebook Agent (ID: 7) -->
+        <div class="draggable" data-type="agent" data-id="7" style="left: 60%; top: 51%;" onclick="handleAgentClick(7)">
+          <div class="agent-bubble" id="bubble-7" style="--theme-color: var(--color-ebook); display:none;">
+            <div class="agent-bubble-title">Ebook Agent</div>
+            <div class="agent-bubble-text" id="bubble-text-7">เขียนสารบัญ...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#047857" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#059669" stroke="#047857" stroke-width="1" />
+            <rect x="-7" y="-12" width="14" height="9" rx="1" fill="#f8fafc" stroke="#047857" stroke-width="0.8" />
+            <line x1="0" y1="-12" x2="0" y2="-3" stroke="#047857" stroke-width="1.2" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-7"></div>
+            <div class="agent-tag-text">Ebook</div>
+          </div>
+        </div>
+
+        <!-- GM (General Manager) (ID: 8) -->
+        <div class="draggable" data-type="agent" data-id="8" style="left: 36%; top: 24%;" onclick="handleAgentClick(8)">
+          <div class="agent-bubble" id="bubble-8" style="--theme-color: var(--color-gm); display:none;">
+            <div class="agent-bubble-title">General Manager</div>
+            <div class="agent-bubble-text" id="bubble-text-8">คุมทีมแคมเปญ...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#1e3a8a" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#0f172a" stroke="#020617" stroke-width="1" />
+            <polygon points="-3,-22 3,-22 0,-15" fill="#ffffff" />
+            <polygon points="-1,-22 1,-22 0,-18" fill="#2563eb" />
+            <rect x="4" y="-10" width="8" height="11" fill="#f8fafc" stroke="#000" stroke-width="0.8" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-8"></div>
+            <div class="agent-tag-text">GM</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Agent Detail Chat Drawer -->
+      <div id="detail-drawer">
+        <div class="drawer-header">
+          <div class="drawer-avatar" id="agent-icon">🤖</div>
+          <div class="drawer-info">
+            <h2 id="agent-name">Agent Name</h2>
+            <p id="agent-role">AI Role</p>
+          </div>
+          <button class="close-drawer" onclick="closeDrawer()">✕</button>
+        </div>
+
+        <!-- Chat Container inside Drawer -->
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-box"></div>
+          <div class="quick-bar" id="quick-bar-options"></div>
+          
+          <div class="input-panel">
+            <!-- Custom controls wrapper -->
+            <div id="agent-custom-controls"></div>
+            
+            <div class="input-row">
+              <input type="text" id="chat-input" placeholder="Type a message or command..." onkeydown="handleChatKey(event)">
+              <button onclick="sendChatMessage()">ส่ง ➔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar (Stats / Queue / Team Chat) -->
+    <aside class="sidebar right-sidebar">
+      <!-- TikTok Queue Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">TIKTOK QUEUE</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">TOTAL CLIPS</span>
+          <span class="stat-value">54</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">POSTED</span>
+          <span class="stat-value">18</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PENDING</span>
+          <span class="stat-value">36</span>
+        </div>
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" style="width: 33.33%;"></div>
+        </div>
+      </div>
+
+      <!-- Course Sales Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">COURSE SALES</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">ORDERS</span>
+          <span class="stat-value">7</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">REVENUE</span>
+          <span class="stat-value">฿ 14,900</span>
+        </div>
+        <div class="revenue-badge">
+          ฿14,900
+        </div>
+      </div>
+
+      <!-- Team Chat Log Panel -->
+      <div class="panel" style="flex: 1; min-height: 200px; display: flex; flex-direction: column;">
+        <div class="panel-header">
+          <span class="panel-title">TEAM CHAT</span>
+          <span style="color: #64748b; font-size: 8px;">●●</span>
+        </div>
+        <div class="team-chat-logs" id="team-chat-logs">
+          <div class="team-chat-msg">
+            <div class="team-chat-meta">
+              <span class="team-chat-sender shopee">SHOPEE AFFILIATE AGENT</span>
+              <span class="team-chat-badge">RUNNING</span>
+            </div>
+            <p class="team-chat-text">พบสินค้าเทรนด์ใหม่ 6 ตัว</p>
+          </div>
+          <div class="team-chat-msg">
+            <div class="team-chat-meta">
+              <span class="team-chat-sender tiktok">TIKTOK AFFILIATE AGENT</span>
+              <span class="team-chat-badge">RUNNING</span>
+            </div>
+            <p class="team-chat-text">คลิปขายดีพร้อมโพสต์ 12 คลิป</p>
+          </div>
+          <div class="team-chat-msg">
+            <div class="team-chat-meta">
+              <span class="team-chat-sender marketing">MARKETING AGENT</span>
+              <span class="team-chat-badge">RUNNING</span>
+            </div>
+            <p class="team-chat-text">ข้อเสนอใหม่พร้อมทดสอบแล้ว</p>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <!-- Realtime Console Status Bar -->
@@ -1159,7 +1429,7 @@
       <div class="feed-dot"></div>
       <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Virtual office co-workers are online and ready.</span>
     </div>
-    <div style="color: #4a4a75;">CO-WORK CORE v2.5</div>
+    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">CO-WORK CORE v2.5</div>
   </div>
 
   <!-- API Key & Settings Dialog Modal -->
@@ -1188,21 +1458,23 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn-pill" style="background: transparent; border-color: transparent;" onclick="closeSettings()">Cancel</button>
-        <button class="btn" style="--theme-color: #39ff14; --theme-color-glow-solid: #2e8b57; color: #000;" onclick="saveSettings()">Save Settings</button>
+        <button class="action-btn" onclick="closeSettings()">Cancel</button>
+        <button class="action-btn" style="background: #39ff14; color: #000; border-color: #39ff14;" onclick="saveSettings()">Save Settings</button>
       </div>
     </div>
   </div>
 
-  <!-- Script logics -->
+  <!-- Client side scripts -->
   <script>
-    /* Global Co-working Space State & Variables */
+    /* Global variables & states */
     let currentAgentId = null;
     let geminiApiKey = localStorage.getItem('pdoGeminiKey') || '';
     let claudeApiKey = localStorage.getItem('pdoClaudeKey') || '';
     let activeProvider = localStorage.getItem('pdoProvider') || 'mock';
-    
-    // Global data exchange for Ken & Luna
+    let isMoveMode = false;
+    let selectedElement = null;
+
+    // Shared insights data exchange (mapped from Shopee ID 1 to Marketing ID 4)
     let sharedInsightsData = localStorage.getItem('pdoSharedInsights') || null;
     let sharedInsightsFilename = localStorage.getItem('pdoSharedFilename') || '';
 
@@ -1210,65 +1482,343 @@
     let audioContext = null;
     let bgMusicInterval = null;
     let bgMusicStep = 0;
-    let isMuted = true; // start muted by default as per modern browser policies
+    let isMuted = true;
 
+    /* AGENTS CONFIGURATION DATA (8 Agents) */
     const AGENTS_DATA = {
       1: {
         id: 1,
-        name: "ALEX 📊",
-        role: "FINANCE DEPT (ชาย)",
-        bio: "เชี่ยวชาญการวิเคราะห์แนวโน้มตลาดหุ้นไทย (SET) และต่างประเทศ (NASDAQ/NYSE) ช่วยประเมินความเสี่ยงและสรุปคำแนะนำ 'ซื้อ/ขาย/ถือ'",
-        avatar: "📊",
-        theme: "var(--color-finance)",
-        themeOp: "rgba(0, 210, 255, 0.15)",
-        themeGlow: "rgba(0, 210, 255, 0.4)",
-        themeGlowSolid: "rgba(0, 210, 255, 0.7)",
-        intro: "สวัสดีครับ! ผม Alex นักวิเคราะห์ตลาดทุน 📊\nยินดีต้อนรับสู่แผนกการเงินครับ พิมพ์ชื่อย่อหุ้น (Ticker) เช่น AAPL, TSLA, NVDA หรือหุ้นไทย เช่น PTT.BK, SCB.BK ได้เลย ผมจะช่วยวิเคราะห์แนวโน้มหลัก สัญญาณสัญญาณทางเทคนิค และฟันธงคำแนะนำ ซื้อ (BUY) / ขาย (SELL) / ถือ (HOLD) ให้ครับ!",
-        quickReplies: ["AAPL", "TSLA", "PTT.BK", "SCB.BK", "วิเคราะห์หุ้นเทคโนโลยีปีนี้"]
+        name: "SHOPEE AFFILIATE AGENT 🧡",
+        role: "Shopee Campaign Dept (หญิง)",
+        bio: "ช่วยวิเคราะห์สินค้าเทรนด์ใหม่บน Shopee ค้นหาคีย์เวิร์ด และคำนวณค่าคอมมิชชั่น",
+        avatar: "🧡",
+        theme: "#ea580c",
+        themeOp: "rgba(234, 88, 12, 0.15)",
+        themeGlow: "rgba(234, 88, 12, 0.4)",
+        themeGlowSolid: "rgba(234, 88, 12, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน Shopee Affiliate Agent 🧡 ยินดีต้อนรับสู่แผนกแนะนำสินค้าและคำนวณค่าคอมมิชชั่นค่ะ ลองพิมพ์ชื่อสินค้าหรือหมวดหมู่ที่อยากทำตลาดสิคะ ฉันจะช่วยหาคีย์เวิร์ดและประเมินรายได้ให้เลย!",
+        quickReplies: ["ค้นหาสินค้าแฟชั่นเทรนด์ใหม่", "คำนวณคอมมิชชั่นสินค้าไอที", "คีย์เวิร์ดขายดีหมวดเครื่องสำอาง"]
       },
       2: {
         id: 2,
-        name: "MAYA 🔍",
-        role: "MARKET RESEARCH DEPT (หญิง)",
-        bio: "นักสแกนและประเมินสภาวะตลาดสากล ค้นหาหุ้นที่มีความน่าสนใจเชิงมูลค่า หุ้นปันผล หรือหุ้นเติบโตสูงในตลาด SET, NASDAQ และ NYSE",
-        avatar: "🔍",
-        theme: "var(--color-scout)",
-        themeOp: "rgba(255, 59, 147, 0.15)",
-        themeGlow: "rgba(255, 59, 147, 0.4)",
-        themeGlowSolid: "rgba(255, 59, 147, 0.7)",
-        intro: "สวัสดีค่ะ! Maya แผนกวิจัยและหาโอกาสลงทุนยินดีต้อนรับค่ะ 🔍\n\nหนูสแกนตลาดโลกตลอดเวลา ต้องการให้หนูช่วยแนะนำหุ้นเด่นในตลาดไหนดีคะ? เลือกตลาด SET, NASDAQ หรือ NYSE จากปุ่มได้เลยค่ะ หรือถามคำถามเกี่ยวกับการค้นหาหุ้นที่หนูสแกนอยู่ได้เลยค่ะ!",
-        quickReplies: ["สแกนตลาด SET 🇹🇭", "สแกนตลาด NASDAQ 🇺🇸", "สแกนตลาด NYSE 🏛️", "หาหุ้นปันผลเด่น"]
+        name: "TIKTOK AFFILIATE AGENT 🎥",
+        role: "TikTok Video Dept (หญิง)",
+        bio: "สแกนหาสินค้าขายดีบน TikTok Shop วางแนวทางการทำคลิปสั้น VDO และสถิติคนดู",
+        avatar: "🎥",
+        theme: "#10b981",
+        themeOp: "rgba(16, 185, 129, 0.15)",
+        themeGlow: "rgba(16, 185, 129, 0.4)",
+        themeGlowSolid: "rgba(16, 185, 129, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน TikTok Affiliate Agent 🎥 ยินดีต้อนรับสู่แผนกทำเงินจากวิดีโอสั้นค่ะ อยากทำคลิปสั้นโปรโมทสินค้าชิ้นไหนดีคะ? พิมพ์บอกฉันได้เลย ฉันจะวางสคริปต์ 30 วินาทีและแฮชแท็กทำเงินให้!",
+        quickReplies: ["สคริปต์รีวิวแก้วเก็บความเย็น", "สินค้าขายดี TikTok Shop สัปดาห์นี้", "เทคนิคทำคลิปสั้นให้ไวรัล"]
       },
       3: {
         id: 3,
-        name: "KEN 📂",
-        role: "BUSINESS INTELLIGENCE DEPT (ชาย)",
-        bio: "นักวิเคราะห์ Insights ข้อมูลองค์กรและข้อมูลดิบ อัปโหลดไฟล์ Excel / CSV หรือวางข้อมูลดิบ เพื่อให้ผมคำนวณและสรุปข้อค้นพบเชิงสถิติ",
-        avatar: "📂",
-        theme: "var(--color-bi)",
-        themeOp: "rgba(57, 255, 20, 0.15)",
-        themeGlow: "rgba(57, 255, 20, 0.4)",
-        themeGlowSolid: "rgba(57, 255, 20, 0.7)",
-        intro: "สวัสดีครับ! ผม Ken ทีมข้อมูลยินดีช่วยเหลือครับ 📂\n\nคุณสามารถลากไฟล์ CSV หรือ Excel มาวางในช่อง หรือวางข้อมูลตารางได้โดยตรงเลย ผมจะช่วยทำการสรุปผลลัพธ์หลัก คำนวณค่าสถิติสำคัญ ค้นหา Insight ลับในข้อมูล และร่างคำแนะนำเชิงปฏิบัติการให้ทันทีครับ!\n\n💡 หมายเหตุ: ข้อมูลที่คุณอัปโหลด ผมจะวิเคราะห์เสร็จแล้วส่งต่อไปให้ Luna เพื่อใช้ประกอบการร่างสไลด์นำเสนอได้ทันทีครับ!",
-        quickReplies: ["ลองวิเคราะห์ตัวอย่างข้อมูลยอดขาย", "ดูฟีเจอร์ข้อมูลที่รองรับ"]
+        name: "AI CHATBOT 🤖",
+        role: "Customer Support (ชาย)",
+        bio: "ช่วยตอบคำถามลูกค้า ปิดการขายทางแชท และสรุปประเด็นปัญหาที่ลูกค้าพบเจอบ่อย",
+        avatar: "🤖",
+        theme: "#2563eb",
+        themeOp: "rgba(37, 99, 235, 0.15)",
+        themeGlow: "rgba(37, 99, 235, 0.4)",
+        themeGlowSolid: "rgba(37, 99, 235, 0.7)",
+        intro: "สวัสดีครับ! ผม AI Chatbot 🤖 แผนกลูกค้าสัมพันธ์และปิดการขายทางแชทครับ วางข้อความที่ลูกค้ามักจะถามบ่อยๆ หรือระบุลักษณะสินค้าที่คุณต้องการให้ผมจำลองการปิดการขายให้ได้เลยครับ!",
+        quickReplies: ["เขียนคำตอบเมื่อลูกค้าขอส่วนลด", "จำลองปิดการขายคอร์สออนไลน์", "ตอบกลับคำถามเรื่องการจัดส่งล่าช้า"]
       },
       4: {
         id: 4,
-        name: "LUNA 🎨",
-        role: "CREATIVE & PRESENTATION DEPT (หญิง)",
-        bio: "ผู้ออกแบบโครงสร้างการนำเสนอและสร้าง Slide Outline มืออาชีพ สามารถนำสรุปผลวิเคราะห์ของ Ken มาเรียบเรียง หรือสร้างจากหัวข้อที่กำหนดเอง",
-        avatar: "🎨",
-        theme: "var(--color-creative)",
-        themeOp: "rgba(255, 159, 28, 0.15)",
-        themeGlow: "rgba(255, 159, 28, 0.4)",
-        themeGlowSolid: "rgba(255, 159, 28, 0.7)",
-        intro: "สวัสดีค่ะ! หนู Luna ฝ่ายครีเอทีฟสไลด์ยินดีต้อนรับค่ะ 🎨\n\nหนูช่วยเปลี่ยนข้อมูลการวิเคราะห์ของ Ken ให้กลายเป็นโครงร่างพรีเซนเตชันแบบเป็นขั้นเป็นตอน หรือถ้าพี่ๆ มีหัวข้ออื่นที่อยากสร้างพรีเซนเตชันขึ้นมาใหม่เอง ก็บอกหนูได้เลยนะคะ! เดี๋ยวหนูร่างสไลด์ 8 หน้าเด่นๆ ให้เลยค่ะ!",
-        quickReplies: ["สร้างสไลด์จากข้อมูลของ Ken 📊", "สร้างสไลด์เรื่อง 'ทิศทาง AI Agents ในปี 2026'", "แนะนำธีมสีนำเสนอ"]
+        name: "MARKETING AGENT 📢",
+        role: "Marketing & Strategy (หญิง)",
+        bio: "วางกลยุทธ์การตลาด เขียนคำโฆษณา (Copywriting) และแคปชั่นดึงดูดใจบนโซเชียลมีเดีย",
+        avatar: "📢",
+        theme: "#8b5cf6",
+        themeOp: "rgba(139, 92, 246, 0.15)",
+        themeGlow: "rgba(139, 92, 246, 0.4)",
+        themeGlowSolid: "rgba(139, 92, 246, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน Marketing Agent 📢 พร้อมช่วยคุณเขียนคำโฆษณาเด็ดๆ แคปชั่นปังๆ หรือวางกลยุทธ์ยิงแอดเพื่อกระตุ้นยอดขายแล้วค่ะ ลองพิมพ์รายละเอียดสินค้าหรือโปรโมชั่นมาได้เลยนะคะ!",
+        quickReplies: ["เขียนแคปชั่นโปรโมทคอร์สเรียน", "วางแผนยิงแอด Facebook สำหรับสินค้าแม่และเด็ก", "Copywriting แบบ AIDA สำหรับหูฟังบลูทูธ"]
+      },
+      5: {
+        id: 5,
+        name: "FACEBOOK REELS AGENT 📱",
+        role: "FB Reels Specialist (ชาย)",
+        bio: "วิเคราะห์คลิปสั้น Facebook Reels วางกลยุทธ์เพิ่มยอดวิว และกระตุ้นยอดขายผ่านป้ายยาลิงก์",
+        avatar: "📱",
+        theme: "#3b82f6",
+        themeOp: "rgba(59, 130, 246, 0.15)",
+        themeGlow: "rgba(59, 130, 246, 0.4)",
+        themeGlowSolid: "rgba(59, 130, 246, 0.7)",
+        intro: "สวัสดีครับ! ผม Facebook Reels Agent 📱 ยินดีต้อนรับสู่แผนกเพิ่มยอดวิวและคอมเมนต์สร้างเงินครับ ส่งหัวข้อคลิปหรือสินค้าที่คุณอยากทำ Reels มาได้เลย ผมจะช่วยเขียนไอเดียเปิดคลิป 3 วินาทีแรกให้หยุดนิ้วดู!",
+        quickReplies: ["ไอเดีย Reels แนวไลฟ์สไตล์ตลกๆ", "กลยุทธ์โพสต์ Reels ให้คอมเมนต์ถล่มทลาย", "เขียนโครงคลิปป้ายยาของใช้ในบ้าน"]
+      },
+      6: {
+        id: 6,
+        name: "YOUTUBE AGENT 📺",
+        role: "YouTube Video Dept (ชาย)",
+        bio: "แนะนำไอเดียคลิปยาว วางโครงสร้างสคริปต์วิดีโอเพื่อปิดการขาย และทำ SEO สำหรับดันยอดวิว",
+        avatar: "📺",
+        theme: "#ef4444",
+        themeOp: "rgba(239, 68, 68, 0.15)",
+        themeGlow: "rgba(239, 68, 68, 0.4)",
+        themeGlowSolid: "rgba(239, 68, 68, 0.7)",
+        intro: "สวัสดีครับ! ผม YouTube Agent 📺 แผนกวิดีโอยาวและ SEO ดึงดูดผู้ชมครับ ส่งหัวข้อวิดีโอที่คุณต้องการทำมาได้เลย ผมจะช่วยวางโครงร่างเนื้อหา (Outline) สคริปต์เปิดตัว และคีย์เวิร์ดสำหรับดันวิดีโอให้อยู่หน้าแรก!",
+        quickReplies: ["วางสคริปต์วิดีโอรีวิวไอที 10 นาที", "คีย์เวิร์ด SEO สำหรับช่องสายท่องเที่ยว", "วิธีพูดปิดการขายท้ายคลิปยาว"]
+      },
+      7: {
+        id: 7,
+        name: "EBOOK AGENT 📚",
+        role: "Ebook Publisher (หญิง)",
+        bio: "ช่วยร่างโครงเรื่องหนังสือ เขียนเนื้อหาแต่ละบท และแนะนำรูปแบบ Ebook ที่ตลาดกำลังต้องการ",
+        avatar: "📚",
+        theme: "#059669",
+        themeOp: "rgba(5, 150, 105, 0.15)",
+        themeGlow: "rgba(5, 150, 105, 0.4)",
+        themeGlowSolid: "rgba(5, 150, 105, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน Ebook Agent 📚 แผนกเขียนและสร้างสรรค์หนังสือดิจิทัลค่ะ บอกหัวข้อที่คุณสนใจเขียนสิคะ ฉันจะวางสารบัญ (Table of Contents) และร่างเนื้อหาบทแรกให้เป็นตัวอย่างทันที!",
+        quickReplies: ["สารบัญ Ebook สอนสร้างรายได้จาก AI", "ร่างเนื้อหาบทนำหนังสือพัฒนาตัวเอง", "แนะนำหัวข้อ Ebook ที่ขายดีในปีนี้"]
+      },
+      8: {
+        id: 8,
+        name: "GM (General Manager) 👔",
+        role: "General Manager (ชาย)",
+        bio: "วิเคราะห์ภาพรวมผลงานของทุกแผนก วางเป้าหมายการขาย และจัดสรรลำดับความสำคัญ",
+        avatar: "👔",
+        theme: "#0f172a",
+        themeOp: "rgba(15, 23, 42, 0.15)",
+        themeGlow: "rgba(15, 23, 42, 0.4)",
+        themeGlowSolid: "rgba(15, 23, 42, 0.7)",
+        intro: "สวัสดีครับ! ผม GM 👔 หัวหน้าทีม Virtual Office นี้ครับ ผมทำหน้าที่ควบคุมภาพรวม ประสานงานระหว่างแผนก และตัดสินใจเลือกแคมเปญที่ดีที่สุด ส่งรายงานหรือเป้าหมายยอดขายของคุณมาได้เลย ผมจะช่วยประเมินแผนและจัดสรรงานให้ลูกทีมคนอื่นๆ!",
+        quickReplies: ["สรุปแผนงานวันนี้", "วางเป้าหมายรายได้ 1 แสนบาทต่อเดือน", "จัดลำดับความสำคัญของแคมเปญสัปดาห์นี้"]
       }
     };
 
-    // Chat Logs stored in memory per session
-    const chatLogs = { 1: [], 2: [], 3: [], 4: [] };
+    // Chat Logs stored in memory
+    const chatLogs = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] };
+
+    /* Draggable Positions Engine (Persistent in LocalStorage) */
+    const DEFAULT_POSITIONS = {
+      desk: {
+        1: { left: "18%", top: "46%" },
+        2: { left: "34%", top: "22%" },
+        3: { left: "35%", top: "48%" },
+        4: { left: "66%", top: "52%" },
+        5: { left: "56%", top: "68%" }
+      },
+      agent: {
+        1: { left: "59%", top: "21%" },
+        2: { left: "22%", top: "38%" },
+        3: { left: "53%", top: "68%" },
+        4: { left: "30%", top: "50%" },
+        5: { left: "29%", top: "28%" },
+        6: { left: "45%", top: "17%" },
+        7: { left: "60%", top: "51%" },
+        8: { left: "36%", top: "24%" }
+      }
+    };
+
+    let itemPositions = JSON.parse(localStorage.getItem('pdoPositions')) || JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
+
+    function loadPositions() {
+      for (const type in itemPositions) {
+        for (const id in itemPositions[type]) {
+          const el = document.querySelector(`.draggable[data-type="${type}"][data-id="${id}"]`);
+          if (el) {
+            el.style.left = itemPositions[type][id].left;
+            el.style.top = itemPositions[type][id].top;
+          }
+        }
+      }
+      ySortWorkspace();
+    }
+
+    function savePosition(type, id, left, top) {
+      if (!itemPositions[type]) itemPositions[type] = {};
+      itemPositions[type][id] = { left, top };
+      localStorage.setItem('pdoPositions', JSON.stringify(itemPositions));
+    }
+
+    function resetPositions() {
+      playClickSound();
+      itemPositions = JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
+      localStorage.setItem('pdoPositions', JSON.stringify(itemPositions));
+      loadPositions();
+      logActivity("LAYOUT RESET: Desks and Agents returned to default positions.");
+    }
+
+    // Depth Sorting based on Y Coordinate (top percentage)
+    function ySortWorkspace() {
+      const items = document.querySelectorAll('.draggable');
+      items.forEach(el => {
+        const topVal = parseFloat(el.style.top || '0');
+        // Desks get slightly lower base z-index so characters stand on/behind them appropriately
+        const offset = el.getAttribute('data-type') === 'desk' ? 0 : 5;
+        el.style.zIndex = Math.round(topVal * 10) + offset;
+      });
+    }
+
+    /* Draggable Mouse & Touch Event Handlers */
+    let isDragging = false;
+    let activeDragEl = null;
+    let offsetStartX = 0;
+    let offsetStartY = 0;
+
+    function setupDragEngine() {
+      const workspace = document.getElementById('office-canvas');
+
+      workspace.addEventListener('mousedown', dragStart);
+      workspace.addEventListener('touchstart', dragStart, { passive: false });
+
+      window.addEventListener('mousemove', dragMove);
+      window.addEventListener('touchmove', dragMove, { passive: false });
+
+      window.addEventListener('mouseup', dragEnd);
+      window.addEventListener('touchend', dragEnd);
+    }
+
+    function dragStart(e) {
+      if (!isMoveMode) return;
+      
+      const target = e.target.closest('.draggable');
+      if (!target) return;
+
+      activeDragEl = target;
+      isDragging = true;
+
+      // Select element
+      document.querySelectorAll('.draggable').forEach(el => el.classList.remove('selected'));
+      target.classList.add('selected');
+      selectedElement = target;
+
+      const rect = target.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      // Calculate click offset relative to target anchor center
+      offsetStartX = clientX - (rect.left + rect.width / 2);
+      offsetStartY = clientY - (rect.top + rect.height / 2);
+
+      target.classList.add('dragging');
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function dragMove(e) {
+      if (!isDragging || !activeDragEl) return;
+
+      const container = document.getElementById('office-canvas');
+      const containerRect = container.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      let posX = clientX - containerRect.left - offsetStartX;
+      let posY = clientY - containerRect.top - offsetStartY;
+
+      // Bound to percentage
+      let pctX = (posX / containerRect.width) * 100;
+      let pctY = (posY / containerRect.height) * 100;
+
+      pctX = Math.max(2, Math.min(pctX, 98));
+      pctY = Math.max(2, Math.min(pctY, 98));
+
+      activeDragEl.style.left = pctX.toFixed(2) + '%';
+      activeDragEl.style.top = pctY.toFixed(2) + '%';
+
+      ySortWorkspace();
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function dragEnd() {
+      if (!isDragging || !activeDragEl) return;
+      activeDragEl.classList.remove('dragging');
+
+      const id = activeDragEl.getAttribute('data-id');
+      const type = activeDragEl.getAttribute('data-type');
+      savePosition(type, id, activeDragEl.style.left, activeDragEl.style.top);
+
+      isDragging = false;
+      activeDragEl = null;
+    }
+
+    function toggleMoveMode() {
+      playClickSound();
+      isMoveMode = !isMoveMode;
+      const btn = document.getElementById('btn-move-mode');
+      if (isMoveMode) {
+        btn.textContent = 'SAVE MODE';
+        btn.classList.add('active');
+        document.body.classList.add('move-mode');
+        logActivity("MOVE MODE ENABLED: Drag agents or desks to customize room layout.");
+      } else {
+        btn.textContent = 'MOVE MODE';
+        btn.classList.remove('active');
+        document.body.classList.remove('move-mode');
+        // Deselect
+        document.querySelectorAll('.draggable').forEach(el => el.classList.remove('selected'));
+        selectedElement = null;
+        logActivity("MOVE MODE DISABLED: Layout changes saved.");
+      }
+    }
+
+    function deleteSelected() {
+      if (!selectedElement) {
+        logActivity("No element selected to delete. Enable MOVE MODE, then click an item to select it.");
+        return;
+      }
+      playErrorSound();
+      const type = selectedElement.getAttribute('data-type');
+      const id = selectedElement.getAttribute('data-id');
+      selectedElement.style.display = 'none';
+      logActivity(`HIDDEN: ${type.toUpperCase()} #${id} removed from office canvas.`);
+      selectedElement.classList.remove('selected');
+      selectedElement = null;
+    }
+
+    function handleAgentClick(id) {
+      if (isMoveMode) return; // ignore standard clicks during Move Mode
+      openAgent(id);
+    }
+
+    function changeAgentStatus(id, status) {
+      playClickSound();
+      logActivity(`Status of ${AGENTS_DATA[id].name} updated to ${status}`);
+      
+      const dot = document.getElementById(`dot-${id}`);
+      if (dot) {
+        dot.className = 'agent-tag-dot';
+        if (status === 'OFFLINE') {
+          dot.classList.add('offline');
+          // Add system log in team chat
+          postTeamChatMsg(id, status, "OFFLINE - Stopped tasks");
+        } else if (status === 'IDLE') {
+          dot.classList.add('idle');
+          postTeamChatMsg(id, status, "IDLE - Standing by");
+        } else {
+          // Running
+          postTeamChatMsg(id, status, "RUNNING - Processing tasks");
+        }
+      }
+    }
+
+    function postTeamChatMsg(agentId, status, text) {
+      const container = document.getElementById('team-chat-logs');
+      const agent = AGENTS_DATA[agentId];
+      const div = document.createElement('div');
+      div.className = 'team-chat-msg';
+      
+      let classTag = 'shopee';
+      if (agentId === 2 || agentId === 7) classTag = 'tiktok';
+      if (agentId === 4 || agentId === 8 || agentId === 5) classTag = 'marketing';
+      
+      div.innerHTML = `
+        <div class="team-chat-meta">
+          <span class="team-chat-sender ${classTag}">${agent.name}</span>
+          <span class="team-chat-badge">${status}</span>
+        </div>
+        <p class="team-chat-text">${text}</p>
+      `;
+      
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
 
     /* Web Audio System Engine */
     function initAudio() {
@@ -1309,7 +1859,6 @@
 
     function playClickSound() {
       if (isMuted) return;
-      // Coin Sound
       playTone(523.25, 'square', 0.08, 0.03); // C5
       setTimeout(() => {
         playTone(659.25, 'square', 0.12, 0.03); // E5
@@ -1346,12 +1895,10 @@
         const noteIndex = bgMusicStep % 4;
         const baseNote = currentChord[noteIndex];
         
-        // Dynamic arpeggiation
-        playTone(baseNote, 'triangle', 0.3, 0.015);
+        playTone(baseNote, 'triangle', 0.3, 0.012);
         
-        // Add a soft high harmony note occasionally
         if (bgMusicStep % 8 === 0) {
-          playTone(baseNote * 2, 'sine', 0.5, 0.008);
+          playTone(baseNote * 2, 'sine', 0.5, 0.006);
         }
         
         bgMusicStep++;
@@ -1374,33 +1921,28 @@
       }
     }
 
-    /* Core UI - Open and Close Detail Drawer */
+    /* Core UI - Drawer Actions */
     function openAgent(id) {
       playClickSound();
       currentAgentId = id;
       const a = AGENTS_DATA[id];
       
-      // Update drawer theme colors
       const drawer = document.getElementById('detail-drawer');
       drawer.style.setProperty('--theme-color', a.theme);
       drawer.style.setProperty('--theme-color-op', a.themeOp);
       drawer.style.setProperty('--theme-color-glow', a.themeGlow);
       drawer.style.setProperty('--theme-color-glow-solid', a.themeGlowSolid);
 
-      // Set drawer texts
       document.getElementById('agent-icon').textContent = a.avatar;
       document.getElementById('agent-name').textContent = a.name;
       document.getElementById('agent-role').textContent = a.role;
       
-      // Render Agent Custom Input Controls
       renderCustomControls(id);
 
-      // Render Chat messages
       const chatBox = document.getElementById('chat-box');
       chatBox.innerHTML = '';
       
       if (chatLogs[id].length === 0) {
-        // add intro message
         chatLogs[id].push({ sender: 'agent', text: a.intro });
       }
       
@@ -1408,7 +1950,6 @@
         appendMessageUI(msg.sender, msg.text);
       });
 
-      // Render Quick replies
       const quickBar = document.getElementById('quick-bar-options');
       quickBar.innerHTML = '';
       a.quickReplies.forEach(qr => {
@@ -1423,9 +1964,7 @@
       });
 
       drawer.classList.add('open');
-      
-      // Update activity feed
-      logActivity(`Open department: ${a.role} with agent ${a.name}`);
+      logActivity(`Open chat with: ${a.name} (${a.role})`);
     }
 
     function closeDrawer() {
@@ -1440,49 +1979,46 @@
       document.getElementById('feed-log').textContent = `${timeStr} ${text}`;
     }
 
-    /* Render Specialized Control UI based on active agent */
+    /* Render Custom Controls per Agent */
     function renderCustomControls(id) {
       const wrapper = document.getElementById('agent-custom-controls');
       wrapper.innerHTML = '';
 
-      if (id === 1) { // ALEX
-        wrapper.innerHTML = `
-          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: var(--font-mono)">
-            หุ้นตัวอย่าง: AAPL, MSFT, PTT.BK, BDMS.BK, INTUCH.BK, CPALL.BK
-          </div>
-        `;
-      } 
-      else if (id === 2) { // MAYA
-        wrapper.innerHTML = `
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด SET 🇹🇭')">🇹🇭 SET</button>
-            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด NASDAQ 🇺🇸')">🇺🇸 NASDAQ</button>
-            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด NYSE 🏛️')">🏛️ NYSE</button>
-          </div>
-        `;
-      } 
-      else if (id === 3) { // KEN
+      if (id === 1) { // Shopee Affiliate Agent (File Drop)
         wrapper.innerHTML = `
           <div class="file-drop-area" id="drop-area" onclick="triggerFileInput()"
                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
             <input type="file" id="csv-file-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
             <span style="font-size: 24px;">📁</span>
-            <p><strong>คลิกเพื่ออัปโหลด</strong> หรือลากและวางไฟล์ <strong>.CSV / .XLSX</strong> ที่นี่</p>
-          </div>
-          <div style="margin-bottom: 10px;">
-            <textarea id="csv-paste-area" placeholder="หรือวางข้อความรูปแบบ CSV ที่นี่ (เช่น ชื่อ,ยอดขาย\nสมชาย,5000)\nแล้วกดวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(57,255,20,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: var(--font-mono); outline: none;"></textarea>
-            <button class="btn" style="--theme-color: var(--color-bi); font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteData()">📊 วิเคราะห์ข้อมูลจากกล่องข้อความ</button>
+            <p><strong>คลิกเพื่ออัปโหลดไฟล์</strong> หรือลากและวางไฟล์สินค้า <strong>.CSV / .XLSX</strong></p>
           </div>
         `;
       } 
-      else if (id === 4) { // LUNA
+      else if (id === 2) { // TikTok Affiliate Agent (Categories Selector)
+        wrapper.innerHTML = `
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดเครื่องสำอาง/ความงาม 💄')">💄 Beauty</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดเสื้อผ้า/แฟชั่น 👗')">👗 Fashion</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดอุปกรณ์ไอที/Gadgets 🔌')">🔌 Gadgets</button>
+          </div>
+        `;
+      } 
+      else if (id === 3) { // AI Chatbot (Paste text logs)
+        wrapper.innerHTML = `
+          <div style="margin-bottom: 10px;">
+            <textarea id="csv-paste-area" placeholder="วางแชทลูกค้าตรงนี้ (เช่น สนใจคอร์สเรียนค่ะ ลดราคาได้อีกไหม) แล้วคลิกร่างคำตอบด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: monospace; outline: none; resize: none;"></textarea>
+            <button class="action-btn" style="font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">🤖 ร่างคำตอบกลับเพื่อปิดการขาย</button>
+          </div>
+        `;
+      } 
+      else if (id === 4) { // Marketing Agent (Shared insights)
         const hasData = !!sharedInsightsData;
-        const color = hasData ? 'var(--color-bi)' : '#ff5555';
+        const color = hasData ? '#10b981' : '#ff5555';
         
         wrapper.innerHTML = `
-          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(57,255,20,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 11.5px;">
+          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(16,185,129,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 11.5px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span>ข้อมูลจาก Ken: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งานแล้ว (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
+              <span>ข้อมูลผลผลิตจาก Shopee: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งาน (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
               ${hasData ? `<button class="btn-pill" style="font-size: 9px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
             </div>
           </div>
@@ -1510,10 +2046,13 @@
       const loaderDiv = document.createElement('div');
       loaderDiv.className = 'loading-container';
       loaderDiv.id = 'chat-loader';
+      loaderDiv.style.padding = '8px';
       loaderDiv.innerHTML = `
-        <div class="loading-dot"></div>
-        <div class="loading-dot"></div>
-        <div class="loading-dot"></div>
+        <div style="display: flex; gap: 4px;">
+          <div class="loading-dot" style="width:6px;height:6px;background:#cbd5e0;border-radius:50%;animation:dotPulse 1.2s infinite ease-in-out;"></div>
+          <div class="loading-dot" style="width:6px;height:6px;background:#cbd5e0;border-radius:50%;animation:dotPulse 1.2s infinite ease-in-out;animation-delay:0.2s;"></div>
+          <div class="loading-dot" style="width:6px;height:6px;background:#cbd5e0;border-radius:50%;animation:dotPulse 1.2s infinite ease-in-out;animation-delay:0.4s;"></div>
+        </div>
       `;
       chatBox.appendChild(loaderDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -1551,16 +2090,19 @@
         const agentResponse = await callAgentAPI(currentAgentId, queryText);
         hideLoadingIndicator();
         
-        // Parse signals if Alex, otherwise render formatted response
         let outputHTML = formatMarkdown(agentResponse);
-        if (currentAgentId === 1) { // ALEX
+        if (currentAgentId === 1) { // Shopee Agent (Signal parser placeholder)
           outputHTML = parseStockSignal(agentResponse) + outputHTML;
-        } else if (currentAgentId === 4) { // LUNA
+        } else if (currentAgentId === 4) { // Marketing Agent (Slides copy plan parser)
           outputHTML = parsePresentationSlides(agentResponse);
         }
         
         appendMessageUI('agent', outputHTML, true);
         chatLogs[currentAgentId].push({ sender: 'agent', text: outputHTML });
+        
+        // Push agent bubble text above head
+        triggerAgentBubble(currentAgentId, queryText.slice(0, 15) + "...");
+        postTeamChatMsg(currentAgentId, "RUNNING", agentResponse.slice(0, 30).replace(/\[.*?\]/g, '') + "...");
         playSuccessSound();
       } catch (err) {
         console.error("API Call error:", err);
@@ -1570,14 +2112,25 @@
       }
     }
 
+    function triggerAgentBubble(agentId, text) {
+      const bubble = document.getElementById(`bubble-${agentId}`);
+      const bubbleText = document.getElementById(`bubble-text-${agentId}`);
+      if (bubble && bubbleText) {
+        bubbleText.textContent = text;
+        bubble.style.display = 'block';
+        setTimeout(() => {
+          bubble.style.display = 'none';
+        }, 5000);
+      }
+    }
+
     /* API Call Integrations (Supports Gemini & Claude) */
     async function callAgentAPI(agentId, prompt) {
       const agent = AGENTS_DATA[agentId];
       let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
       
-      // Inject Ken's data to Luna's prompt if requested
       if (agentId === 4 && sharedInsightsData) {
-        systemInstruction += `\nมีข้อมูลดิบวิเคราะห์จาก Ken Data Analyst ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลนี้มาใช้ออกแบบหัวข้อพรีเซนเตชันตามสมควร`;
+        systemInstruction += `\nมีข้อมูลดิบวิเคราะห์แคมเปญยอดขายจาก Shopee Agent ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลนี้มาใช้ออกแบบคำโปรโมทหรือหัวข้อตามสมควร`;
       }
 
       const combinedPrompt = `${systemInstruction}\n\nคำขอจากผู้ใช้: ${prompt}`;
@@ -1591,7 +2144,6 @@
           throw new Error("ยังไม่ได้ป้อน Gemini API Key กรุณาตั้งค่าที่ปุ่มรูปฟันเฟืองด้านขวาบนก่อนใช้งานครับ");
         }
         
-        // Call Gemini 2.5 Flash
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
         const response = await fetch(url, {
           method: 'POST',
@@ -1646,209 +2198,114 @@
       throw new Error("Invalid Provider Configuration");
     }
 
-    /* Mock backend simulation for high fidelity testing without keys */
+    /* Mock Backend Simulation */
     function callMockBackend(agentId, prompt) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          if (agentId === 1) { // ALEX
-            const ticker = prompt.toUpperCase().replace('.BK', '');
-            if (ticker.includes('AAPL') || ticker.includes('APPLE')) {
-              resolve(`[SIGNAL: BUY]
-🎯 หุ้น: Apple Inc. (AAPL)
-🏆 คำแนะนำ: ซื้อ (BUY)
+          if (agentId === 1) { // Shopee Affiliate Agent
+            resolve(`[SIGNAL: BUY]
+🎯 การวิเคราะห์แคมเปญและค่าคอมมิชชั่นสำหรับ: ${prompt}
+🏆 แนะนำ: ทำการตลาดด่วน (High Commission Potential)
 
-📊 เหตุผลหลัก:
-1. การเติบโตอย่างมั่นคงในกลุ่ม Services (Apple Music, iCloud, App Store) ซึ่งมีอัตรากำไรขั้นต้นเกือบ 70%
-2. การเปิดตัวฟีเจอร์ AI 'Apple Intelligence' ใน iPhone 16 และรุ่นอนาคตจะกระตุ้นความต้องการเครื่องใหม่ (Upgrade Cycle) ครั้งใหญ่
-3. กระแสเงินสดอิสระที่แข็งแกร่ง (Free Cash Flow) เอื้อต่อการปันผลและการซื้อหุ้นคืนสม่ำเสมอ
+📊 รายละเอียดการทำตลาด:
+1. สินค้ากลุ่มนี้มีสถิติการสั่งซื้อสูงช่วง Flash Sale 12.00 และ 18.00 น.
+2. อัตราค่าคอมมิชชั่นเฉลี่ยอยู่ที่ 8% - 12% ถือเป็นรายได้ที่ดีมาก
+3. แนะนำให้เจาะกลุ่มเป้าหมายนักเรียนนักศึกษาผ่านการสร้างพิกัดลิงก์ในหน้าโปรไฟล์
 
-⚠️ ระดับความเสี่ยง: ต่ำ
-🎯 ราคาเป้าหมาย: $240.00
-🚨 ข้อควรระวัง: แรงกดดันจากยอดขายในฝั่งยุโรปและจีนเนื่องจากปัญหาการแข่งขันและการต่อต้านผูกขาดทางกฎหมาย`);
-            } else if (ticker.includes('TSLA') || ticker.includes('TESLA')) {
-              resolve(`[SIGNAL: HOLD]
-🎯 หุ้น: Tesla Inc. (TSLA)
-🏆 คำแนะนำ: ถือ (HOLD)
-
-📊 เหตุผลหลัก:
-1. ปัญหาการแข่งขันสูงขึ้นในตลาดยานยนต์ไฟฟ้า (EV) ทั่วโลก โดยเฉพาะแบรนด์คู่แข่งในจีน
-2. ศักยภาพระยะยาวของเทคโนโลยี FSD (Full Self-Driving) และหุ่นยนต์ Optimus เป็นปัจจัยขับเคลื่อนแต่ใช้เวลานาน
-3. กำไรส่วนต่างรถยนต์ลดลงเนื่องจากการปรับลดราคาขายปลีก
-
-⚠️ ระดับความเสี่ยง: สูง
-🎯 ราคาเป้าหมาย: $210.00
-🚨 ข้อควรระวัง: นโยบายและข้อพิพาทด้านการกำกับดูแลของ CEO และความล่าช้าในการเปิดตัวรถยนต์รุ่นประหยัด (Model 2)`);
-            } else if (ticker.includes('PTT')) {
-              resolve(`[SIGNAL: HOLD]
-🎯 หุ้น: PTT Public Company (PTT.BK)
-🏆 คำแนะนำ: ถือ (HOLD)
-
-📊 เหตุผลหลัก:
-1. เป็นหุ้นหลักที่มีการจ่ายเงินปันผลมั่นคง (Dividend Yield ~5-6% ต่อปี)
-2. ค่าการกลั่นและราคาพลังงานโลกเคลื่อนไหวในกรอบจำกัด ส่งผลให้ผลการดำเนินงานทรงตัว
-3. การลงทุนในธุรกิจ EV Value Chain และพลังงานทดแทนยังใช้เวลาสร้างผลกำไรสุทธิอย่างมีนัยสำคัญ
-
-⚠️ ระดับความเสี่ยง: ต่ำ-ปานกลาง
-🎯 ราคาเป้าหมาย: 36.00 บาท
-🚨 ข้อควรระวัง: ผลกระทบจากมาตรการแทรกแซงราคาพลังงานของรัฐบาลและการปรับโครงสร้างราคาก๊าซธรรมชาติ`);
-            } else {
-              // Generic analysis
-              resolve(`[SIGNAL: BUY]
-🎯 หุ้น: ${ticker}
-🏆 คำแนะนำ: ซื้อสะสม (BUY)
-
-📊 เหตุผลหลัก:
-1. ดัชนีทางเทคนิคเริ่มฟื้นตัวจากกรอบแนวรับและปริมาณการซื้อขายหนาแน่นขึ้น
-2. แนวโน้มรายได้ของกลุ่มอุตสาหกรรมในไตรมาสถัดไปได้รับการสนับสนุนจากภาพรวมเศรษฐกิจ
-3. มูลค่าหุ้น (Valuation) ปัจจุบันซื้อขายที่อัตราส่วน P/E ต่ำกว่าค่าเฉลี่ยย้อนหลัง 5 ปี
-
-⚠️ ระดับความเสี่ยง: กลาง
-🎯 ราคาเป้าหมาย: คำนวณเบื้องต้นบวก 15% จากราคาปัจจุบัน
-🚨 ข้อควรระวัง: สภาวะความผันผวนของอัตราดอกเบี้ยและอัตราแลกเปลี่ยน`);
-            }
+⚠️ ความยากง่ายในการทำ: ปานกลาง
+🎯 รายได้คาดการณ์ต่อ 100 ออเดอร์: ฿ 3,500
+🚨 ข้อควรระวัง: สต็อกสินค้าของร้านค้าหลักอาจหมดไวช่วงแคมเปญใหญ่`);
           } 
-          
-          else if (agentId === 2) { // MAYA
-            if (prompt.includes('SET')) {
-              resolve(`จากการสแกนตลาด **SET (ไทย)** วันนี้พบหุ้น 3 ตัวที่น่าสนใจในเงื่อนไขต่างๆ ค่ะ:
+          else if (agentId === 2) { // TikTok Affiliate Agent
+            resolve(`ผลวิเคราะห์และสคริปต์สั้นสำหรับ TikTok Shop หมวดหมู่นี้ค่ะ:
 
-1. **BDMS (กรุงเทพดุสิตเวชการ)**
-   - **ประเภท**: Value / Defensive
-   - **ความน่าสนใจ**: จำนวนผู้ป่วยต่างชาติฟื้นตัวเต็มที่ ทนทานต่อสภาวะเงินเฟ้อ อัตรากำไรสุทธิเติบโตอย่างมั่นคง
-   - **ความเสี่ยง**: ต่ำ
+🎬 **ไอเดียคลิปสั้น**: รีวิวเปิดกล่องและเปรียบเทียบฟังก์ชันการใช้งาน
+⏱️ **โครงร่างสคริปต์ 30 วินาที**:
+- **0-3 วินาทีแรก (Hook)**: "รู้ยัง? ทำไมคนแห่ซื้อเจ้าสิ่งนี้กันจนหมดสต็อก!"
+- **3-20 วินาที (Body)**: สาธิตให้เห็นประโยชน์หลัก 2 ข้อที่ชีวิตสบายขึ้น
+- **20-30 วินาที (CTA)**: "กดพิกัดตระกร้าเหลืองซ้ายมือ ด่วนก่อนหมดโปร!"
 
-2. **ADVANC (แอดวานซ์ อินโฟร์ เซอร์วิส)**
-   - **ประเภท**: Dividend / Cash Cow
-   - **ความน่าสนใจ**: หลังรวมกับ 3BB ส่วนแบ่งตลาดอินเทอร์เน็ตบ้านแข็งแกร่ง กระแสเงินสดสูง อัตราปันผลราว 4.5% ต่อปี
-   - **ความเสี่ยง**: ต่ำ
-
-3. **CPALL (ซีพี ออลล์)**
-   - **ประเภท**: Growth / Domestic Play
-   - **ความน่าสนใจ**: ได้รับประโยชน์จากการท่องเที่ยวและการกระตุ้นการบริโภคภายในประเทศ ยอดซื้อต่อบิลขยับสูงขึ้น
-   - **ความเสี่ยง**: กลาง`);
-            } else if (prompt.includes('NASDAQ')) {
-              resolve(`จากการสแกนตลาด **NASDAQ (สหรัฐฯ)** วันนี้พบหุ้นเด่นเทคโนโลยีที่น่าสนใจ 3 ตัวค่ะ:
-
-1. **NVDA (NVIDIA Corp)**
-   - **ประเภท**: Hyper Growth
-   - **ความน่าสนใจ**: ความต้องการชิป Blackwell GPU สำหรับดาต้าเซ็นเตอร์ AI ยังล้นหลาม สัญญาณนำตลาดชัดเจน
-   - **ความเสี่ยง**: สูง (เนื่องจาก Valuation สูง)
-
-2. **MSFT (Microsoft Corp)**
-   - **ประเภท**: Tech Blue-chip
-   - **ความน่าสนใจ**: การขยายรายได้ทางด้าน Cloud (Azure AI Integration) และสิทธิ์การใช้งาน Copilot เสริมรายได้ที่เติบโตซ้ำ (Recurring Revenue)
-   - **ความเสี่ยง**: ต่ำ-กลาง
-
-3. **COST (Costco Wholesale)**
-   - **ประเภท**: Steady Growth
-   - **ความน่าสนใจ**: อัตราการต่ออายุสมาชิกสูงเกือบ 90% ยอดขายแข็งแกร่งแม้อยู่ในวิกฤตเศรษฐกิจเงินเฟ้อ
-   - **ความเสี่ยง**: ต่ำ`);
-            } else {
-              resolve(`ผลสแกนหุ้นเด่นทั่วโลกวันนี้:
-              
-• **NYSE: JPM (JPMorgan Chase)** - ยักษ์ใหญ่การเงินที่ได้ประโยชน์จากอัตราดอกเบี้ยสูงระยะยาว ปันผลมั่นคง
-• **NASDAQ: AMZN (Amazon)** - ผลกำไรจาก AWS Cloud ดีขึ้นและการฟื้นตัวของโลจิสติกส์อีคอมเมิร์ซ
-• **SET: GULF (กัลฟ์ เอ็นเนอร์จี)** - แผนงานขยายกำลังการผลิตพลังงานหมุนเวียนและการจัดเตรียมโครงสร้าง Data Center`);
-            }
+📈 **ความเสี่ยง/คำแนะนำ**:
+• ความยาก: ง่าย
+• กลุ่มเป้าหมาย: วัยรุ่น/วัยทำงานต้นๆ`);
           } 
-          
-          else if (agentId === 3) { // KEN
-            resolve(`วิเคราะห์สรุปข้อมูลดิบสำเร็จแล้วครับ! 📊
+          else if (agentId === 3) { // AI Chatbot
+            resolve(`วิเคราะห์ทราฟฟิกแชทและเขียนสคริปต์ปิดการขายให้ครับ 🤖:
 
-📋 **สรุปข้อมูล**: 
-- แหล่งที่มา: ข้อมูลจำลองระบบงาน
-- ขอบเขต: คอลัมน์ (วันที่, หมวดหมู่สินค้า, ยอดขายสุทธิ, ลูกค้าใหม่)
+💬 **ตัวอย่างการโต้ตอบเพื่อปิดการขาย**:
+- **เมื่อลูกค้ากังวลใจ**: "ขอบคุณที่สนใจครับ! สินค้ามีพร้อมส่งทันทีและรับประกัน 1 ปีเต็มครับ สะดวกโอนเงินหรือเก็บเงินปลายทางดีครับ?"
+- **เมื่อลูกค้าขอส่วนลด**: "สำหรับออเดอร์นี้ผมแถมคูปองส่งฟรีให้ทันทีครับ พร้อมส่งรอบวันนี้เลย สนใจรับเลยไหมครับ?"
 
-📊 **Insights หลัก**:
-1. ยอดขายสูงสุดกระจุกตัวอยู่ในหมวดหมู่ **เทคโนโลยีและอุปกรณ์** คิดเป็น 48% ของยอดขายรวมทั้งหมด
-2. อัตราการเพิ่มของลูกค้าใหม่สัมพันธ์โดยตรงกับแคมเปญช่วงต้นเดือน (วันที่ 1-5)
-3. ยอดขายมีอัตราการดรอปตัวเฉลี่ย 15% ในสัปดาห์ที่สามของเดือนก่อนจะฟื้นตัวสัปดาห์สุดท้าย
-
-📈 **สถิติหลัก**:
-- ยอดขายรวม: 1,450,000 บาท
-- ยอดขายเฉลี่ยต่อวัน: 48,333 บาท
-- ยอดขายสูงสุด: 85,000 บาท (หมวดหมู่ไอที)
-- ยอดขายต่ำสุด: 12,000 บาท (หมวดหมู่แฟชั่น)
-
-💡 **ข้อเสนอแนะหลัก**:
-- แนะนำให้เพิ่มงบโฆษณาในสัปดาห์ที่ 3 เพื่อพยุงยอดขายที่มักลดต่ำลง
-- เน้นขยายสต็อกสินค้าหมวดเทคโนโลยีเพราะเป็นตัวขับเคลื่อนยอดขายหลัก
-- ส่งข้อมูลการวิเคราะห์นี้ให้กับ Luna เพื่อร่างแนวทางการนำเสนอได้ทันทีครับ!`);
+💡 **จุดเด่นสินค้า**: ใช้ง่าย, บริการรวดเร็ว, แก้ปัญหาได้ตรงจุด`);
           } 
-          
-          else if (agentId === 4) { // LUNA
-            resolve(`โครงร่าง Presentation 8 สไลด์ ร่างให้แล้วเรียบร้อยค่ะ 🎨
+          else if (agentId === 4) { // Marketing Agent
+            resolve(`แผนกลยุทธ์การตลาดและคำโฆษณา (Copywriting) ร่างให้เรียบร้อยค่ะ 📢:
 
 [SLIDE 1]
-🖼️ หน้าปก: การนำเสนอผลวิเคราะห์ยอดขายและการเติบโตทางธุรกิจ
-📝 หัวข้อรอง: สรุป Insights จากข้อมูลสถิติและการตัดสินใจเชิงกลยุทธ์
-🎨 Layout & สี: ใช้โทนสีน้ำเงินเข้มและสีทองเพื่อความน่าเชื่อถือ วางโลโก้บริษัทด้านบนขวา
+🖼️ คอนเซปต์แคมเปญหลัก: ป้ายยาของดีที่ต้องมีติดบ้าน
+📝 ร่างคำโปรโมทหลักดึงดูดใจ และวางแผนยิงแอดในช่องทาง Facebook
+🎨 คาร์ดโทนม่วงนีออน ให้ความรู้สึกพรีเมียมทันสมัย
 
 [SLIDE 2]
-🖼️ Agenda และ ภาพรวมการวิเคราะห์
-📝 สรุปภาพรวมการนำเสนอ 3 หัวข้อหลัก: ผลการดำเนินงานทางสถิติ, Insights ข้อมูลยอดขาย และแนวทางปฏิบัติที่แนะนำ
-🎨 Layout & สี: ใช้การแบ่ง 3 คอลัมน์ คาร์ดสีเทาอ่อน สไตล์มินิมอล
+🖼️ กลยุทธ์การเขียน Copywriting (แบบ AIDA)
+📝 A: ดึงความสนใจด้วยพาดหัวปังๆ, I: สร้างความอยากรู้, D: มอบโปรโมชันจำกัดเวลา, A: กระตุ้นการสั่งซื้อทันที
+🎨 ใช้รูปแบบ List ชัดเจน สะอาดตา
 
 [SLIDE 3]
-🖼️ ผลการดำเนินงานรายไตรมาส (ยอดรวมยอดขาย)
-📝 ชูตัวเลขสำคัญ: ยอดขายรวมสะสม 1.45 ล้านบาท และอัตราการเติบโตขึ้น 12% MoM
-🎨 Layout & สี: เน้นตัวเลขขนาดใหญ่ (Hero Metric) บนพื้นหลังสีเข้มเด่นสะดุดตา
-
-[SLIDE 4]
-🖼️ เจาะลึกหมวดสินค้าหลัก: เทคโนโลยีนำตลาด
-📝 ยอดขายเทคโนโลยีทำได้สูงที่สุดถึง 48% ของพอร์ตโฟลิโอ ตามด้วยเครื่องใช้ไฟฟ้า และหมวดอื่นๆ
-🎨 Layout & สี: วาดแผนภูมิวงกลม (Pie Chart) ใช้สีฟ้าสะท้อนแสงในการจำแนกส่วนแบ่ง
-
-[SLIDE 5]
-🖼️ พฤติกรรมผู้บริโภคและฐานลูกค้าใหม่
-📝 อัตราการเพิ่มของลูกค้าสูงสุดในช่วงแคมเปญ 5 วันแรกของแต่ละเดือน
-🎨 Layout & สี: แสดงกราฟเส้นแสดงแนวโน้มรายวัน พร้อมวงกลมไฮไลท์วันกิจกรรม
-
-[SLIDE 6]
-🖼️ จุดที่ควรปรับปรุง: ปัญหาช่วงกลางเดือน
-📝 ยอดขายตกลงเฉลี่ย 15% ในช่วงสัปดาห์ที่ 3 ของเดือน
-🎨 Layout & สี: ใช้สีส้มแดงเพื่อเน้นจุดที่มีความเบี่ยงเบนหรือต้องการแก้ไข
-
-[SLIDE 7]
-🖼️ ข้อเสนอแนะ 3 ข้อเพื่อยกระดับธุรกิจ
-📝 1. อัดแคมเปญกระตุ้นกลางเดือน, 2. จัดโปรโมชันแฝดในกลุ่มเทคโนโลยี, 3. ปรับโครงสร้างสต็อกสินค้าขายดี
-🎨 Layout & สี: ลำดับเลขแบบกล่อง 1, 2, 3 โทนสีเขียวสะท้อนความสำเร็จ
-
-[SLIDE 8]
-🖼️ สรุปแผนปฏิบัติการและช่วง Q&A
-📝 หน้าปิด สรุปกำหนดวันเริ่มทำแผนโปรเจกต์ และช่องทางติดต่อทีมงาน
-🎨 Layout & สี: เรียบง่าย สะอาดตา สีพื้นขาวเทา หรือเข้มปานกลาง โลโก้แบรนด์ชัดเจน`);
+🖼️ ช่องทางการโปรโมทหลัก
+📝 เน้นยิงแอด Facebook Ads (70%), ร่วมกับ TikTok Shop (30%)
+🎨 แผนภูมิวงกลมแสดงส่วนแบ่งสัดส่วนงบโฆษณา`);
+          }
+          else if (agentId === 5) { // Facebook Reels Agent
+            resolve(`วางแนวทางทำคลิปสั้นลง Facebook Reels เพื่อยอดวิวดันยอดขายครับ 📱:
+            
+• **เปิดคลิปหยุดนิ้ว**: "คลิปนี้มีคำตอบ ของเล่นใหม่ช่วยลดงานบ้านไป 80%!"
+• **ความยาววิดีโอแนะนำ**: 15 - 22 วินาที (ช่วยเพิ่มเปอร์เซ็นต์การดูจนจบ)
+• **พิกัดลิงก์**: ให้ปักหมุดไว้ที่ช่องคอมเมนต์ด้านล่างเสมอเพื่อเพิ่มยอด Click-through Rate`);
+          }
+          else if (agentId === 6) { // YouTube Agent
+            resolve(`สรุปแผนเนื้อหาวิดีโอยาวบน YouTube เพื่อดัน SEO ครับ 📺:
+            
+• **หัวข้อคลิปแนะนำ**: "รีวิวเจาะลึก 5 อันดับของใช้คุณภาพดีปี 2026 (ไม่ต้องสปอนเซอร์)"
+• **คีย์เวิร์ดดัน SEO**: รีวิวสินค้าไอที, ของใช้ในบ้านยอดฮิต, ป้ายยา Shopee, TikTok Shop
+• **โครงสร้างบทพูด**: แบ่งเป็น 3 ส่วน (พาดหัวเด่น -> เปรียบเทียบสเปกจริง -> สรุปความคุ้มค่าราคา)`);
+          }
+          else if (agentId === 7) { // Ebook Agent
+            resolve(`ร่างโครงสร้างเล่มและเนื้อหาสารบัญ Ebook เพื่อสร้าง Passive Income ค่ะ 📚:
+            
+• **ชื่อหนังสือแนะนำ**: "สร้างรายได้หลักแสนต่อเดือนด้วย AI Affiliate (ฉบับทำตามได้ทันที)"
+• **โครงสร้าง 5 บทเรียน**:
+  1. ปรับ Mindset ทำ Affiliate ให้จับเงินหมื่นในสัปดาห์แรก
+  2. รู้จักเครื่องมือ AI ช่วยสร้างสคริปต์และคลิปไวรัล
+  3. เจาะสูตรลับปั้นช่องป้ายยาให้ยอดวิวหลักแสน
+  4. เทคนิควางลิงก์เก็บค่าคอมมิชชั่นออโต้ 24 ชั่วโมง
+  5. Checklist ขั้นตอนการสร้าง Passive Income ระยะยาว`);
+          }
+          else if (agentId === 8) { // GM
+            resolve(`สรุปภารกิจเป้าหมายงานของทีม Virtual Office ในสัปดาห์นี้ครับ 👔:
+            
+• **เป้าหมายรายได้**: เพิ่มออเดอร์ให้ได้ 15% ภายในวันอาทิตย์นี้
+• **ทิศทางแคมเปญ**: มอบหมายให้ Shopee และ TikTok จัดหาลิสต์รายการสินค้าปันผลและค่าคอมมิชชั่นสูงเพื่อเริ่มแคมเปญ
+• **การดำเนินงาน**: Marketing Agent ร่างคำโฆษณาเพื่อนำไปส่งต่อให้ทีม Reels/YouTube ผลิตสื่อต่อไป`);
           }
         }, 1500);
       });
     }
 
-    /* Markdown Formatting for Chat outputs */
+    /* Markdown Formatting */
     function formatMarkdown(text) {
       if (!text) return '';
-      
-      // Temporary hide the signal formatting from raw markdown output to prevent double parsing
       let cleanText = text.replace(/\[SIGNAL:\s*(BUY|SELL|HOLD)\]\n?/i, '');
-      
-      // Bold syntax
       cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       cleanText = cleanText.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      
-      // Bullets
       cleanText = cleanText.replace(/^\s*[-•]\s*(.*)$/gm, '<li>$1</li>');
-      
-      // Group contiguous <li> tags into <ul>
       cleanText = cleanText.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
-      // Fix potential nested <ul> tags from single lines
       cleanText = cleanText.replace(/<\/ul>\s*<ul>/g, '');
-
-      // Line breaks
       cleanText = cleanText.replace(/\n/g, '<br>');
-      
       return cleanText;
     }
 
-    /* Extract [SIGNAL: BUY/SELL/HOLD] from Alex's response to draw custom badge */
+    /* Stock Signal Badge Creator */
     function parseStockSignal(text) {
       const match = text.match(/\[SIGNAL:\s*(BUY|SELL|HOLD)\]/i);
       if (!match) return '';
@@ -1859,48 +2316,38 @@
       
       if (sig === 'BUY') {
         badgeClass = 'sig-buy';
-        tagText = 'BUY ✅';
+        tagText = 'HIGH COMM ✅';
       } else if (sig === 'SELL') {
         badgeClass = 'sig-sell';
-        tagText = 'SELL ❌';
+        tagText = 'LOW COMM ❌';
       }
       
-      return `<div style="margin-bottom: 12px;"><span class="signal-badge ${badgeClass}">${tagText}</span></div>`;
+      // return customized inline styles matching main system
+      const color = sig === 'BUY' ? '#10b981' : sig === 'SELL' ? '#ef4444' : '#f59e0b';
+      const border = sig === 'BUY' ? 'rgba(16,185,129,0.3)' : sig === 'SELL' ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)';
+      return `<div style="margin-bottom: 10px;"><span style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-weight:700; font-size:10px; color:${color}; background:${border}; border:1px solid ${color}">${tagText}</span></div>`;
     }
 
-    /* Extract Slide structures from Luna's response to draw slide cards */
+    /* Presentation Slide Deck Formatter */
     function parsePresentationSlides(text) {
-      // Find slides formatted like [SLIDE 1] or Slide 1:
-      const slideRegex = /\[SLIDE\s+(\d+)\]\n?🖼️\s*(.*?)\n?📝\s*(.*?)\n?🎨\s*(.*?)(?=\[SLIDE|$)/gi;
+      const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      const parts = formattedText.split(/\[SLIDE\s+\d+\]/i);
+      const matches = [...formattedText.matchAll(/\[SLIDE\s+(\d+)]/gi)];
       
       let html = '';
-      let match;
-      let hasSlides = false;
-      
-      // Parse markdown boldings before split mapping
-      const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      
-      const slides = [];
-      const parts = formattedText.split(/\[SLIDE\s+\d+\]/i);
-      
-      // Iterate through split segments
-      const matches = [...formattedText.matchAll(/\[SLIDE\s+(\d+)\]/gi)];
-      
       if (matches.length > 0) {
-        hasSlides = true;
-        html += `<div style="margin-bottom: 15px;">🎨 <strong>นี่คือร่างโครงสร้างสไลด์ที่หนูออกแบบไว้ให้ค่ะ:</strong></div>`;
+        html += `<div style="margin-bottom: 10px;">📋 <strong>นี่คือโครงร่างเนื้อหาแคมเปญโฆษณาค่ะ:</strong></div>`;
         html += `<div class="slide-deck">`;
         
         for (let i = 0; i < matches.length; i++) {
-          const slideNum = matches[i][1];
+          const num = matches[i][1];
           const content = parts[i + 1] || '';
           
-          // extract Title, bullet, layout
           const titleMatch = content.match(/🖼️\s*(.*?)(?=<br>|$)/i);
           const bulletsMatch = content.match(/📝\s*(.*?)(?=🎨|<br><br>|$)/i);
           const layoutMatch = content.match(/🎨\s*(.*?)(?=$)/i);
           
-          const title = titleMatch ? titleMatch[1].trim() : `Slide ${slideNum}`;
+          const title = titleMatch ? titleMatch[1].trim() : `แคมเปญ ${num}`;
           const bulletsRaw = bulletsMatch ? bulletsMatch[1].trim() : '';
           const layout = layoutMatch ? layoutMatch[1].trim() : '';
           
@@ -1910,44 +2357,33 @@
             bulletsHTML = '<ul>';
             listItems.forEach(item => {
               const cleanItem = item.replace(/^[•\-\s]*/, '').trim();
-              if (cleanItem) {
-                bulletsHTML += `<li>${cleanItem}</li>`;
-              }
+              if (cleanItem) bulletsHTML += `<li>${cleanItem}</li>`;
             });
             bulletsHTML += '</ul>';
           }
           
           html += `
             <div class="slide-card">
-              <h4>SLIDE ${slideNum}: ${title}</h4>
+              <h4>หัวข้อ ${num}: ${title}</h4>
               ${bulletsHTML}
-              ${layout ? `<div class="layout-note">💡 คำแนะนำแอนิเมชัน/สี: ${layout}</div>` : ''}
+              ${layout ? `<div class="layout-note">💡 รูปแบบแนะนำ: ${layout}</div>` : ''}
             </div>
           `;
         }
-        
         html += `</div>`;
-        html += `<div style="margin-top: 10px; font-size: 11px; color:#a0aec0;">💡 คุณสามารถกดคัดลอกรายละเอียดเหล่านี้เพื่อไปสร้างสไลด์นำเสนอใน PowerPoint, Keynote หรือ Google Slides ได้ทันทีค่ะ!</div>`;
-      }
-      
-      if (!hasSlides) {
-        // Fallback to normal text formatting if AI returns non-standard template format
+      } else {
         html = formatMarkdown(text);
       }
-      
       return html;
     }
 
-    /* Settings & Provider management */
+    /* Settings Control Dialog Modal */
     function openSettings() {
       playClickSound();
       document.getElementById('settings-modal').classList.add('show');
-      
-      // Load inputs with current values
       document.getElementById('ai-provider').value = activeProvider;
       document.getElementById('gemini-key').value = geminiApiKey;
       document.getElementById('claude-key').value = claudeApiKey;
-      
       toggleProviderFields();
     }
 
@@ -1973,10 +2409,10 @@
       
       closeSettings();
       playSuccessSound();
-      logActivity(`SETTINGS UPDATED: Provider switched to ${activeProvider.toUpperCase()}`);
+      logActivity(`SETTINGS UPDATED: Model provider set to ${activeProvider.toUpperCase()}`);
     }
 
-    /* Drag & Drop Excel/CSV files for KEN Data Analyst */
+    /* File Import trigger for Shopee Agent (ID 1) */
     function triggerFileInput() {
       document.getElementById('csv-file-input').click();
     }
@@ -1994,18 +2430,13 @@
     function handleDrop(e) {
       e.preventDefault();
       document.getElementById('drop-area').classList.remove('dragover');
-      
       const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        processInputFile(files[0]);
-      }
+      if (files.length > 0) processInputFile(files[0]);
     }
 
     function handleFileSelected(e) {
       const files = e.target.files;
-      if (files.length > 0) {
-        processInputFile(files[0]);
-      }
+      if (files.length > 0) processInputFile(files[0]);
     }
 
     function processInputFile(file) {
@@ -2013,13 +2444,12 @@
       const reader = new FileReader();
       const ext = file.name.split('.').pop().toLowerCase();
       
-      appendMessageUI('user', `📁 อัปโหลดไฟล์: ${file.name} (${(file.size/1024).toFixed(1)} KB)`);
+      appendMessageUI('user', `📁 นำเข้าไฟล์: ${file.name} (${(file.size/1024).toFixed(1)} KB)`);
       logActivity(`Parsing file: ${file.name}`);
 
       if (ext === 'csv') {
         reader.onload = function(e) {
-          const text = e.target.result;
-          parseAndStoreInsights(text, file.name);
+          parseAndStoreInsights(e.target.result, file.name);
         };
         reader.readAsText(file);
       } 
@@ -2030,64 +2460,59 @@
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
-            // Convert to CSV string for uniform parsing
             const csv = XLSX.utils.sheet_to_csv(worksheet);
             parseAndStoreInsights(csv, file.name);
           } catch (err) {
             console.error("XLSX parsing failed:", err);
-            appendMessageUI('agent', `❌ เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาบันทึกเป็นไฟล์ .CSV ก่อนนำเข้าครับ`);
+            appendMessageUI('agent', `❌ ไม่สามารถโหลดไฟล์ Excel ได้ กรุณาบันทึกเป็น .CSV ก่อนนำเข้าค่ะ`);
             playErrorSound();
           }
         };
         reader.readAsArrayBuffer(file);
       } else {
-        appendMessageUI('agent', `❌ ระบบรองรับเฉพาะไฟล์ข้อมูลนามสกุล .CSV หรือ .XLSX เท่านั้นครับ`);
+        appendMessageUI('agent', `❌ รองรับเฉพาะไฟล์นามสกุล .CSV หรือ .XLSX เท่านั้นค่ะ`);
         playErrorSound();
       }
     }
 
     function analyzePasteArea() {
-      const pasteText = document.getElementById('csv-paste-area').value.trim();
-      if (!pasteText) {
-        appendMessageUI('agent', `⚠️ กรุณาวางข้อมูล CSV ในกล่องข้อความก่อนกดวิเคราะห์ครับ`);
+      const text = document.getElementById('csv-paste-area').value.trim();
+      if (!text) {
+        appendMessageUI('agent', `⚠️ กรุณาวางข้อความก่อนกดวิเคราะห์ค่ะ`);
         playErrorSound();
         return;
       }
-      
-      appendMessageUI('user', `📋 ทำการวางข้อมูล CSV ด้วยตนเอง`);
-      parseAndStoreInsights(pasteText, 'ข้อมูลคัดลอก (Clipboard)');
+      appendMessageUI('user', `📋 วางแชทข้อความลูกค้าเพื่อวิเคราะห์`);
+      parseAndStoreInsights(text, 'ข้อมูลคัดลอก (Clipboard)');
     }
 
-    // Function to parse the rows and send to AI agent (Ken)
     async function parseAndStoreInsights(csvText, filename) {
       showLoadingIndicator();
       const rows = csvText.split('\n').filter(r => r.trim() !== '');
-      const previewRows = rows.slice(0, 40).join('\n'); // Send top 40 rows to avoid context limits
+      const previewRows = rows.slice(0, 40).join('\n');
       
-      const queryPrompt = `ทำการวิเคราะห์เชิงลึกเกี่ยวกับสถิติ Insights จากข้อมูลยอดขาย/ข้อมูลเชิงสถิติในไฟล์ชื่อ "${filename}" จำนวนแถวทั้งหมด ${rows.length} แถว\n\nนี่คือตัวอย่างข้อมูลดิบ:\n${previewRows}`;
+      const queryPrompt = `วิเคราะห์ข้อมูลสำหรับแคมเปญนี้ ไฟล์ชื่อ "${filename}" ข้อมูลตัวอย่าง:\n${previewRows}`;
       
       try {
-        const responseText = await callAgentAPI(3, queryPrompt);
+        const responseText = await callAgentAPI(currentAgentId, queryPrompt);
         hideLoadingIndicator();
         
-        // Save to global variables for Luna
         sharedInsightsData = responseText;
         sharedInsightsFilename = filename;
         localStorage.setItem('pdoSharedInsights', responseText);
         localStorage.setItem('pdoSharedFilename', filename);
 
         const htmlResponse = formatMarkdown(responseText);
-        appendMessageUI('agent', `✅ **วิเคราะห์ข้อมูลสำเร็จแล้วครับ!** จำนวนข้อมูลที่วิเคราะห์ทั้งสิ้น ${rows.length} แถว\n\n${htmlResponse}`, true);
-        chatLogs[3].push({ sender: 'agent', text: htmlResponse });
+        appendMessageUI('agent', `✅ **วิเคราะห์สำเร็จแล้วค่ะ!**\n\n${htmlResponse}`, true);
+        chatLogs[currentAgentId].push({ sender: 'agent', text: htmlResponse });
         
-        // Refresh drawer controls to update Luna indicator
-        renderCustomControls(3);
+        renderCustomControls(currentAgentId);
         playSuccessSound();
-        logActivity(`ANALYSIS COMPLETED: File ${filename} analyzed by Ken.`);
+        logActivity(`INSIGHTS COMPLETED: Data source ${filename} analyzed by Shopee Agent.`);
       } catch (err) {
         console.error(err);
         hideLoadingIndicator();
-        appendMessageUI('agent', `❌ ไม่สามารถทำการวิเคราะห์ข้อมูลได้: ${err.message}`);
+        appendMessageUI('agent', `❌ ข้อผิดพลาดในการวิเคราะห์: ${err.message}`);
         playErrorSound();
       }
     }
@@ -2099,21 +2524,21 @@
       localStorage.removeItem('pdoSharedFilename');
       renderCustomControls(currentAgentId);
       playClickSound();
-      logActivity(`DATA RESET: Ken's shared insights cleared.`);
+      logActivity(`DATA RESET: Cleared shared insights database.`);
     }
 
-    /* Open Weather API Widget */
+    /* Open Weather API geolocator & fetcher */
     async function refreshWeather() {
       const iconEl = document.getElementById('weather-icon');
       const tempEl = document.getElementById('weather-temp');
       const descEl = document.getElementById('weather-desc');
       const cityEl = document.getElementById('weather-city');
       
-      descEl.textContent = 'Refreshing...';
+      descEl.textContent = 'ระบุตำแหน่ง...';
       playClickSound();
 
       if (!navigator.geolocation) {
-        descEl.textContent = 'GPS Not Supported';
+        descEl.textContent = 'GPS ไม่สนับสนุน';
         return;
       }
 
@@ -2122,29 +2547,23 @@
         const lon = pos.coords.longitude;
         
         try {
-          // 1. Fetch current weather from Open-Meteo
-          const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
-          const wResp = await fetch(weatherUrl);
+          const wResp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`);
           const wData = await wResp.json();
           
-          // 2. Reverse geocode location using OpenStreetMap Nominatim
-          const geoUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=th`;
-          const gResp = await fetch(geoUrl);
+          const gResp = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=th`);
           const gData = await gResp.json();
           
-          // Map weather codes to description emojis
           const wCodes = {
             0: ['☀️', 'แจ่มใส'], 1: ['🌤', 'มีเมฆบางส่วน'], 2: ['⛅', 'เมฆครึ้ม'], 3: ['☁️', 'ครึ้มฟ้าครึ้มฝน'],
             45: ['🌫', 'หมอกลง'], 48: ['🌫', 'หมอกจัด'],
-            51: ['🌦', 'ฝนตกเบาบาง'], 53: ['🌦', 'ฝนปรอย'], 55: ['🌦', 'ฝนตกค่อนข้างหนัก'],
-            61: ['🌧', 'ฝนตกเล็กน้อย'], 63: ['🌧', 'ฝนตกปานกลาง'], 65: ['🌧', 'ฝนตกหนัก'],
-            80: ['🌦', 'ฝนซู่ตกเบา'], 81: ['🌧', 'ฝนซู่ตกหนัก'], 95: ['⛈', 'พายุฝนฟ้าคะนอง']
+            51: ['🌦', 'ฝนปรอย'], 53: ['🌦', 'ฝนตกปานกลาง'], 55: ['🌦', 'ฝนตกหนัก'],
+            61: ['🌧', 'ฝนตกเล็กน้อย'], 63: ['🌧', 'ฝนตกทั่วไป'], 65: ['🌧', 'ฝนตกหนักมาก'],
+            80: ['🌦', 'ฝนตกไล่ช้าง'], 81: ['🌧', 'ฝนตกหนักทั่วไป'], 95: ['⛈', 'พายุฝนฟ้าคะนอง']
           };
           
           const code = wData.current.weather_code;
-          const [ico, desc] = wCodes[code] || ['🌡', 'ไม่ทราบสภาพอากาศ'];
+          const [ico, desc] = wCodes[code] || ['🌡', 'อากาศแปรปรวน'];
           const temp = Math.round(wData.current.temperature_2m);
-          
           const city = gData.address.city || gData.address.town || gData.address.municipality || gData.address.province || '';
           
           iconEl.textContent = ico;
@@ -2152,21 +2571,21 @@
           descEl.textContent = desc;
           cityEl.textContent = city ? `· ${city.slice(0, 10)}` : '';
           
-          logActivity(`WEATHER UPDATED: ${temp}°C in ${city || 'current location'}`);
+          logActivity(`WEATHER REFRESHED: Apparent temperature ${temp}°C in ${city || 'current city'}`);
         } catch (err) {
-          descEl.textContent = 'Fetch Error';
+          descEl.textContent = 'ข้อผิดพลาดเครือข่าย';
           console.error(err);
         }
       }, () => {
-        descEl.textContent = 'GPS Access Denied';
+        descEl.textContent = 'GPS ปิดการเข้าถึง';
       }, { timeout: 10000 });
     }
 
-    // Initialize Page load
+    /* Page load init triggers */
     window.addEventListener('load', () => {
-      // Refresh weather
+      loadPositions();
+      setupDragEngine();
       refreshWeather();
-      // Update console initial log
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
   </script>
