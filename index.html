@@ -1385,62 +1385,6 @@
           </svg>
         </div>
 
-        <!-- Decor 2 (Printer/Copier - Back Left Area) -->
-        <div class="draggable" data-type="decor" data-id="2" style="left: 20%; top: 48%;">
-          <svg width="55" height="55" viewBox="-27 -27 55 55" xmlns="http://www.w3.org/2000/svg">
-            <!-- Shadow -->
-            <polygon points="-22,10 0,-1 22,10 0,21" fill="rgba(0,0,0,0.22)" />
-            <!-- Main Body -->
-            <polygon points="-18,2 0,11 0,19 -18,10" fill="#334155" />
-            <polygon points="0,11 18,2 18,10 0,19" fill="#1e293b" />
-            <polygon points="-18,2 0,-7 18,2 0,11" fill="#475569" />
-            
-            <!-- Upper Copier scanner unit -->
-            <polygon points="-18,-5 0,4 0,1 -18,-8" fill="#475569" />
-            <polygon points="0,4 18,-5 18,-8 0,1" fill="#334155" />
-            <polygon points="-18,-8 0,-17 18,-8 0,1" fill="#64748b" />
-            
-            <!-- Scanner Lid -->
-            <polygon points="-16,-9 0,-17 16,-9 0,-1" fill="#f1f5f9" opacity="0.95" />
-            <polygon points="-16,-9 0,-1 0,1 -16,-7" fill="#cbd5e0" />
-            
-            <!-- Control panel -->
-            <polygon points="2,2 10,-2 10,1 2,5" fill="#0f172a" />
-            <circle cx="5" cy="2.5" r="1.2" fill="#10b981" />
-            <circle cx="8" cy="1" r="0.8" fill="#f59e0b" />
-          </svg>
-        </div>
-
-        <!-- Decor 3 (Tall Wooden Bookcase - Left Wall Area) -->
-        <div class="draggable" data-type="decor" data-id="3" style="left: 26%; top: 40%;">
-          <svg width="65" height="95" viewBox="-32 -47 65 95" xmlns="http://www.w3.org/2000/svg">
-            <!-- Shadow -->
-            <polygon points="-28,35 2,-2 32,13 2,50" fill="rgba(0,0,0,0.25)" />
-            <!-- Bookcase Frame -->
-            <polygon points="-24,-30 -14,-35 -14,35 -24,40" fill="#78350f" />
-            <polygon points="-14,-35 16,-20 16,50 -14,35" fill="#451a03" />
-            <polygon points="-24,-30 -14,-35 16,-20 6,-15" fill="#92400e" />
-            <polygon points="-24,40 -14,35 16,50 6,55" fill="#451a03" />
-            
-            <!-- Shelves and binders inside -->
-            <polygon points="-14,5 16,20 16,22 -14,7" fill="#78350f" />
-            <polygon points="-10,5 -6,7 -6,0 -10,-2" fill="#3b82f6" />
-            <polygon points="-6,7 -2,9 -2,2 -6,0" fill="#ef4444" />
-            <polygon points="2,11 6,13 6,6 2,4" fill="#10b981" />
-            <polygon points="6,13 10,15 10,8 6,6" fill="#eab308" />
-
-            <polygon points="-14,-15 16,0 16,-2 -14,-17" fill="#78350f" />
-            <polygon points="-8,-16 -4,-14 -4,-21 -8,-23" fill="#ef4444" />
-            <polygon points="-4,-14 0,-12 0,-19 -4,-21" fill="#3b82f6" />
-            <polygon points="4,-10 8,-8 8,-15 4,-17" fill="#10b981" />
-
-            <!-- Glass sliding doors -->
-            <polygon points="-22,-24 6,-10 6,42 -22,28" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.8" />
-            <line x1="-8" y1="10" x2="-8" y2="18" stroke="#cbd5e0" stroke-width="1.5" />
-            <line x1="-6" y1="10" x2="-6" y2="18" stroke="#94a3b8" stroke-width="1.5" />
-          </svg>
-        </div>
-
         <!-- Decor 4 (Projector Screen - Back Right Wall) -->
         <div class="draggable" data-type="decor" data-id="4" style="left: 72%; top: 46%;">
           <svg width="60" height="80" viewBox="-30 -40 60 80" xmlns="http://www.w3.org/2000/svg">
@@ -2424,14 +2368,12 @@
       },
       decor: {
         1: { left: "78%", top: "42%" },
-        2: { left: "20%", top: "48%" },
-        3: { left: "26%", top: "40%" },
         4: { left: "72%", top: "46%" },
         5: { left: "50%", top: "82%" }
       }
     };
 
-    let itemPositions = JSON.parse(localStorage.getItem('pdoPositions_v5')) || JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
+    let itemPositions = JSON.parse(localStorage.getItem('pdoPositions_v6')) || JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
 
     function loadPositions() {
       for (const type in itemPositions) {
@@ -2449,13 +2391,13 @@
     function savePosition(type, id, left, top) {
       if (!itemPositions[type]) itemPositions[type] = {};
       itemPositions[type][id] = { left, top };
-      localStorage.setItem('pdoPositions_v5', JSON.stringify(itemPositions));
+      localStorage.setItem('pdoPositions_v6', JSON.stringify(itemPositions));
     }
 
     function resetPositions() {
       playClickSound();
       itemPositions = JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
-      localStorage.setItem('pdoPositions_v5', JSON.stringify(itemPositions));
+      localStorage.setItem('pdoPositions_v6', JSON.stringify(itemPositions));
       loadPositions();
       logActivity("LAYOUT RESET: Desks and Agents aligned to professional positions on the floor.");
     }
