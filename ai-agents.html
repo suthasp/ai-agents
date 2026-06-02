@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Pixel Virtual Office</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- SheetJS for Excel/CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    /* Design Tokens & Theme Variables */
+    :root {
+      --bg-dark: #06060c;
+      --bg-card: rgba(13, 13, 25, 0.75);
+      --border-glow: rgba(100, 80, 220, 0.3);
+      --font-pixel: 'Press Start 2P', monospace;
+      --font-sans: 'Outfit', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      /* Department Glows & Accents */
+      --color-finance: #00d2ff;
+      --color-scout: #ff3b93;
+      --color-bi: #39ff14;
+      --color-creative: #ff9f1c;
+      
+      --glow-finance: drop-shadow(0 0 12px rgba(0, 210, 255, 0.6));
+      --glow-scout: drop-shadow(0 0 12px rgba(255, 59, 147, 0.6));
+      --glow-bi: drop-shadow(0 0 12px rgba(57, 255, 20, 0.6));
+      --glow-creative: drop-shadow(0 0 12px rgba(255, 159, 28, 0.6));
+    }
+
+    /* Core Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(30, 20, 70, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(10, 40, 60, 0.3) 0%, transparent 50%),
+        linear-gradient(rgba(18, 16, 32, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 16, 32, 0.5) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      color: #e2e8f0;
+      font-family: var(--font-sans);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styling */
+    header {
+      background: linear-gradient(180deg, rgba(15, 12, 30, 0.95) 0%, rgba(6, 6, 12, 0.8) 100%);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(80, 60, 180, 0.35);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-logo {
+      font-size: 24px;
+      animation: neonPulse 2s infinite ease-in-out;
+    }
+
+    .brand h1 {
+      font-family: var(--font-pixel);
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(100, 80, 255, 0.8);
+      margin-bottom: 4px;
+    }
+
+    .brand p {
+      font-size: 9px;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--font-mono);
+    }
+
+    .header-widgets {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Weather widget styling */
+    .weather-chip {
+      background: rgba(15, 20, 45, 0.6);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .weather-chip:hover {
+      border-color: rgba(0, 210, 255, 0.7);
+      background: rgba(15, 20, 45, 0.8);
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+    }
+    .weather-temp {
+      color: var(--color-finance);
+      font-weight: 700;
+    }
+
+    /* Sound and Settings Buttons */
+    .icon-btn {
+      background: rgba(30, 25, 55, 0.6);
+      border: 1px solid rgba(120, 90, 220, 0.4);
+      color: #a0aec0;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      color: #fff;
+      border-color: rgba(120, 90, 220, 0.8);
+      box-shadow: 0 0 10px rgba(120, 90, 220, 0.3);
+      transform: translateY(-2px);
+    }
+    .icon-btn.active {
+      background: rgba(100, 80, 220, 0.3);
+      border-color: rgba(100, 80, 220, 0.8);
+      color: #fff;
+    }
+
+    /* Main Workspace */
+    #main-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Office Map Wrapper */
+    #office-canvas {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    #office-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(20, 15, 50, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* SVG Isometric Map styling */
+    .isometric-map {
+      width: 100%;
+      height: 100%;
+      max-width: 960px;
+      max-height: 600px;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+    }
+
+    /* SVG Hover States & Animations */
+    .room-floor {
+      transition: fill 0.3s, filter 0.3s;
+      cursor: pointer;
+    }
+
+    .room-group:hover .room-floor {
+      filter: brightness(1.25);
+    }
+
+    .room-group:hover .room-border {
+      stroke-width: 2.5px;
+      opacity: 0.9;
+    }
+
+    .room-group:hover .char-avatar {
+      transform: translateY(-8px);
+    }
+
+    .room-group[data-dept="1"] { --glow-col: var(--color-finance); }
+    .room-group[data-dept="2"] { --glow-col: var(--color-scout); }
+    .room-group[data-dept="3"] { --glow-col: var(--color-bi); }
+    .room-group[data-dept="4"] { --glow-col: var(--color-creative); }
+
+    .room-group:hover .room-glow {
+      opacity: 0.15;
+    }
+
+    /* Floating labels */
+    .dept-label {
+      font-family: var(--font-pixel);
+      font-size: 8px;
+      fill: #fff;
+      pointer-events: none;
+      opacity: 0.75;
+      transition: opacity 0.2s, font-size 0.2s;
+    }
+    .room-group:hover .dept-label {
+      opacity: 1;
+      font-size: 9px;
+    }
+
+    /* CSS Animations for SVG elements */
+    @keyframes idleBreathe {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    
+    @keyframes bubbleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes neonPulse {
+      0%, 100% { opacity: 0.8; text-shadow: 0 0 4px rgba(100, 80, 255, 0.5); }
+      50% { opacity: 1; text-shadow: 0 0 12px rgba(100, 80, 255, 0.9); }
+    }
+
+    @keyframes radarScan {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .char-avatar {
+      transform-origin: bottom center;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: idleBreathe 3s ease-in-out infinite;
+      cursor: pointer;
+    }
+    .char-avatar-1 { animation-delay: 0s; }
+    .char-avatar-2 { animation-delay: 0.6s; }
+    .char-avatar-3 { animation-delay: 1.2s; }
+    .char-avatar-4 { animation-delay: 1.8s; }
+
+    .speech-bubble {
+      animation: bubbleBounce 2.5s ease-in-out infinite;
+      cursor: pointer;
+    }
+    .bubble-1 { animation-delay: 0.2s; }
+    .bubble-2 { animation-delay: 0.8s; }
+    .bubble-3 { animation-delay: 1.4s; }
+    .bubble-4 { animation-delay: 2.0s; }
+
+    .radar-beam {
+      transform-origin: 460px 170px;
+      animation: radarScan 4s linear infinite;
+    }
+
+    .screen-flicker {
+      animation: flicker 4s infinite;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 0.95; }
+      45% { opacity: 0.95; }
+      46% { opacity: 0.4; }
+      47% { opacity: 0.9; }
+      50% { opacity: 0.95; }
+      92% { opacity: 0.95; }
+      93% { opacity: 0.5; }
+      94% { opacity: 0.9; }
+    }
+
+    /* Details Drawer */
+    #detail-drawer {
+      width: 420px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border-left: 2px solid rgba(80, 60, 180, 0.3);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+      z-index: 90;
+    }
+    #detail-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+
+    .drawer-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(30, 20, 60, 0.6);
+      border: 2px solid var(--theme-color, #718096);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 0 10px var(--theme-color-glow);
+    }
+
+    .drawer-info h2 {
+      font-size: 16px;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .drawer-info p {
+      font-size: 11px;
+      color: var(--theme-color, #a0aec0);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .close-drawer {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: none;
+      border: none;
+      color: #718096;
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .close-drawer:hover {
+      color: #fff;
+    }
+
+    /* Chat Section inside Drawer */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: rgba(8, 8, 16, 0.5);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      animation: msgAppear 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes msgAppear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.agent {
+      align-self: flex-start;
+      background: rgba(30, 30, 50, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      border-bottom-left-radius: 2px;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: var(--theme-color-op, rgba(100, 80, 220, 0.3));
+      border: 1px solid var(--theme-color-glow-solid, rgba(100, 80, 220, 0.6));
+      color: #fff;
+      border-bottom-right-radius: 2px;
+    }
+
+    .msg.system {
+      align-self: center;
+      background: rgba(15, 30, 20, 0.7);
+      border: 1px solid rgba(57, 255, 20, 0.3);
+      color: #58d68d;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      border-radius: 6px;
+      max-width: 95%;
+      text-align: center;
+    }
+
+    /* Message form options */
+    .quick-bar {
+      padding: 8px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(6, 6, 12, 0.3);
+    }
+
+    .btn-pill {
+      background: rgba(35, 35, 60, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-pill:hover {
+      background: var(--theme-color-op);
+      border-color: var(--theme-color);
+      color: #fff;
+    }
+
+    /* Custom Module Input Area */
+    .input-panel {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 10, 20, 0.8);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-row input, .input-row textarea {
+      flex: 1;
+      background: rgba(5, 5, 10, 0.8);
+      border: 1px solid rgba(100, 80, 255, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-row input:focus, .input-row textarea:focus {
+      border-color: var(--theme-color);
+    }
+
+    .input-row textarea {
+      resize: none;
+      height: 54px;
+    }
+
+    /* Button styles */
+    .btn {
+      background: var(--theme-color, #503cb4);
+      border: 1px solid var(--theme-color-glow-solid, #6e58d6);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 10px var(--theme-color-op);
+    }
+    .btn:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 15px var(--theme-color);
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* File Drop Zone for KEN */
+    .file-drop-area {
+      border: 2px dashed rgba(57, 255, 20, 0.3);
+      background: rgba(57, 255, 20, 0.04);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+    .file-drop-area:hover, .file-drop-area.dragover {
+      border-color: var(--color-bi);
+      background: rgba(57, 255, 20, 0.1);
+      box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    }
+    .file-drop-area p {
+      font-size: 12px;
+      color: #a0aec0;
+      margin-top: 8px;
+    }
+    .file-drop-area strong {
+      color: var(--color-bi);
+    }
+
+    /* Custom Stock Badges */
+    .signal-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      margin-right: 6px;
+    }
+    .sig-buy { background: rgba(57, 255, 20, 0.15); border: 1px solid var(--color-bi); color: var(--color-bi); }
+    .sig-sell { background: rgba(255, 59, 147, 0.15); border: 1px solid var(--color-scout); color: var(--color-scout); }
+    .sig-hold { background: rgba(255, 159, 28, 0.15); border: 1px solid var(--color-creative); color: var(--color-creative); }
+
+    /* Custom Loading Indicator */
+    .loading-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+    }
+    .loading-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--theme-color, #718096);
+      border-radius: 50%;
+      animation: dotPulse 1.2s infinite ease-in-out;
+    }
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(0.6); opacity: 0.4; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* Activity Feed / Console Log (Bottom Section) */
+    #activity-feed {
+      height: 48px;
+      background: #040408;
+      border-top: 1px solid rgba(80, 60, 180, 0.25);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #6a6a9b;
+      z-index: 80;
+    }
+
+    .feed-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #8f8fbf;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .feed-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--color-bi);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--color-bi);
+      animation: neonPulse 1.5s infinite;
+    }
+
+    /* Modals (API Key / Settings) */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #0d0d1a;
+      border: 2px solid rgba(120, 90, 220, 0.5);
+      border-radius: 12px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(120, 90, 220, 0.25);
+      animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalScale {
+      from { transform: scale(0.9) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-box h3 {
+      font-family: var(--font-pixel);
+      font-size: 11px;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .modal-box p {
+      font-size: 12px;
+      color: #718096;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #a0aec0;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      background: rgba(5, 5, 10, 0.8);
+      border: 1px solid rgba(120, 90, 220, 0.4);
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: rgba(120, 90, 220, 0.8);
+      box-shadow: 0 0 8px rgba(120, 90, 220, 0.2);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(6, 6, 12, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(80, 60, 180, 0.4);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(80, 60, 180, 0.7);
+    }
+
+    /* Slide Card Decks for LUNA's Output */
+    .slide-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 10px 0;
+    }
+    .slide-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--color-creative);
+      border-radius: 6px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    .slide-card h4 {
+      font-size: 13px;
+      font-family: var(--font-pixel);
+      font-size: 7.5px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .slide-card ul {
+      margin-left: 16px;
+      font-size: 12px;
+      color: #cbd5e0;
+    }
+    .slide-card li {
+      margin-bottom: 4px;
+    }
+    .slide-card .layout-note {
+      margin-top: 8px;
+      font-size: 10.5px;
+      color: var(--color-creative);
+      font-style: italic;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 900px) {
+      #main-container {
+        flex-direction: column;
+      }
+      
+      #detail-drawer {
+        width: 100%;
+        height: 65vh;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        transform: translateY(100%);
+        border-left: none;
+        border-top: 2px solid rgba(80, 60, 180, 0.35);
+      }
+      #detail-drawer.open {
+        transform: translateY(0);
+      }
+      
+      #office-canvas {
+        flex: 1;
+        height: 35vh;
+        min-height: 280px;
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🏢</div>
+      <div>
+        <h1>PIXEL VIRTUAL OFFICE</h1>
+        <p>3D ISOMETRIC AI COLLABORATION CO-WORKING SPACE</p>
+      </div>
+    </div>
+
+    <div class="header-widgets">
+      <!-- Weather Widget -->
+      <div class="weather-chip" id="weather-widget" onclick="refreshWeather()" title="Click to refresh location weather">
+        <span id="weather-icon">🌤</span>
+        <span class="weather-temp" id="weather-temp">--°C</span>
+        <span id="weather-desc">Loading...</span>
+        <span id="weather-city" style="color: #718096; font-size: 11px;"></span>
+      </div>
+
+      <!-- Audio Toggle Button -->
+      <button class="icon-btn" id="audio-toggle" onclick="toggleAudio()" title="Toggle Background Chiptune & SFX">
+        🔇
+      </button>
+
+      <!-- Settings Button -->
+      <button class="icon-btn" onclick="openSettings()" title="Settings & API Keys">
+        ⚙️
+      </button>
+      
+      <!-- Online Badge -->
+      <div style="background: rgba(57, 255, 20, 0.1); border: 1px solid var(--color-bi); color: var(--color-bi); font-family: var(--font-pixel); font-size: 8px; padding: 6px 10px; border-radius: 6px; letter-spacing: 0.5px;">
+        ● 4 ONLINE
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div id="main-container">
+    
+    <!-- 3D Isometric Office Map -->
+    <div id="office-canvas">
+      <svg class="isometric-map" viewBox="0 0 920 600" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Neon Filters -->
+          <filter id="neon-glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          
+          <!-- Floors Gradients -->
+          <linearGradient id="grad-finance" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#041830"/>
+            <stop offset="100%" stop-color="#020814"/>
+          </linearGradient>
+          <linearGradient id="grad-scout" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2d0a33"/>
+            <stop offset="100%" stop-color="#0f0212"/>
+          </linearGradient>
+          <linearGradient id="grad-bi" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#05240c"/>
+            <stop offset="100%" stop-color="#010a04"/>
+          </linearGradient>
+          <linearGradient id="grad-creative" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2c1704"/>
+            <stop offset="100%" stop-color="#0e0701"/>
+          </linearGradient>
+          
+          <!-- Scanline overlay pattern -->
+          <pattern id="pat-scanline" width="4" height="4" patternUnits="userSpaceOnUse">
+            <rect width="4" height="2" fill="#000000" opacity="0.15"/>
+          </pattern>
+        </defs>
+
+        <!-- Floor Plate Base Outline -->
+        <polygon points="115,440 460,295 805,440 460,585" fill="#181826" stroke="#2c2c44" stroke-width="3" />
+
+        <!-- ==================== ROOM 1: FINANCE DEPT (ALEX) - TOP-LEFT ==================== -->
+        <g class="room-group" data-dept="1" onclick="openAgent(1)" onmouseenter="playHoverSound()">
+          <!-- Floor Tile -->
+          <polygon class="room-floor" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="url(#grad-finance)" />
+          <polygon class="room-border" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="none" stroke="var(--color-finance)" stroke-width="1.5" opacity="0.5" />
+          
+          <!-- Room Glow Overlay -->
+          <polygon class="room-glow" points="115,440 287.5,367.5 460,440 287.5,512.5" fill="var(--color-finance)" opacity="0" style="transition: opacity 0.3s;" />
+
+          <!-- Office Assets: Server Rack -->
+          <g transform="translate(160, 360)">
+            <polygon points="0,20 25,-10 50,0 25,30" fill="#2d3748" stroke="#1a202c" />
+            <polygon points="0,20 25,30 25,60 0,50" fill="#1a202c" />
+            <polygon points="25,30 50,0 50,30 25,60" fill="#4a5568" />
+            <!-- Server blinking LEDs -->
+            <circle cx="10" cy="30" r="1.5" fill="#00d2ff" />
+            <circle cx="10" cy="36" r="1.5" fill="#39ff14" class="screen-flicker" />
+            <circle cx="18" cy="32" r="1.5" fill="#ff9f1c" />
+            <circle cx="18" cy="40" r="1.5" fill="#00d2ff" class="screen-flicker" />
+          </g>
+
+          <!-- Office Assets: Desk -->
+          <g transform="translate(230, 390)">
+            <polygon points="0,15 35,-15 70,0 35,30" fill="#8a5220" stroke="#4a2a0a" />
+            <polygon points="0,15 35,30 35,50 0,35" fill="#4a2a0a" />
+            <polygon points="35,30 70,0 70,20 35,50" fill="#6a3a10" />
+            
+            <!-- Monitor -->
+            <polygon points="20,-5 35,-15 50,-5 35,5" fill="#1a202c" />
+            <polygon points="22,-4 35,-12 48,-4 35,4" fill="#0d1e36" stroke="#00d2ff" stroke-width="0.8" />
+            <!-- Stock chart lines on monitor -->
+            <polyline points="26,1 32,-5 38,-2 44,-8" fill="none" stroke="#39ff14" stroke-width="1.2" class="screen-flicker" />
+          </g>
+
+          <!-- ALEX character avatar -->
+          <g class="char-avatar char-avatar-1" transform="translate(250, 410)">
+            <!-- Head & hair -->
+            <rect x="-10" y="-45" width="20" height="20" rx="3" fill="#e2c499" />
+            <rect x="-12" y="-47" width="24" height="8" rx="2" fill="#2d3748" /> <!-- Cool dark hair -->
+            <rect x="-10" y="-40" width="4" height="6" fill="#2d3748" />
+            <!-- Glasses -->
+            <rect x="-8" y="-37" width="6" height="4" fill="none" stroke="#00d2ff" stroke-width="1" />
+            <rect x="2" y="-37" width="6" height="4" fill="none" stroke="#00d2ff" stroke-width="1" />
+            <!-- Eyes -->
+            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
+            <circle cx="5" cy="-35" r="1.2" fill="#000" />
+            <!-- Body / Suits -->
+            <rect x="-14" y="-25" width="28" height="26" rx="4" fill="#1a365d" stroke="#0a1d37" stroke-width="1" /> <!-- Blue blazer -->
+            <polygon points="-4,-25 4,-25 0,-15" fill="#fff" /> <!-- Shirt tie area -->
+            <polygon points="-1,-25 1,-25 0,-20" fill="#e53e3e" /> <!-- Red tie -->
+            <!-- Hands -->
+            <circle cx="-16" cy="-12" r="3" fill="#e2c499" />
+            <circle cx="16" cy="-12" r="3" fill="#e2c499" />
+            
+            <!-- Laptop screen glow -->
+            <polygon points="-8,-12 0,-18 8,-12 0,-6" fill="rgba(0, 210, 255, 0.4)" filter="url(#neon-glow-blue)" />
+          </g>
+
+          <!-- Speech bubble / Status badge -->
+          <g class="speech-bubble bubble-1" transform="translate(260, 310)">
+            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#0b132b" stroke="var(--color-finance)" stroke-width="1.5" />
+            <polygon points="-5,12 0,18 5,12" fill="#0b132b" stroke="var(--color-finance)" stroke-width="1.5" />
+            <!-- Cover inside stroke -->
+            <polygon points="-4,11 0,16 4,11" fill="#0b132b" />
+            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">ALEX 📊 [ซื้อ/ขาย]</text>
+          </g>
+          
+          <text x="210" y="475" class="dept-label">FINANCE</text>
+        </g>
+
+        <!-- ==================== ROOM 2: MARKET SCOUT (MAYA) - TOP-RIGHT ==================== -->
+        <g class="room-group" data-dept="2" onclick="openAgent(2)" onmouseenter="playHoverSound()">
+          <!-- Floor Tile -->
+          <polygon class="room-floor" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="url(#grad-scout)" />
+          <polygon class="room-border" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="none" stroke="var(--color-scout)" stroke-width="1.5" opacity="0.5" />
+
+          <!-- Room Glow Overlay -->
+          <polygon class="room-glow" points="287.5,367.5 460,295 632.5,367.5 460,440" fill="var(--color-scout)" opacity="0" style="transition: opacity 0.3s;" />
+
+          <!-- Office Assets: Big Radar Screen/Hologram Map -->
+          <g transform="translate(460, 170)">
+            <!-- Radar Base -->
+            <ellipse cx="0" cy="180" rx="35" ry="12" fill="#1a202c" stroke="#2d3748" />
+            <!-- Radar screen vertical grid -->
+            <ellipse cx="0" cy="180" rx="30" ry="10" fill="#2d0a33" stroke="var(--color-scout)" stroke-width="1" />
+            <!-- Rotating radar beam -->
+            <polygon class="radar-beam" points="0,180 30,175 25,183" fill="rgba(255, 59, 147, 0.4)" />
+            <!-- Blinking stock scouts -->
+            <circle cx="-10" cy="182" r="2.5" fill="#39ff14" class="screen-flicker" />
+            <circle cx="15" cy="178" r="2" fill="var(--color-scout)" />
+          </g>
+
+          <!-- Office Assets: Desk -->
+          <g transform="translate(400, 330)">
+            <polygon points="0,15 35,-15 70,0 35,30" fill="#2d3748" stroke="#1a202c" />
+            <polygon points="0,15 35,30 35,50 0,35" fill="#1a202c" />
+            <polygon points="35,30 70,0 70,20 35,50" fill="#4a5568" />
+            
+            <!-- Dual Monitors -->
+            <polygon points="12,-5 25,-12 38,-5 25,4" fill="#000" />
+            <polygon points="14,-4 25,-10 36,-4 25,3" fill="#16041c" stroke="var(--color-scout)" stroke-width="0.8" />
+            
+            <polygon points="40,-5 53,-12 66,-5 53,4" fill="#000" />
+            <polygon points="42,-4 53,-10 64,-4 53,3" fill="#16041c" stroke="var(--color-scout)" stroke-width="0.8" />
+          </g>
+
+          <!-- MAYA character avatar -->
+          <g class="char-avatar char-avatar-2" transform="translate(425, 350)">
+            <!-- Head & Hair (Long brown hair) -->
+            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#dca980" />
+            <rect x="-11" y="-48" width="22" height="12" rx="3" fill="#78341a" /> <!-- Hair top -->
+            <!-- Hair bangs down sides -->
+            <rect x="-11" y="-42" width="3" height="15" fill="#78341a" />
+            <rect x="8" y="-42" width="3" height="15" fill="#78341a" />
+            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
+            <circle cx="5" cy="-35" r="1.2" fill="#000" />
+            <rect x="-4" y="-31" width="8" height="1.5" fill="#e05a88" /> <!-- Lips -->
+            
+            <!-- Body / Clothes -->
+            <rect x="-13" y="-27" width="26" height="28" rx="5" fill="#5b21b6" stroke="#4c1d95" stroke-width="1" /> <!-- Purple sweater -->
+            <circle cx="-14" cy="-12" r="3" fill="#dca980" />
+            <circle cx="14" cy="-12" r="3" fill="#dca980" />
+          </g>
+
+          <!-- Speech bubble -->
+          <g class="speech-bubble bubble-2" transform="translate(440, 255)">
+            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#1d0a25" stroke="var(--color-scout)" stroke-width="1.5" />
+            <polygon points="-5,12 0,18 5,12" fill="#1d0a25" stroke="var(--color-scout)" stroke-width="1.5" />
+            <polygon points="-4,11 0,16 4,11" fill="#1d0a25" />
+            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">MAYA 🔍 [สแกน SET]</text>
+          </g>
+          
+          <text x="420" y="335" class="dept-label">SCOUT</text>
+        </g>
+
+        <!-- ==================== ROOM 3: CREATIVE STUDIO (LUNA) - BOTTOM-RIGHT ==================== -->
+        <g class="room-group" data-dept="4" onclick="openAgent(4)" onmouseenter="playHoverSound()">
+          <!-- Floor Tile -->
+          <polygon class="room-floor" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="url(#grad-creative)" />
+          <polygon class="room-border" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="none" stroke="var(--color-creative)" stroke-width="1.5" opacity="0.5" />
+
+          <!-- Room Glow Overlay -->
+          <polygon class="room-glow" points="460,440 632.5,367.5 805,440 632.5,512.5" fill="var(--color-creative)" opacity="0" style="transition: opacity 0.3s;" />
+
+          <!-- Office Assets: Bookshelf / Display -->
+          <g transform="translate(710, 360)">
+            <polygon points="0,20 20,-10 40,0 20,30" fill="#5c3a21" stroke="#2e1a0b" />
+            <polygon points="0,20 20,30 20,60 0,50" fill="#2e1a0b" />
+            <polygon points="20,30 40,0 40,30 20,60" fill="#462c19" />
+            <!-- Colorful books -->
+            <rect x="5" y="32" width="3" height="15" fill="#f56565" transform="skewY(26)" />
+            <rect x="10" y="29" width="3" height="17" fill="#4299e1" transform="skewY(26)" />
+            <rect x="15" y="26" width="3" height="19" fill="#48bb78" transform="skewY(26)" />
+          </g>
+
+          <!-- Office Assets: Creative Presentation Easel -->
+          <g transform="translate(560, 440)">
+            <line x1="0" y1="0" x2="-10" y2="40" stroke="#4a5568" stroke-width="3" />
+            <line x1="0" y1="0" x2="10" y2="40" stroke="#4a5568" stroke-width="3" />
+            <line x1="0" y1="0" x2="0" y2="45" stroke="#718096" stroke-width="2" />
+            <!-- Board canvas -->
+            <polygon points="-25,-15 25,-25 25,-5 -25,5" fill="#edf2f7" stroke="#2d3748" stroke-width="2" />
+            <polygon points="-23,-13 23,-23 23,-7 -23,3" fill="#ff9f1c" opacity="0.8" class="screen-flicker" />
+            <text x="0" y="-8" text-anchor="middle" fill="#fff" font-family="var(--font-pixel)" font-size="5" transform="rotate(-11)">SLIDE</text>
+          </g>
+
+          <!-- LUNA character avatar -->
+          <g class="char-avatar char-avatar-4" transform="translate(635, 430)">
+            <!-- Head & hair (Purple/pink hair) -->
+            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#f7fafc" /> <!-- pale skin -->
+            <rect x="-12" y="-47" width="24" height="12" rx="4" fill="#d53f8c" /> <!-- Pink hair top -->
+            <!-- Twin pony tails -->
+            <circle cx="-13" cy="-40" r="4.5" fill="#d53f8c" />
+            <circle cx="13" cy="-40" r="4.5" fill="#d53f8c" />
+            <!-- Eyes -->
+            <circle cx="-5" cy="-35" r="1.2" fill="#000" />
+            <circle cx="5" cy="-35" r="1.2" fill="#000" />
+            
+            <!-- Body / Clothing -->
+            <rect x="-13" y="-27" width="26" height="28" rx="5" fill="#e53e3e" stroke="#9b2c2c" stroke-width="1" /> <!-- Red dress -->
+            <circle cx="-14" cy="-12" r="3" fill="#f7fafc" />
+            <circle cx="14" cy="-12" r="3" fill="#f7fafc" />
+          </g>
+
+          <!-- Speech bubble -->
+          <g class="speech-bubble bubble-4" transform="translate(650, 335)">
+            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#2d1105" stroke="var(--color-creative)" stroke-width="1.5" />
+            <polygon points="-5,12 0,18 5,12" fill="#2d1105" stroke="var(--color-creative)" stroke-width="1.5" />
+            <polygon points="-4,11 0,16 4,11" fill="#2d1105" />
+            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">LUNA 🎨 [สไลด์ PPT]</text>
+          </g>
+
+          <text x="650" y="475" class="dept-label">CREATIVE</text>
+        </g>
+
+        <!-- ==================== ROOM 4: DATA INSIGHTS DEPT (KEN) - BOTTOM-LEFT ==================== -->
+        <g class="room-group" data-dept="3" onclick="openAgent(3)" onmouseenter="playHoverSound()">
+          <!-- Floor Tile -->
+          <polygon class="room-floor" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="url(#grad-bi)" />
+          <polygon class="room-border" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="none" stroke="var(--color-bi)" stroke-width="1.5" opacity="0.5" />
+
+          <!-- Room Glow Overlay -->
+          <polygon class="room-glow" points="287.5,512.5 460,440 632.5,512.5 460,585" fill="var(--color-bi)" opacity="0" style="transition: opacity 0.3s;" />
+
+          <!-- Office Assets: Plant -->
+          <g transform="translate(360, 480)">
+            <ellipse cx="0" cy="30" rx="10" ry="5" fill="#3b2314" stroke="#221107" />
+            <!-- Plant stems -->
+            <path d="M 0,25 Q -10,10 -8,2" fill="none" stroke="#2f855a" stroke-width="3" />
+            <path d="M 0,25 Q 10,8 8,0" fill="none" stroke="#2f855a" stroke-width="2.5" />
+            <!-- Leaves -->
+            <ellipse cx="-8" cy="2" rx="4" ry="7" fill="#48bb78" transform="rotate(-30 -8 2)" />
+            <ellipse cx="8" cy="0" rx="4" ry="7" fill="#38a169" transform="rotate(30 8 0)" />
+          </g>
+
+          <!-- Office Assets: Big Screen Console -->
+          <g transform="translate(460, 455)">
+            <!-- Main base -->
+            <polygon points="-30,10 30,10 40,20 -20,20" fill="#2d3748" stroke="#1a202c" />
+            <!-- Tall monitor panel -->
+            <polygon points="-25,-25 25,-25 25,10 -25,10" fill="#1a202c" />
+            <polygon points="-23,-23 23,-23 23,8 -23,8" fill="#041006" stroke="var(--color-bi)" stroke-width="0.8" />
+            <text x="0" y="-8" text-anchor="middle" fill="#39ff14" font-family="var(--font-mono)" font-size="5" class="screen-flicker">01101011</text>
+            <line x1="-15" y1="2" x2="15" y2="2" stroke="#39ff14" stroke-width="1" class="screen-flicker" />
+          </g>
+
+          <!-- KEN character avatar -->
+          <g class="char-avatar char-avatar-3" transform="translate(460, 520)">
+            <!-- Head & hair (Spiky blonde hair) -->
+            <rect x="-9" y="-45" width="18" height="18" rx="2" fill="#f3d9b1" />
+            <!-- Spiky hair lines -->
+            <polygon points="-12,-43 -9,-50 -6,-44" fill="#ecc94b" />
+            <polygon points="-6,-44 -2,-52 2,-44" fill="#ecc94b" />
+            <polygon points="2,-44 6,-50 10,-43" fill="#ecc94b" />
+            <rect x="-9" y="-46" width="18" height="5" fill="#ecc94b" />
+            <!-- Glasses -->
+            <rect x="-9" y="-36" width="18" height="3" fill="rgba(255, 255, 255, 0.4)" stroke="#2b6cb0" stroke-width="0.8" />
+            <!-- Eyes -->
+            <circle cx="-5" cy="-34" r="1" fill="#000" />
+            <circle cx="5" cy="-34" r="1" fill="#000" />
+            
+            <!-- Body / Clothing (Green vest over shirt) -->
+            <rect x="-13" y="-27" width="26" height="28" rx="4" fill="#2f855a" stroke="#22543d" stroke-width="1" />
+            <polygon points="-4,-27 4,-27 0,-20" fill="#fff" /> <!-- Shirt collar V -->
+            <circle cx="-14" cy="-12" r="3" fill="#f3d9b1" />
+            <circle cx="14" cy="-12" r="3" fill="#f3d9b1" />
+          </g>
+
+          <!-- Speech bubble -->
+          <g class="speech-bubble bubble-3" transform="translate(460, 420)">
+            <rect x="-45" y="-12" width="90" height="24" rx="6" fill="#051c09" stroke="var(--color-bi)" stroke-width="1.5" />
+            <polygon points="-5,12 0,18 5,12" fill="#051c09" stroke="var(--color-bi)" stroke-width="1.5" />
+            <polygon points="-4,11 0,16 4,11" fill="#051c09" />
+            <text x="0" y="3" text-anchor="middle" fill="#fff" font-family="var(--font-sans)" font-size="10.5" font-weight="700">KEN 📂 [วิเคราะห์ Data]</text>
+          </g>
+
+          <text x="445" y="565" class="dept-label">ANALYTICS</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Agent Detail Drawer -->
+    <div id="detail-drawer">
+      <div class="drawer-header">
+        <div class="drawer-avatar" id="agent-icon">📊</div>
+        <div class="drawer-info">
+          <h2 id="agent-name">ALEX</h2>
+          <p id="agent-role">FINANCIAL ANALYSIS DEPT</p>
+        </div>
+        <button class="close-drawer" onclick="closeDrawer()">✕</button>
+      </div>
+
+      <!-- Live Chat Interface -->
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-box">
+          <!-- Messages will load dynamically -->
+        </div>
+
+        <!-- Quick selection bar -->
+        <div class="quick-bar" id="quick-bar-options">
+          <!-- Dynamic options based on agent -->
+        </div>
+
+        <!-- Text Input Panel -->
+        <div class="input-panel">
+          <!-- Dynamic inputs like Dropzone or Input fields based on agent -->
+          <div id="agent-custom-controls"></div>
+          
+          <div class="input-row" style="margin-top: 10px;" id="text-input-row">
+            <input type="text" id="chat-input" placeholder="Type a message or command..." onkeydown="handleChatKey(event)">
+            <button class="btn" id="send-btn" onclick="sendChatMessage()">
+              <span>ส่ง</span> ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Realtime Console Status Bar -->
+  <div id="activity-feed">
+    <div class="feed-text">
+      <div class="feed-dot"></div>
+      <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Virtual office co-workers are online and ready.</span>
+    </div>
+    <div style="color: #4a4a75;">CO-WORK CORE v2.5</div>
+  </div>
+
+  <!-- API Key & Settings Dialog Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-box">
+      <h3>⚙️ CO-WORK OFFICE SETTINGS</h3>
+      <p>Configure your model credentials. Credentials are saved locally in your browser's localStorage.</p>
+      
+      <div class="form-group">
+        <label for="ai-provider">Model Provider</label>
+        <select id="ai-provider" onchange="toggleProviderFields()">
+          <option value="mock">Simulated Mode (No API key needed)</option>
+          <option value="gemini">Gemini API (Google)</option>
+          <option value="anthropic">Claude API (Anthropic)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="gemini-group" style="display: none;">
+        <label for="gemini-key">Gemini API Key</label>
+        <input type="password" id="gemini-key" placeholder="AIzaSy...">
+      </div>
+
+      <div class="form-group" id="claude-group" style="display: none;">
+        <label for="claude-key">Anthropic API Key</label>
+        <input type="password" id="claude-key" placeholder="sk-ant-...">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-pill" style="background: transparent; border-color: transparent;" onclick="closeSettings()">Cancel</button>
+        <button class="btn" style="--theme-color: #39ff14; --theme-color-glow-solid: #2e8b57; color: #000;" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script logics -->
+  <script>
+    /* Global Co-working Space State & Variables */
+    let currentAgentId = null;
+    let geminiApiKey = localStorage.getItem('pdoGeminiKey') || '';
+    let claudeApiKey = localStorage.getItem('pdoClaudeKey') || '';
+    let activeProvider = localStorage.getItem('pdoProvider') || 'mock';
+    
+    // Global data exchange for Ken & Luna
+    let sharedInsightsData = localStorage.getItem('pdoSharedInsights') || null;
+    let sharedInsightsFilename = localStorage.getItem('pdoSharedFilename') || '';
+
+    // Audio status
+    let audioContext = null;
+    let bgMusicInterval = null;
+    let bgMusicStep = 0;
+    let isMuted = true; // start muted by default as per modern browser policies
+
+    const AGENTS_DATA = {
+      1: {
+        id: 1,
+        name: "ALEX 📊",
+        role: "FINANCE DEPT (ชาย)",
+        bio: "เชี่ยวชาญการวิเคราะห์แนวโน้มตลาดหุ้นไทย (SET) และต่างประเทศ (NASDAQ/NYSE) ช่วยประเมินความเสี่ยงและสรุปคำแนะนำ 'ซื้อ/ขาย/ถือ'",
+        avatar: "📊",
+        theme: "var(--color-finance)",
+        themeOp: "rgba(0, 210, 255, 0.15)",
+        themeGlow: "rgba(0, 210, 255, 0.4)",
+        themeGlowSolid: "rgba(0, 210, 255, 0.7)",
+        intro: "สวัสดีครับ! ผม Alex นักวิเคราะห์ตลาดทุน 📊\nยินดีต้อนรับสู่แผนกการเงินครับ พิมพ์ชื่อย่อหุ้น (Ticker) เช่น AAPL, TSLA, NVDA หรือหุ้นไทย เช่น PTT.BK, SCB.BK ได้เลย ผมจะช่วยวิเคราะห์แนวโน้มหลัก สัญญาณสัญญาณทางเทคนิค และฟันธงคำแนะนำ ซื้อ (BUY) / ขาย (SELL) / ถือ (HOLD) ให้ครับ!",
+        quickReplies: ["AAPL", "TSLA", "PTT.BK", "SCB.BK", "วิเคราะห์หุ้นเทคโนโลยีปีนี้"]
+      },
+      2: {
+        id: 2,
+        name: "MAYA 🔍",
+        role: "MARKET RESEARCH DEPT (หญิง)",
+        bio: "นักสแกนและประเมินสภาวะตลาดสากล ค้นหาหุ้นที่มีความน่าสนใจเชิงมูลค่า หุ้นปันผล หรือหุ้นเติบโตสูงในตลาด SET, NASDAQ และ NYSE",
+        avatar: "🔍",
+        theme: "var(--color-scout)",
+        themeOp: "rgba(255, 59, 147, 0.15)",
+        themeGlow: "rgba(255, 59, 147, 0.4)",
+        themeGlowSolid: "rgba(255, 59, 147, 0.7)",
+        intro: "สวัสดีค่ะ! Maya แผนกวิจัยและหาโอกาสลงทุนยินดีต้อนรับค่ะ 🔍\n\nหนูสแกนตลาดโลกตลอดเวลา ต้องการให้หนูช่วยแนะนำหุ้นเด่นในตลาดไหนดีคะ? เลือกตลาด SET, NASDAQ หรือ NYSE จากปุ่มได้เลยค่ะ หรือถามคำถามเกี่ยวกับการค้นหาหุ้นที่หนูสแกนอยู่ได้เลยค่ะ!",
+        quickReplies: ["สแกนตลาด SET 🇹🇭", "สแกนตลาด NASDAQ 🇺🇸", "สแกนตลาด NYSE 🏛️", "หาหุ้นปันผลเด่น"]
+      },
+      3: {
+        id: 3,
+        name: "KEN 📂",
+        role: "BUSINESS INTELLIGENCE DEPT (ชาย)",
+        bio: "นักวิเคราะห์ Insights ข้อมูลองค์กรและข้อมูลดิบ อัปโหลดไฟล์ Excel / CSV หรือวางข้อมูลดิบ เพื่อให้ผมคำนวณและสรุปข้อค้นพบเชิงสถิติ",
+        avatar: "📂",
+        theme: "var(--color-bi)",
+        themeOp: "rgba(57, 255, 20, 0.15)",
+        themeGlow: "rgba(57, 255, 20, 0.4)",
+        themeGlowSolid: "rgba(57, 255, 20, 0.7)",
+        intro: "สวัสดีครับ! ผม Ken ทีมข้อมูลยินดีช่วยเหลือครับ 📂\n\nคุณสามารถลากไฟล์ CSV หรือ Excel มาวางในช่อง หรือวางข้อมูลตารางได้โดยตรงเลย ผมจะช่วยทำการสรุปผลลัพธ์หลัก คำนวณค่าสถิติสำคัญ ค้นหา Insight ลับในข้อมูล และร่างคำแนะนำเชิงปฏิบัติการให้ทันทีครับ!\n\n💡 หมายเหตุ: ข้อมูลที่คุณอัปโหลด ผมจะวิเคราะห์เสร็จแล้วส่งต่อไปให้ Luna เพื่อใช้ประกอบการร่างสไลด์นำเสนอได้ทันทีครับ!",
+        quickReplies: ["ลองวิเคราะห์ตัวอย่างข้อมูลยอดขาย", "ดูฟีเจอร์ข้อมูลที่รองรับ"]
+      },
+      4: {
+        id: 4,
+        name: "LUNA 🎨",
+        role: "CREATIVE & PRESENTATION DEPT (หญิง)",
+        bio: "ผู้ออกแบบโครงสร้างการนำเสนอและสร้าง Slide Outline มืออาชีพ สามารถนำสรุปผลวิเคราะห์ของ Ken มาเรียบเรียง หรือสร้างจากหัวข้อที่กำหนดเอง",
+        avatar: "🎨",
+        theme: "var(--color-creative)",
+        themeOp: "rgba(255, 159, 28, 0.15)",
+        themeGlow: "rgba(255, 159, 28, 0.4)",
+        themeGlowSolid: "rgba(255, 159, 28, 0.7)",
+        intro: "สวัสดีค่ะ! หนู Luna ฝ่ายครีเอทีฟสไลด์ยินดีต้อนรับค่ะ 🎨\n\nหนูช่วยเปลี่ยนข้อมูลการวิเคราะห์ของ Ken ให้กลายเป็นโครงร่างพรีเซนเตชันแบบเป็นขั้นเป็นตอน หรือถ้าพี่ๆ มีหัวข้ออื่นที่อยากสร้างพรีเซนเตชันขึ้นมาใหม่เอง ก็บอกหนูได้เลยนะคะ! เดี๋ยวหนูร่างสไลด์ 8 หน้าเด่นๆ ให้เลยค่ะ!",
+        quickReplies: ["สร้างสไลด์จากข้อมูลของ Ken 📊", "สร้างสไลด์เรื่อง 'ทิศทาง AI Agents ในปี 2026'", "แนะนำธีมสีนำเสนอ"]
+      }
+    };
+
+    // Chat Logs stored in memory per session
+    const chatLogs = { 1: [], 2: [], 3: [], 4: [] };
+
+    /* Web Audio System Engine */
+    function initAudio() {
+      if (audioContext) return;
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playTone(freq, type, duration, volume) {
+      try {
+        initAudio();
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        const osc = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + duration);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        osc.start();
+        osc.stop(audioContext.currentTime + duration);
+      } catch (e) {
+        console.warn("Web Audio play failed:", e);
+      }
+    }
+
+    function playHoverSound() {
+      if (isMuted) return;
+      playTone(700, 'sine', 0.04, 0.02);
+    }
+
+    function playClickSound() {
+      if (isMuted) return;
+      // Coin Sound
+      playTone(523.25, 'square', 0.08, 0.03); // C5
+      setTimeout(() => {
+        playTone(659.25, 'square', 0.12, 0.03); // E5
+      }, 50);
+    }
+
+    function playSuccessSound() {
+      if (isMuted) return;
+      playTone(523.25, 'triangle', 0.1, 0.04);
+      setTimeout(() => playTone(659.25, 'triangle', 0.1, 0.04), 60);
+      setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.04), 120);
+    }
+
+    function playErrorSound() {
+      if (isMuted) return;
+      playTone(180, 'sawtooth', 0.25, 0.05);
+    }
+
+    // Dynamic Retro 8-bit Synth Music Loop
+    function startMusicLoop() {
+      if (bgMusicInterval) clearInterval(bgMusicInterval);
+      
+      const chordC = [261.63, 329.63, 392.00, 523.25]; // C
+      const chordG = [196.00, 246.94, 293.66, 392.00]; // G
+      const chordAm = [220.00, 261.63, 330.00, 440.00]; // Am
+      const chordF = [174.61, 220.00, 261.63, 349.23]; // F
+      
+      const progressions = [chordC, chordAm, chordF, chordG];
+      
+      bgMusicInterval = setInterval(() => {
+        if (isMuted) return;
+        
+        const currentChord = progressions[Math.floor(bgMusicStep / 16) % progressions.length];
+        const noteIndex = bgMusicStep % 4;
+        const baseNote = currentChord[noteIndex];
+        
+        // Dynamic arpeggiation
+        playTone(baseNote, 'triangle', 0.3, 0.015);
+        
+        // Add a soft high harmony note occasionally
+        if (bgMusicStep % 8 === 0) {
+          playTone(baseNote * 2, 'sine', 0.5, 0.008);
+        }
+        
+        bgMusicStep++;
+      }, 180);
+    }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      const btn = document.getElementById('audio-toggle');
+      if (isMuted) {
+        btn.textContent = '🔇';
+        btn.classList.remove('active');
+        if (bgMusicInterval) clearInterval(bgMusicInterval);
+      } else {
+        btn.textContent = '🔊';
+        btn.classList.add('active');
+        initAudio();
+        startMusicLoop();
+        playSuccessSound();
+      }
+    }
+
+    /* Core UI - Open and Close Detail Drawer */
+    function openAgent(id) {
+      playClickSound();
+      currentAgentId = id;
+      const a = AGENTS_DATA[id];
+      
+      // Update drawer theme colors
+      const drawer = document.getElementById('detail-drawer');
+      drawer.style.setProperty('--theme-color', a.theme);
+      drawer.style.setProperty('--theme-color-op', a.themeOp);
+      drawer.style.setProperty('--theme-color-glow', a.themeGlow);
+      drawer.style.setProperty('--theme-color-glow-solid', a.themeGlowSolid);
+
+      // Set drawer texts
+      document.getElementById('agent-icon').textContent = a.avatar;
+      document.getElementById('agent-name').textContent = a.name;
+      document.getElementById('agent-role').textContent = a.role;
+      
+      // Render Agent Custom Input Controls
+      renderCustomControls(id);
+
+      // Render Chat messages
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML = '';
+      
+      if (chatLogs[id].length === 0) {
+        // add intro message
+        chatLogs[id].push({ sender: 'agent', text: a.intro });
+      }
+      
+      chatLogs[id].forEach(msg => {
+        appendMessageUI(msg.sender, msg.text);
+      });
+
+      // Render Quick replies
+      const quickBar = document.getElementById('quick-bar-options');
+      quickBar.innerHTML = '';
+      a.quickReplies.forEach(qr => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-pill';
+        btn.textContent = qr;
+        btn.onclick = () => {
+          playClickSound();
+          submitQuery(qr);
+        };
+        quickBar.appendChild(btn);
+      });
+
+      drawer.classList.add('open');
+      
+      // Update activity feed
+      logActivity(`Open department: ${a.role} with agent ${a.name}`);
+    }
+
+    function closeDrawer() {
+      playClickSound();
+      document.getElementById('detail-drawer').classList.remove('open');
+      currentAgentId = null;
+    }
+
+    function logActivity(text) {
+      const now = new Date();
+      const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+      document.getElementById('feed-log').textContent = `${timeStr} ${text}`;
+    }
+
+    /* Render Specialized Control UI based on active agent */
+    function renderCustomControls(id) {
+      const wrapper = document.getElementById('agent-custom-controls');
+      wrapper.innerHTML = '';
+
+      if (id === 1) { // ALEX
+        wrapper.innerHTML = `
+          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: var(--font-mono)">
+            หุ้นตัวอย่าง: AAPL, MSFT, PTT.BK, BDMS.BK, INTUCH.BK, CPALL.BK
+          </div>
+        `;
+      } 
+      else if (id === 2) { // MAYA
+        wrapper.innerHTML = `
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด SET 🇹🇭')">🇹🇭 SET</button>
+            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด NASDAQ 🇺🇸')">🇺🇸 NASDAQ</button>
+            <button class="btn" style="padding: 6px 12px; font-size: 11.5px; --theme-color: var(--color-scout);" onclick="submitQuery('สแกนตลาด NYSE 🏛️')">🏛️ NYSE</button>
+          </div>
+        `;
+      } 
+      else if (id === 3) { // KEN
+        wrapper.innerHTML = `
+          <div class="file-drop-area" id="drop-area" onclick="triggerFileInput()"
+               ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <input type="file" id="csv-file-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
+            <span style="font-size: 24px;">📁</span>
+            <p><strong>คลิกเพื่ออัปโหลด</strong> หรือลากและวางไฟล์ <strong>.CSV / .XLSX</strong> ที่นี่</p>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <textarea id="csv-paste-area" placeholder="หรือวางข้อความรูปแบบ CSV ที่นี่ (เช่น ชื่อ,ยอดขาย\nสมชาย,5000)\nแล้วกดวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(57,255,20,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: var(--font-mono); outline: none;"></textarea>
+            <button class="btn" style="--theme-color: var(--color-bi); font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteData()">📊 วิเคราะห์ข้อมูลจากกล่องข้อความ</button>
+          </div>
+        `;
+      } 
+      else if (id === 4) { // LUNA
+        const hasData = !!sharedInsightsData;
+        const color = hasData ? 'var(--color-bi)' : '#ff5555';
+        
+        wrapper.innerHTML = `
+          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(57,255,20,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 11.5px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>ข้อมูลจาก Ken: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งานแล้ว (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
+              ${hasData ? `<button class="btn-pill" style="font-size: 9px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function appendMessageUI(sender, text, isHTML = false) {
+      const chatBox = document.getElementById('chat-box');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${sender}`;
+      
+      if (isHTML) {
+        msgDiv.innerHTML = text;
+      } else {
+        msgDiv.textContent = text;
+      }
+      
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showLoadingIndicator() {
+      const chatBox = document.getElementById('chat-box');
+      const loaderDiv = document.createElement('div');
+      loaderDiv.className = 'loading-container';
+      loaderDiv.id = 'chat-loader';
+      loaderDiv.innerHTML = `
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+      `;
+      chatBox.appendChild(loaderDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function hideLoadingIndicator() {
+      const loader = document.getElementById('chat-loader');
+      if (loader) loader.remove();
+    }
+
+    /* Message Submission */
+    function handleChatKey(e) {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    function sendChatMessage() {
+      const inp = document.getElementById('chat-input');
+      const val = inp.value.trim();
+      if (!val) return;
+      
+      inp.value = '';
+      submitQuery(val);
+    }
+
+    async function submitQuery(queryText) {
+      appendMessageUI('user', queryText);
+      chatLogs[currentAgentId].push({ sender: 'user', text: queryText });
+      
+      playClickSound();
+      showLoadingIndicator();
+      
+      try {
+        const agentResponse = await callAgentAPI(currentAgentId, queryText);
+        hideLoadingIndicator();
+        
+        // Parse signals if Alex, otherwise render formatted response
+        let outputHTML = formatMarkdown(agentResponse);
+        if (currentAgentId === 1) { // ALEX
+          outputHTML = parseStockSignal(agentResponse) + outputHTML;
+        } else if (currentAgentId === 4) { // LUNA
+          outputHTML = parsePresentationSlides(agentResponse);
+        }
+        
+        appendMessageUI('agent', outputHTML, true);
+        chatLogs[currentAgentId].push({ sender: 'agent', text: outputHTML });
+        playSuccessSound();
+      } catch (err) {
+        console.error("API Call error:", err);
+        hideLoadingIndicator();
+        appendMessageUI('agent', `❌ เกิดข้อผิดพลาด: ${err.message}`);
+        playErrorSound();
+      }
+    }
+
+    /* API Call Integrations (Supports Gemini & Claude) */
+    async function callAgentAPI(agentId, prompt) {
+      const agent = AGENTS_DATA[agentId];
+      let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
+      
+      // Inject Ken's data to Luna's prompt if requested
+      if (agentId === 4 && sharedInsightsData) {
+        systemInstruction += `\nมีข้อมูลดิบวิเคราะห์จาก Ken Data Analyst ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลนี้มาใช้ออกแบบหัวข้อพรีเซนเตชันตามสมควร`;
+      }
+
+      const combinedPrompt = `${systemInstruction}\n\nคำขอจากผู้ใช้: ${prompt}`;
+
+      if (activeProvider === 'mock') {
+        return await callMockBackend(agentId, prompt);
+      }
+
+      if (activeProvider === 'gemini') {
+        if (!geminiApiKey) {
+          throw new Error("ยังไม่ได้ป้อน Gemini API Key กรุณาตั้งค่าที่ปุ่มรูปฟันเฟืองด้านขวาบนก่อนใช้งานครับ");
+        }
+        
+        // Call Gemini 2.5 Flash
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: combinedPrompt }] }],
+            generationConfig: {
+              temperature: 0.6,
+              maxOutputTokens: 2048
+            }
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error?.message || `HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+      }
+
+      if (activeProvider === 'anthropic') {
+        if (!claudeApiKey) {
+          throw new Error("ยังไม่ได้ป้อน Claude API Key กรุณาตั้งค่าที่ปุ่มรูปฟันเฟืองด้านขวาบนก่อนใช้งานครับ");
+        }
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': claudeApiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1500,
+            messages: [{ role: 'user', content: combinedPrompt }]
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error?.message || `HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.content[0].text;
+      }
+      
+      throw new Error("Invalid Provider Configuration");
+    }
+
+    /* Mock backend simulation for high fidelity testing without keys */
+    function callMockBackend(agentId, prompt) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          if (agentId === 1) { // ALEX
+            const ticker = prompt.toUpperCase().replace('.BK', '');
+            if (ticker.includes('AAPL') || ticker.includes('APPLE')) {
+              resolve(`[SIGNAL: BUY]
+🎯 หุ้น: Apple Inc. (AAPL)
+🏆 คำแนะนำ: ซื้อ (BUY)
+
+📊 เหตุผลหลัก:
+1. การเติบโตอย่างมั่นคงในกลุ่ม Services (Apple Music, iCloud, App Store) ซึ่งมีอัตรากำไรขั้นต้นเกือบ 70%
+2. การเปิดตัวฟีเจอร์ AI 'Apple Intelligence' ใน iPhone 16 และรุ่นอนาคตจะกระตุ้นความต้องการเครื่องใหม่ (Upgrade Cycle) ครั้งใหญ่
+3. กระแสเงินสดอิสระที่แข็งแกร่ง (Free Cash Flow) เอื้อต่อการปันผลและการซื้อหุ้นคืนสม่ำเสมอ
+
+⚠️ ระดับความเสี่ยง: ต่ำ
+🎯 ราคาเป้าหมาย: $240.00
+🚨 ข้อควรระวัง: แรงกดดันจากยอดขายในฝั่งยุโรปและจีนเนื่องจากปัญหาการแข่งขันและการต่อต้านผูกขาดทางกฎหมาย`);
+            } else if (ticker.includes('TSLA') || ticker.includes('TESLA')) {
+              resolve(`[SIGNAL: HOLD]
+🎯 หุ้น: Tesla Inc. (TSLA)
+🏆 คำแนะนำ: ถือ (HOLD)
+
+📊 เหตุผลหลัก:
+1. ปัญหาการแข่งขันสูงขึ้นในตลาดยานยนต์ไฟฟ้า (EV) ทั่วโลก โดยเฉพาะแบรนด์คู่แข่งในจีน
+2. ศักยภาพระยะยาวของเทคโนโลยี FSD (Full Self-Driving) และหุ่นยนต์ Optimus เป็นปัจจัยขับเคลื่อนแต่ใช้เวลานาน
+3. กำไรส่วนต่างรถยนต์ลดลงเนื่องจากการปรับลดราคาขายปลีก
+
+⚠️ ระดับความเสี่ยง: สูง
+🎯 ราคาเป้าหมาย: $210.00
+🚨 ข้อควรระวัง: นโยบายและข้อพิพาทด้านการกำกับดูแลของ CEO และความล่าช้าในการเปิดตัวรถยนต์รุ่นประหยัด (Model 2)`);
+            } else if (ticker.includes('PTT')) {
+              resolve(`[SIGNAL: HOLD]
+🎯 หุ้น: PTT Public Company (PTT.BK)
+🏆 คำแนะนำ: ถือ (HOLD)
+
+📊 เหตุผลหลัก:
+1. เป็นหุ้นหลักที่มีการจ่ายเงินปันผลมั่นคง (Dividend Yield ~5-6% ต่อปี)
+2. ค่าการกลั่นและราคาพลังงานโลกเคลื่อนไหวในกรอบจำกัด ส่งผลให้ผลการดำเนินงานทรงตัว
+3. การลงทุนในธุรกิจ EV Value Chain และพลังงานทดแทนยังใช้เวลาสร้างผลกำไรสุทธิอย่างมีนัยสำคัญ
+
+⚠️ ระดับความเสี่ยง: ต่ำ-ปานกลาง
+🎯 ราคาเป้าหมาย: 36.00 บาท
+🚨 ข้อควรระวัง: ผลกระทบจากมาตรการแทรกแซงราคาพลังงานของรัฐบาลและการปรับโครงสร้างราคาก๊าซธรรมชาติ`);
+            } else {
+              // Generic analysis
+              resolve(`[SIGNAL: BUY]
+🎯 หุ้น: ${ticker}
+🏆 คำแนะนำ: ซื้อสะสม (BUY)
+
+📊 เหตุผลหลัก:
+1. ดัชนีทางเทคนิคเริ่มฟื้นตัวจากกรอบแนวรับและปริมาณการซื้อขายหนาแน่นขึ้น
+2. แนวโน้มรายได้ของกลุ่มอุตสาหกรรมในไตรมาสถัดไปได้รับการสนับสนุนจากภาพรวมเศรษฐกิจ
+3. มูลค่าหุ้น (Valuation) ปัจจุบันซื้อขายที่อัตราส่วน P/E ต่ำกว่าค่าเฉลี่ยย้อนหลัง 5 ปี
+
+⚠️ ระดับความเสี่ยง: กลาง
+🎯 ราคาเป้าหมาย: คำนวณเบื้องต้นบวก 15% จากราคาปัจจุบัน
+🚨 ข้อควรระวัง: สภาวะความผันผวนของอัตราดอกเบี้ยและอัตราแลกเปลี่ยน`);
+            }
+          } 
+          
+          else if (agentId === 2) { // MAYA
+            if (prompt.includes('SET')) {
+              resolve(`จากการสแกนตลาด **SET (ไทย)** วันนี้พบหุ้น 3 ตัวที่น่าสนใจในเงื่อนไขต่างๆ ค่ะ:
+
+1. **BDMS (กรุงเทพดุสิตเวชการ)**
+   - **ประเภท**: Value / Defensive
+   - **ความน่าสนใจ**: จำนวนผู้ป่วยต่างชาติฟื้นตัวเต็มที่ ทนทานต่อสภาวะเงินเฟ้อ อัตรากำไรสุทธิเติบโตอย่างมั่นคง
+   - **ความเสี่ยง**: ต่ำ
+
+2. **ADVANC (แอดวานซ์ อินโฟร์ เซอร์วิส)**
+   - **ประเภท**: Dividend / Cash Cow
+   - **ความน่าสนใจ**: หลังรวมกับ 3BB ส่วนแบ่งตลาดอินเทอร์เน็ตบ้านแข็งแกร่ง กระแสเงินสดสูง อัตราปันผลราว 4.5% ต่อปี
+   - **ความเสี่ยง**: ต่ำ
+
+3. **CPALL (ซีพี ออลล์)**
+   - **ประเภท**: Growth / Domestic Play
+   - **ความน่าสนใจ**: ได้รับประโยชน์จากการท่องเที่ยวและการกระตุ้นการบริโภคภายในประเทศ ยอดซื้อต่อบิลขยับสูงขึ้น
+   - **ความเสี่ยง**: กลาง`);
+            } else if (prompt.includes('NASDAQ')) {
+              resolve(`จากการสแกนตลาด **NASDAQ (สหรัฐฯ)** วันนี้พบหุ้นเด่นเทคโนโลยีที่น่าสนใจ 3 ตัวค่ะ:
+
+1. **NVDA (NVIDIA Corp)**
+   - **ประเภท**: Hyper Growth
+   - **ความน่าสนใจ**: ความต้องการชิป Blackwell GPU สำหรับดาต้าเซ็นเตอร์ AI ยังล้นหลาม สัญญาณนำตลาดชัดเจน
+   - **ความเสี่ยง**: สูง (เนื่องจาก Valuation สูง)
+
+2. **MSFT (Microsoft Corp)**
+   - **ประเภท**: Tech Blue-chip
+   - **ความน่าสนใจ**: การขยายรายได้ทางด้าน Cloud (Azure AI Integration) และสิทธิ์การใช้งาน Copilot เสริมรายได้ที่เติบโตซ้ำ (Recurring Revenue)
+   - **ความเสี่ยง**: ต่ำ-กลาง
+
+3. **COST (Costco Wholesale)**
+   - **ประเภท**: Steady Growth
+   - **ความน่าสนใจ**: อัตราการต่ออายุสมาชิกสูงเกือบ 90% ยอดขายแข็งแกร่งแม้อยู่ในวิกฤตเศรษฐกิจเงินเฟ้อ
+   - **ความเสี่ยง**: ต่ำ`);
+            } else {
+              resolve(`ผลสแกนหุ้นเด่นทั่วโลกวันนี้:
+              
+• **NYSE: JPM (JPMorgan Chase)** - ยักษ์ใหญ่การเงินที่ได้ประโยชน์จากอัตราดอกเบี้ยสูงระยะยาว ปันผลมั่นคง
+• **NASDAQ: AMZN (Amazon)** - ผลกำไรจาก AWS Cloud ดีขึ้นและการฟื้นตัวของโลจิสติกส์อีคอมเมิร์ซ
+• **SET: GULF (กัลฟ์ เอ็นเนอร์จี)** - แผนงานขยายกำลังการผลิตพลังงานหมุนเวียนและการจัดเตรียมโครงสร้าง Data Center`);
+            }
+          } 
+          
+          else if (agentId === 3) { // KEN
+            resolve(`วิเคราะห์สรุปข้อมูลดิบสำเร็จแล้วครับ! 📊
+
+📋 **สรุปข้อมูล**: 
+- แหล่งที่มา: ข้อมูลจำลองระบบงาน
+- ขอบเขต: คอลัมน์ (วันที่, หมวดหมู่สินค้า, ยอดขายสุทธิ, ลูกค้าใหม่)
+
+📊 **Insights หลัก**:
+1. ยอดขายสูงสุดกระจุกตัวอยู่ในหมวดหมู่ **เทคโนโลยีและอุปกรณ์** คิดเป็น 48% ของยอดขายรวมทั้งหมด
+2. อัตราการเพิ่มของลูกค้าใหม่สัมพันธ์โดยตรงกับแคมเปญช่วงต้นเดือน (วันที่ 1-5)
+3. ยอดขายมีอัตราการดรอปตัวเฉลี่ย 15% ในสัปดาห์ที่สามของเดือนก่อนจะฟื้นตัวสัปดาห์สุดท้าย
+
+📈 **สถิติหลัก**:
+- ยอดขายรวม: 1,450,000 บาท
+- ยอดขายเฉลี่ยต่อวัน: 48,333 บาท
+- ยอดขายสูงสุด: 85,000 บาท (หมวดหมู่ไอที)
+- ยอดขายต่ำสุด: 12,000 บาท (หมวดหมู่แฟชั่น)
+
+💡 **ข้อเสนอแนะหลัก**:
+- แนะนำให้เพิ่มงบโฆษณาในสัปดาห์ที่ 3 เพื่อพยุงยอดขายที่มักลดต่ำลง
+- เน้นขยายสต็อกสินค้าหมวดเทคโนโลยีเพราะเป็นตัวขับเคลื่อนยอดขายหลัก
+- ส่งข้อมูลการวิเคราะห์นี้ให้กับ Luna เพื่อร่างแนวทางการนำเสนอได้ทันทีครับ!`);
+          } 
+          
+          else if (agentId === 4) { // LUNA
+            resolve(`โครงร่าง Presentation 8 สไลด์ ร่างให้แล้วเรียบร้อยค่ะ 🎨
+
+[SLIDE 1]
+🖼️ หน้าปก: การนำเสนอผลวิเคราะห์ยอดขายและการเติบโตทางธุรกิจ
+📝 หัวข้อรอง: สรุป Insights จากข้อมูลสถิติและการตัดสินใจเชิงกลยุทธ์
+🎨 Layout & สี: ใช้โทนสีน้ำเงินเข้มและสีทองเพื่อความน่าเชื่อถือ วางโลโก้บริษัทด้านบนขวา
+
+[SLIDE 2]
+🖼️ Agenda และ ภาพรวมการวิเคราะห์
+📝 สรุปภาพรวมการนำเสนอ 3 หัวข้อหลัก: ผลการดำเนินงานทางสถิติ, Insights ข้อมูลยอดขาย และแนวทางปฏิบัติที่แนะนำ
+🎨 Layout & สี: ใช้การแบ่ง 3 คอลัมน์ คาร์ดสีเทาอ่อน สไตล์มินิมอล
+
+[SLIDE 3]
+🖼️ ผลการดำเนินงานรายไตรมาส (ยอดรวมยอดขาย)
+📝 ชูตัวเลขสำคัญ: ยอดขายรวมสะสม 1.45 ล้านบาท และอัตราการเติบโตขึ้น 12% MoM
+🎨 Layout & สี: เน้นตัวเลขขนาดใหญ่ (Hero Metric) บนพื้นหลังสีเข้มเด่นสะดุดตา
+
+[SLIDE 4]
+🖼️ เจาะลึกหมวดสินค้าหลัก: เทคโนโลยีนำตลาด
+📝 ยอดขายเทคโนโลยีทำได้สูงที่สุดถึง 48% ของพอร์ตโฟลิโอ ตามด้วยเครื่องใช้ไฟฟ้า และหมวดอื่นๆ
+🎨 Layout & สี: วาดแผนภูมิวงกลม (Pie Chart) ใช้สีฟ้าสะท้อนแสงในการจำแนกส่วนแบ่ง
+
+[SLIDE 5]
+🖼️ พฤติกรรมผู้บริโภคและฐานลูกค้าใหม่
+📝 อัตราการเพิ่มของลูกค้าสูงสุดในช่วงแคมเปญ 5 วันแรกของแต่ละเดือน
+🎨 Layout & สี: แสดงกราฟเส้นแสดงแนวโน้มรายวัน พร้อมวงกลมไฮไลท์วันกิจกรรม
+
+[SLIDE 6]
+🖼️ จุดที่ควรปรับปรุง: ปัญหาช่วงกลางเดือน
+📝 ยอดขายตกลงเฉลี่ย 15% ในช่วงสัปดาห์ที่ 3 ของเดือน
+🎨 Layout & สี: ใช้สีส้มแดงเพื่อเน้นจุดที่มีความเบี่ยงเบนหรือต้องการแก้ไข
+
+[SLIDE 7]
+🖼️ ข้อเสนอแนะ 3 ข้อเพื่อยกระดับธุรกิจ
+📝 1. อัดแคมเปญกระตุ้นกลางเดือน, 2. จัดโปรโมชันแฝดในกลุ่มเทคโนโลยี, 3. ปรับโครงสร้างสต็อกสินค้าขายดี
+🎨 Layout & สี: ลำดับเลขแบบกล่อง 1, 2, 3 โทนสีเขียวสะท้อนความสำเร็จ
+
+[SLIDE 8]
+🖼️ สรุปแผนปฏิบัติการและช่วง Q&A
+📝 หน้าปิด สรุปกำหนดวันเริ่มทำแผนโปรเจกต์ และช่องทางติดต่อทีมงาน
+🎨 Layout & สี: เรียบง่าย สะอาดตา สีพื้นขาวเทา หรือเข้มปานกลาง โลโก้แบรนด์ชัดเจน`);
+          }
+        }, 1500);
+      });
+    }
+
+    /* Markdown Formatting for Chat outputs */
+    function formatMarkdown(text) {
+      if (!text) return '';
+      
+      // Temporary hide the signal formatting from raw markdown output to prevent double parsing
+      let cleanText = text.replace(/\[SIGNAL:\s*(BUY|SELL|HOLD)\]\n?/i, '');
+      
+      // Bold syntax
+      cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      cleanText = cleanText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      
+      // Bullets
+      cleanText = cleanText.replace(/^\s*[-•]\s*(.*)$/gm, '<li>$1</li>');
+      
+      // Group contiguous <li> tags into <ul>
+      cleanText = cleanText.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+      // Fix potential nested <ul> tags from single lines
+      cleanText = cleanText.replace(/<\/ul>\s*<ul>/g, '');
+
+      // Line breaks
+      cleanText = cleanText.replace(/\n/g, '<br>');
+      
+      return cleanText;
+    }
+
+    /* Extract [SIGNAL: BUY/SELL/HOLD] from Alex's response to draw custom badge */
+    function parseStockSignal(text) {
+      const match = text.match(/\[SIGNAL:\s*(BUY|SELL|HOLD)\]/i);
+      if (!match) return '';
+      
+      const sig = match[1].toUpperCase();
+      let badgeClass = 'sig-hold';
+      let tagText = 'HOLD ⏸️';
+      
+      if (sig === 'BUY') {
+        badgeClass = 'sig-buy';
+        tagText = 'BUY ✅';
+      } else if (sig === 'SELL') {
+        badgeClass = 'sig-sell';
+        tagText = 'SELL ❌';
+      }
+      
+      return `<div style="margin-bottom: 12px;"><span class="signal-badge ${badgeClass}">${tagText}</span></div>`;
+    }
+
+    /* Extract Slide structures from Luna's response to draw slide cards */
+    function parsePresentationSlides(text) {
+      // Find slides formatted like [SLIDE 1] or Slide 1:
+      const slideRegex = /\[SLIDE\s+(\d+)\]\n?🖼️\s*(.*?)\n?📝\s*(.*?)\n?🎨\s*(.*?)(?=\[SLIDE|$)/gi;
+      
+      let html = '';
+      let match;
+      let hasSlides = false;
+      
+      // Parse markdown boldings before split mapping
+      const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+      const slides = [];
+      const parts = formattedText.split(/\[SLIDE\s+\d+\]/i);
+      
+      // Iterate through split segments
+      const matches = [...formattedText.matchAll(/\[SLIDE\s+(\d+)\]/gi)];
+      
+      if (matches.length > 0) {
+        hasSlides = true;
+        html += `<div style="margin-bottom: 15px;">🎨 <strong>นี่คือร่างโครงสร้างสไลด์ที่หนูออกแบบไว้ให้ค่ะ:</strong></div>`;
+        html += `<div class="slide-deck">`;
+        
+        for (let i = 0; i < matches.length; i++) {
+          const slideNum = matches[i][1];
+          const content = parts[i + 1] || '';
+          
+          // extract Title, bullet, layout
+          const titleMatch = content.match(/🖼️\s*(.*?)(?=<br>|$)/i);
+          const bulletsMatch = content.match(/📝\s*(.*?)(?=🎨|<br><br>|$)/i);
+          const layoutMatch = content.match(/🎨\s*(.*?)(?=$)/i);
+          
+          const title = titleMatch ? titleMatch[1].trim() : `Slide ${slideNum}`;
+          const bulletsRaw = bulletsMatch ? bulletsMatch[1].trim() : '';
+          const layout = layoutMatch ? layoutMatch[1].trim() : '';
+          
+          let bulletsHTML = '';
+          if (bulletsRaw) {
+            const listItems = bulletsRaw.split(/<br>\s*-\s*|<br>\s*•\s*/g);
+            bulletsHTML = '<ul>';
+            listItems.forEach(item => {
+              const cleanItem = item.replace(/^[•\-\s]*/, '').trim();
+              if (cleanItem) {
+                bulletsHTML += `<li>${cleanItem}</li>`;
+              }
+            });
+            bulletsHTML += '</ul>';
+          }
+          
+          html += `
+            <div class="slide-card">
+              <h4>SLIDE ${slideNum}: ${title}</h4>
+              ${bulletsHTML}
+              ${layout ? `<div class="layout-note">💡 คำแนะนำแอนิเมชัน/สี: ${layout}</div>` : ''}
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
+        html += `<div style="margin-top: 10px; font-size: 11px; color:#a0aec0;">💡 คุณสามารถกดคัดลอกรายละเอียดเหล่านี้เพื่อไปสร้างสไลด์นำเสนอใน PowerPoint, Keynote หรือ Google Slides ได้ทันทีค่ะ!</div>`;
+      }
+      
+      if (!hasSlides) {
+        // Fallback to normal text formatting if AI returns non-standard template format
+        html = formatMarkdown(text);
+      }
+      
+      return html;
+    }
+
+    /* Settings & Provider management */
+    function openSettings() {
+      playClickSound();
+      document.getElementById('settings-modal').classList.add('show');
+      
+      // Load inputs with current values
+      document.getElementById('ai-provider').value = activeProvider;
+      document.getElementById('gemini-key').value = geminiApiKey;
+      document.getElementById('claude-key').value = claudeApiKey;
+      
+      toggleProviderFields();
+    }
+
+    function closeSettings() {
+      playClickSound();
+      document.getElementById('settings-modal').classList.remove('show');
+    }
+
+    function toggleProviderFields() {
+      const prov = document.getElementById('ai-provider').value;
+      document.getElementById('gemini-group').style.display = prov === 'gemini' ? 'block' : 'none';
+      document.getElementById('claude-group').style.display = prov === 'anthropic' ? 'block' : 'none';
+    }
+
+    function saveSettings() {
+      activeProvider = document.getElementById('ai-provider').value;
+      geminiApiKey = document.getElementById('gemini-key').value.trim();
+      claudeApiKey = document.getElementById('claude-key').value.trim();
+      
+      localStorage.setItem('pdoProvider', activeProvider);
+      localStorage.setItem('pdoGeminiKey', geminiApiKey);
+      localStorage.setItem('pdoClaudeKey', claudeApiKey);
+      
+      closeSettings();
+      playSuccessSound();
+      logActivity(`SETTINGS UPDATED: Provider switched to ${activeProvider.toUpperCase()}`);
+    }
+
+    /* Drag & Drop Excel/CSV files for KEN Data Analyst */
+    function triggerFileInput() {
+      document.getElementById('csv-file-input').click();
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('drop-area').classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('drop-area').classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('drop-area').classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        processInputFile(files[0]);
+      }
+    }
+
+    function handleFileSelected(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        processInputFile(files[0]);
+      }
+    }
+
+    function processInputFile(file) {
+      playClickSound();
+      const reader = new FileReader();
+      const ext = file.name.split('.').pop().toLowerCase();
+      
+      appendMessageUI('user', `📁 อัปโหลดไฟล์: ${file.name} (${(file.size/1024).toFixed(1)} KB)`);
+      logActivity(`Parsing file: ${file.name}`);
+
+      if (ext === 'csv') {
+        reader.onload = function(e) {
+          const text = e.target.result;
+          parseAndStoreInsights(text, file.name);
+        };
+        reader.readAsText(file);
+      } 
+      else if (ext === 'xlsx' || ext === 'xls') {
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            // Convert to CSV string for uniform parsing
+            const csv = XLSX.utils.sheet_to_csv(worksheet);
+            parseAndStoreInsights(csv, file.name);
+          } catch (err) {
+            console.error("XLSX parsing failed:", err);
+            appendMessageUI('agent', `❌ เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาบันทึกเป็นไฟล์ .CSV ก่อนนำเข้าครับ`);
+            playErrorSound();
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        appendMessageUI('agent', `❌ ระบบรองรับเฉพาะไฟล์ข้อมูลนามสกุล .CSV หรือ .XLSX เท่านั้นครับ`);
+        playErrorSound();
+      }
+    }
+
+    function analyzePasteArea() {
+      const pasteText = document.getElementById('csv-paste-area').value.trim();
+      if (!pasteText) {
+        appendMessageUI('agent', `⚠️ กรุณาวางข้อมูล CSV ในกล่องข้อความก่อนกดวิเคราะห์ครับ`);
+        playErrorSound();
+        return;
+      }
+      
+      appendMessageUI('user', `📋 ทำการวางข้อมูล CSV ด้วยตนเอง`);
+      parseAndStoreInsights(pasteText, 'ข้อมูลคัดลอก (Clipboard)');
+    }
+
+    // Function to parse the rows and send to AI agent (Ken)
+    async function parseAndStoreInsights(csvText, filename) {
+      showLoadingIndicator();
+      const rows = csvText.split('\n').filter(r => r.trim() !== '');
+      const previewRows = rows.slice(0, 40).join('\n'); // Send top 40 rows to avoid context limits
+      
+      const queryPrompt = `ทำการวิเคราะห์เชิงลึกเกี่ยวกับสถิติ Insights จากข้อมูลยอดขาย/ข้อมูลเชิงสถิติในไฟล์ชื่อ "${filename}" จำนวนแถวทั้งหมด ${rows.length} แถว\n\nนี่คือตัวอย่างข้อมูลดิบ:\n${previewRows}`;
+      
+      try {
+        const responseText = await callAgentAPI(3, queryPrompt);
+        hideLoadingIndicator();
+        
+        // Save to global variables for Luna
+        sharedInsightsData = responseText;
+        sharedInsightsFilename = filename;
+        localStorage.setItem('pdoSharedInsights', responseText);
+        localStorage.setItem('pdoSharedFilename', filename);
+
+        const htmlResponse = formatMarkdown(responseText);
+        appendMessageUI('agent', `✅ **วิเคราะห์ข้อมูลสำเร็จแล้วครับ!** จำนวนข้อมูลที่วิเคราะห์ทั้งสิ้น ${rows.length} แถว\n\n${htmlResponse}`, true);
+        chatLogs[3].push({ sender: 'agent', text: htmlResponse });
+        
+        // Refresh drawer controls to update Luna indicator
+        renderCustomControls(3);
+        playSuccessSound();
+        logActivity(`ANALYSIS COMPLETED: File ${filename} analyzed by Ken.`);
+      } catch (err) {
+        console.error(err);
+        hideLoadingIndicator();
+        appendMessageUI('agent', `❌ ไม่สามารถทำการวิเคราะห์ข้อมูลได้: ${err.message}`);
+        playErrorSound();
+      }
+    }
+
+    function clearSharedData() {
+      sharedInsightsData = null;
+      sharedInsightsFilename = '';
+      localStorage.removeItem('pdoSharedInsights');
+      localStorage.removeItem('pdoSharedFilename');
+      renderCustomControls(currentAgentId);
+      playClickSound();
+      logActivity(`DATA RESET: Ken's shared insights cleared.`);
+    }
+
+    /* Open Weather API Widget */
+    async function refreshWeather() {
+      const iconEl = document.getElementById('weather-icon');
+      const tempEl = document.getElementById('weather-temp');
+      const descEl = document.getElementById('weather-desc');
+      const cityEl = document.getElementById('weather-city');
+      
+      descEl.textContent = 'Refreshing...';
+      playClickSound();
+
+      if (!navigator.geolocation) {
+        descEl.textContent = 'GPS Not Supported';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        
+        try {
+          // 1. Fetch current weather from Open-Meteo
+          const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
+          const wResp = await fetch(weatherUrl);
+          const wData = await wResp.json();
+          
+          // 2. Reverse geocode location using OpenStreetMap Nominatim
+          const geoUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=th`;
+          const gResp = await fetch(geoUrl);
+          const gData = await gResp.json();
+          
+          // Map weather codes to description emojis
+          const wCodes = {
+            0: ['☀️', 'แจ่มใส'], 1: ['🌤', 'มีเมฆบางส่วน'], 2: ['⛅', 'เมฆครึ้ม'], 3: ['☁️', 'ครึ้มฟ้าครึ้มฝน'],
+            45: ['🌫', 'หมอกลง'], 48: ['🌫', 'หมอกจัด'],
+            51: ['🌦', 'ฝนตกเบาบาง'], 53: ['🌦', 'ฝนปรอย'], 55: ['🌦', 'ฝนตกค่อนข้างหนัก'],
+            61: ['🌧', 'ฝนตกเล็กน้อย'], 63: ['🌧', 'ฝนตกปานกลาง'], 65: ['🌧', 'ฝนตกหนัก'],
+            80: ['🌦', 'ฝนซู่ตกเบา'], 81: ['🌧', 'ฝนซู่ตกหนัก'], 95: ['⛈', 'พายุฝนฟ้าคะนอง']
+          };
+          
+          const code = wData.current.weather_code;
+          const [ico, desc] = wCodes[code] || ['🌡', 'ไม่ทราบสภาพอากาศ'];
+          const temp = Math.round(wData.current.temperature_2m);
+          
+          const city = gData.address.city || gData.address.town || gData.address.municipality || gData.address.province || '';
+          
+          iconEl.textContent = ico;
+          tempEl.textContent = `${temp}°C`;
+          descEl.textContent = desc;
+          cityEl.textContent = city ? `· ${city.slice(0, 10)}` : '';
+          
+          logActivity(`WEATHER UPDATED: ${temp}°C in ${city || 'current location'}`);
+        } catch (err) {
+          descEl.textContent = 'Fetch Error';
+          console.error(err);
+        }
+      }, () => {
+        descEl.textContent = 'GPS Access Denied';
+      }, { timeout: 10000 });
+    }
+
+    // Initialize Page load
+    window.addEventListener('load', () => {
+      // Refresh weather
+      refreshWeather();
+      // Update console initial log
+      logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
+    });
+  </script>
+</body>
+</html>
