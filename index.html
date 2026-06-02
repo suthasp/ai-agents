@@ -45,6 +45,7 @@
       overflow: hidden;
       background: #06060c url('background_v3.jpg') no-repeat center center;
       background-size: cover;
+      position: relative;
     }
 
     .sidebar {
@@ -80,10 +81,11 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      position: relative;
+      position: static;
       height: 100%;
       overflow: hidden;
       background: transparent;
+      pointer-events: none;
     }
 
     /* Panels styling (Glassmorphism & neon glows) */
@@ -200,6 +202,7 @@
       align-items: center;
       justify-content: space-between;
       z-index: 20;
+      pointer-events: auto;
     }
 
     .action-group-left {
@@ -383,9 +386,14 @@
 
     /* Office Canvas & Draggable Engine */
     #office-canvas {
-      flex: 1;
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
+      z-index: 1;
+      pointer-events: auto;
     }
 
     .move-mode #office-canvas {
@@ -480,6 +488,7 @@
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 100;
+      pointer-events: auto;
     }
 
     #detail-drawer.open {
@@ -726,6 +735,7 @@
       left: 0;
       right: 0;
       z-index: 30;
+      pointer-events: auto;
     }
 
     .feed-text {
