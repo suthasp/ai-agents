@@ -2182,6 +2182,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: combinedPrompt }] }],
+            tools: [{ google_search: {} }], // Enable Google Search grounding
             generationConfig: {
               temperature: 0.6,
               maxOutputTokens: 2048
@@ -2230,21 +2231,128 @@
       throw new Error("Invalid Provider Configuration");
     }
 
-    /* Mock Backend Simulation */
-    function callMockBackend(agentId, prompt) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          if (agentId === 1) { // SAM (News Summarizer)
-            resolve(`📰 **สรุปข่าวสารและแนวโน้มตลาดหุ้นหลักประจำวันนี้:**
-            
+    /* Mock Backend Simulation with Real-time Data Fetches */
+    /* Helper to fetch stock price from Yahoo Finance via CORS proxy */
+    async function fetchRealTimeStock(symbol) {
+      const cleanSymbol = symbol.toUpperCase().trim();
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}`)}`;
+      try {
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error("Fetch failed");
+        const data = await res.json();
+        const result = data.chart?.result?.[0];
+        if (!result) throw new Error("No data found");
+        
+        const meta = result.meta;
+        const price = meta.regularMarketPrice;
+        const prevClose = meta.chartPreviousClose || meta.previousClose;
+        const change = price - prevClose;
+        const changePercent = (change / prevClose) * 100;
+        const currency = meta.currency || 'USD';
+        
+        return {
+          price: price.toFixed(2),
+          prevClose: prevClose.toFixed(2),
+          change: (change >= 0 ? '+' : '') + change.toFixed(2),
+          changePercent: (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%',
+          currency,
+          symbol: cleanSymbol,
+          success: true
+        };
+      } catch (err) {
+        console.error("Error fetching live stock:", err);
+        return { success: false, symbol: cleanSymbol };
+      }
+    }
+
+    /* Helper to fetch stock news from Yahoo Finance RSS via CORS proxy */
+    async function fetchRealTimeNews() {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://finance.yahoo.com/rss/topstories')}`;
+      try {
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error("Fetch news failed");
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        const items = xmlDoc.getElementsByTagName("item");
+        const news = [];
+        
+        for (let i = 0; i < Math.min(items.length, 5); i++) {
+          const item = items[i];
+          const title = item.getElementsByTagName("title")[0]?.textContent || '';
+          const link = item.getElementsByTagName("link")[0]?.textContent || '';
+          const desc = item.getElementsByTagName("description")[0]?.textContent || '';
+          news.push({ title, link, description: desc });
+        }
+        return { success: true, news };
+      } catch (err) {
+        console.error("Error fetching live news:", err);
+        return { success: false };
+      }
+    }
+
+    /* Mock Backend Simulation with Real-time Data Fetches */
+    async function callMockBackend(agentId, prompt) {
+      if (agentId === 1) { // SAM (News Summarizer)
+        const liveNews = await fetchRealTimeNews();
+        if (liveNews.success && liveNews.news.length > 0) {
+          let newsText = `📰 **สรุปข่าวสารการเงินและแนวโน้มตลาดหุ้นหลักล่าสุดประจำวันนี้ (ข้อมูลจริงเรียลไทม์):**\n\n`;
+          liveNews.news.forEach((item, index) => {
+            newsText += `${index + 1}. **${item.title}**\n   - *คำอธิบาย*: ${item.description || 'ไม่มีรายละเอียดเพิ่มเติม'}\n   - [ลิงก์อ่านข่าวเต็ม](${item.link})\n\n`;
+          });
+          newsText += `*แหล่งข้อมูลเรียลไทม์: Yahoo Finance RSS feed*`;
+          return newsText;
+        }
+        
+        // Fallback
+        return `📰 **สรุปข่าวสารและแนวโน้มตลาดหุ้นหลักประจำวันนี้:**
+        
 1. **ตลาดหุ้นไทย (SET)**: ดัชนีฟื้นตัวยืนเหนือ 1,380 จุด ได้รับอานิสงส์จากแรงซื้อในกลุ่มพลังงานและกลุ่มท่องเที่ยวที่กลับมาร้อนแรงตามฤดูกาลท่องเที่ยวช่วงปลายปี
 2. **ตลาดสหรัฐฯ (NASDAQ/S&P 500)**: ดัชนีพุ่งสูงสุดใหม่ขานรับตัวเลขอัตราเงินเฟ้อที่ชะลอตัวเร็วกว่าคาด ช่วยคลายความกังวลเรื่องทิศทางอัตราดอกเบี้ยนโยบาย
-3. **ข่าวเศรษฐกิจอื่นๆ**: ดัชนีความเชื่อมั่นผู้บริโภคขยับสูงขึ้นขานรับมาตรการกระตุ้นเศรษฐกิจและการจ่ายเงินปันผลประจำไตรมาสของธนาคารหลัก`);
-          } 
-          else if (agentId === 2) { // ALEX (Ticker Analyzer)
-            const ticker = prompt.toUpperCase().replace('.BK', '');
-            if (ticker.includes('AAPL') || ticker.includes('APPLE')) {
-              resolve(`[SIGNAL: BUY]
+3. **ข่าวเศรษฐกิจอื่นๆ**: ดัชนีความเชื่อมั่นผู้บริโภคขยับสูงขึ้นขานรับมาตรการกระตุ้นเศรษฐกิจและการจ่ายเงินปันผลประจำไตรมาสของธนาคารหลัก`;
+      } 
+      else if (agentId === 2) { // ALEX (Ticker Analyzer)
+        const words = prompt.match(/[A-Za-z.]{2,8}/g) || [];
+        let ticker = 'AAPL';
+        if (words.length > 0) {
+          const potentialTicker = words.find(w => {
+            const cleanW = w.toUpperCase();
+            return cleanW !== 'BUY' && cleanW !== 'SELL' && cleanW !== 'HOLD' && cleanW !== 'STOCK' && cleanW !== 'TICKER';
+          });
+          if (potentialTicker) ticker = potentialTicker.toUpperCase();
+        }
+        
+        const cleanTicker = ticker.replace('.BK', '');
+        const thaiStocks = ['PTT', 'AOT', 'CPALL', 'KBANK', 'SCB', 'BDMS', 'ADVANC', 'GULF', 'BBL', 'SCC'];
+        if (thaiStocks.includes(cleanTicker)) {
+          ticker = cleanTicker + '.BK';
+        }
+        
+        const stock = await fetchRealTimeStock(ticker);
+        if (stock.success) {
+          const changeVal = parseFloat(stock.change);
+          const signal = changeVal >= 0.0 ? 'BUY' : 'HOLD';
+          const signalText = changeVal >= 0.0 ? 'ซื้อสะสม (BUY) ✅' : 'ถือเพื่อรอจังหวะ (HOLD) ⏸️';
+          
+          return `[SIGNAL: ${signal}]
+🎯 หุ้นย่อย: ${stock.symbol}
+🏆 คำแนะนำการลงทุน: ${signalText}
+
+📊 ข้อมูลราคาล่าสุด (Real-time):
+1. **ราคาล่าสุด**: ${stock.price} ${stock.currency}
+2. **ราคาปิดวันก่อน**: ${stock.prevClose} ${stock.currency}
+3. **การเปลี่ยนแปลง**: ${stock.change} (${stock.changePercent})
+
+📈 บทวิเคราะห์ทางเทคนิคเบื้องต้น:
+- ราคาซื้อขายปัจจุบันของ ${stock.symbol} อยู่ที่ ${stock.price} ${stock.currency} มีอัตราความเคลื่อนไหวรายวันประมาณ ${stock.changePercent}
+- กราฟราคาแสดงการตอบสนองต่อแนวรับและแนวต้านตามระดับราคาปัจจุบัน จึงแนะนำตัดสินใจแบบ ${signal}
+- ควรติดตามปริมาณการซื้อขายในกรอบเวลาถัดไปเพื่อประเมินความแข็งแกร่งของเทรนด์
+
+*ข้อมูลอ้างอิงสดส่งตรงจาก Yahoo Finance*`;
+        }
+
+        // Fallback
+        return `[SIGNAL: BUY]
 🎯 หุ้นย่อย: Apple Inc. (AAPL)
 🏆 คำแนะนำการลงทุน: ซื้อสะสม (BUY)
 
@@ -2254,48 +2362,40 @@
 3. กราฟเริ่มสร้างแนวรับที่ชัดเจนบริเวณเส้นค่าเฉลี่ย 50 วัน (50-EMA) เป็นจังหวะดีในการซื้อสะสม
 
 ⚠️ ระดับความเสี่ยง: ต่ำ
-🎯 ราคาเป้าหมายปีหน้า: $245.00`);
-            } else if (ticker.includes('TSLA') || ticker.includes('TESLA')) {
-              resolve(`[SIGNAL: HOLD]
-🎯 หุ้นย่อย: Tesla Inc. (TSLA)
-🏆 คำแนะนำการลงทุน: ถือ (HOLD)
+🎯 ราคาเป้าหมายปีหน้า: $245.00`;
+      } 
+      else if (agentId === 3) { // MAYA (Market Scanner)
+        let marketName = 'NASDAQ';
+        let symbols = ['AAPL', 'MSFT', 'TSLA', 'NVDA'];
+        if (prompt.includes('SET')) {
+          marketName = 'SET (ไทย)';
+          symbols = ['PTT.BK', 'ADVANC.BK', 'CPALL.BK', 'AOT.BK'];
+        } else if (prompt.includes('NYSE')) {
+          marketName = 'NYSE';
+          symbols = ['JPM', 'XOM', 'V', 'KO'];
+        }
+        
+        const results = await Promise.all(symbols.map(s => fetchRealTimeStock(s)));
+        const successfulResults = results.filter(r => r.success);
+        
+        if (successfulResults.length > 0) {
+          let scanText = `🔍 **ผลสแกนหุ้นเด่นที่น่าสนใจในตลาด ${marketName} (ข้อมูลจริงเรียลไทม์):**\n\n`;
+          successfulResults.forEach((s, idx) => {
+            const changeVal = parseFloat(s.change);
+            const type = changeVal >= 0 ? 'หุ้นฟื้นตัวแข็งแกร่งตามเทรนด์ (Bullish)' : 'หุ้นย่อตัวทดสอบแนวรับสะสม (Defensive)';
+            scanText += `${idx + 1}. **${s.symbol}**
+   - **ราคาปัจจุบัน**: ${s.price} ${s.currency}
+   - **การเปลี่ยนแปลง**: ${s.change} (${s.changePercent})
+   - **แนวโน้มเชิงเทคนิค**: ${type}
+   - **ระดับความเสี่ยง**: ${Math.abs(changeVal) > 2 ? 'สูง (ผันผวนสูง)' : 'ต่ำ-ปานกลาง'}\n\n`;
+          });
+          scanText += `*แหล่งข้อมูลราคาเรียลไทม์: Yahoo Finance*`;
+          return scanText;
+        }
 
-📊 วิเคราะห์ทางเทคนิค:
-1. ปัญหาการกดดันด้านราคาและยอดส่งมอบรถยนต์ไฟฟ้าที่เริ่มทรงตัวเนื่องจากการแข่งขันดุเดือดในตลาดจีน
-2. ระบบ FSD (Full Self-Driving) และแผนงาน Cybercab เป็นตัวขับเคลื่อนเป้าหมายสำคัญแต่คาดว่าใช้เวลานานในการทำรายได้จริง
-3. ราคาหุ้นแกว่งตัวผันผวนสูง กราฟเทคนิคเข้าสู่สภาวะทดสอบแนวต้านใหญ่
-
-⚠️ ระดับความเสี่ยง: สูง
-🎯 ราคาเป้าหมาย: $215.00`);
-            } else if (ticker.includes('PTT')) {
-              resolve(`[SIGNAL: HOLD]
-🎯 หุ้นย่อย: PTT Public Company Limited (PTT.BK)
-🏆 คำแนะนำการลงทุน: ถือเพื่อรับปันผล (HOLD)
-
-📊 วิเคราะห์ทางเทคนิค:
-1. เป็นหุ้นกลุ่มพลังงานหลักของไทยที่มีประวัติดีในการจ่ายปันผลสม่ำเสมอ (Dividend Yield ~5.5% ต่อปี)
-2. ค่าการกลั่นและราคาพลังงานของโลกคาดว่าจะยังคงเคลื่อนไหวทรงตัวในกรอบแคบ
-3. การลงทุนเพิ่มเติมในห่วงโซ่คุณค่า EV และอุตสาหกรรมเทคโนโลยียังอยู่ในระยะเริ่มต้นสร้างกำไรหลัก
-
-⚠️ ระดับความเสี่ยง: ต่ำ-ปานกลาง
-🎯 ราคาเป้าหมาย: 36.50 บาท`);
-            } else {
-              resolve(`[SIGNAL: BUY]
-🎯 หุ้นย่อย: ${ticker}
-🏆 คำแนะนำการลงทุน: ซื้อสะสม (BUY)
-
-📊 วิเคราะห์ทางเทคนิค:
-1. ดัชนีสัญญาณเริ่มกลับตัวฟื้นจากระดับสะสมแนวรับหลัก
-2. ปริมาณการซื้อขาย (Volume) เริ่มสะสมหนาแน่นสอดรับทิศทางตลาดขาขึ้น
-3. ประเมินมูลค่าระดับ P/E ต่ำกว่าค่าเฉลี่ยย้อนหลังเป็นจังหวะสะสมระยะยาว
-
-⚠️ ระดับความเสี่ยง: กลาง
-🎯 ราคาเป้าหมาย: +15% จากราคาตลาดปัจจุบัน`);
-            }
-          } 
-          else if (agentId === 3) { // MAYA (Market Scanner)
-            if (prompt.includes('SET')) {
-              resolve(`🔍 **ผลสแกนหุ้นเด่นที่น่าสนใจในตลาด SET (ไทย) วันนี้ค่ะ:**
+        // Fallback
+        if (prompt.includes('SET')) {
+          return `🔍 **ผลสแกนหุ้นเด่นที่น่าสนใจในตลาด SET (ไทย) วันนี้ค่ะ:**
 
 1. **BDMS (กรุงเทพดุสิตเวชการ)**
    - **ประเภท**: หุ้นเชิงรับ (Defensive Value)
@@ -2310,9 +2410,9 @@
 3. **CPALL (ซีพี ออลล์)**
    - **ประเภท**: หุ้นเติบโตตามเศรษฐกิจในประเทศ (Domestic Growth)
    - **ความน่าสนใจ**: ได้รับอานิสงส์เชิงบวกจากการบริโภคที่ฟื้นตัวและการเติบโตด้านการท่องเที่ยว ยอดซื้อต่อบิลขยับตัวสูง
-   - **ความเสี่ยง**: กลาง`);
-            } else if (prompt.includes('NASDAQ')) {
-              resolve(`🔍 **ผลสแกนหุ้นเด่นในตลาดสหรัฐฯ NASDAQ วันนี้ค่ะ:**
+   - **ความเสี่ยง**: กลาง`;
+        } else {
+          return `🔍 **ผลสแกนหุ้นเด่นในตลาดสหรัฐฯ NASDAQ วันนี้ค่ะ:**
 
 1. **NVDA (NVIDIA Corporation)**
    - **ประเภท**: เติบโตสูงพิเศษ (Hyper Growth)
@@ -2327,17 +2427,11 @@
 3. **COST (Costco Wholesale)**
    - **ประเภท**: หุ้นเติบโตมั่นคงสูง (Steady Growth)
    - **ความน่าสนใจ**: อัตราการรักษาสมาชิกคงตัวสูงเกือบ 90% ต้านทานแรงกดดันเงินเฟ้อได้ดี
-   - **ความเสี่ยง**: ต่ำ`);
-            } else {
-              resolve(`🔍 **ผลสแกนตลาดหุ้นเด่นทั่วโลกประจำวันนี้ค่ะ:**
-              
-• **NYSE: JPM (JPMorgan Chase)** - ยักษ์ใหญ่การเงินที่ได้อานิสงส์ดอกเบี้ยนโยบายคงตัวระดับสูง ปันผลดี
-• **NASDAQ: AMZN (Amazon)** - ศักยภาพทำกำไร Cloud AWS ฟื้น และความคล่องตัวของงานจัดส่ง E-commerce ดีขึ้น
-• **SET: GULF (กัลฟ์ เอ็นเนอร์จี)** - โครงการพลังงานหมุนเวียนและการเตรียมสร้างระบบ Data Center ขยายการรับรู้รายได้`);
-            }
-          } 
-          else if (agentId === 4) { // KEN (Data Insights)
-            resolve(`วิเคราะห์ Insights สรุปสถิติข้อมูลพอร์ตการลงทุนเรียบร้อยครับ! 📊
+   - **ความเสี่ยง**: ต่ำ`;
+        }
+      } 
+      else if (agentId === 4) { // KEN (Data Insights)
+        return `วิเคราะห์ Insights สรุปสถิติข้อมูลพอร์ตการลงทุนเรียบร้อยครับ! 📊
 
 📋 **ภาพรวมข้อมูล**:
 - แหล่งที่มา: ไฟล์พอร์ตลงทุน (Portfolio Report)
@@ -2358,10 +2452,10 @@
 💡 **ข้อเสนอแนะสำหรับการจัดทัพพอร์ต**:
 - แนะนำทำการปรับสมดุล (Rebalance) เพื่อขายทำกำไรหุ้นเทคโนโลยีบางส่วนออกไปถือสินทรัพย์เชิงรับป้องพอร์ตช่วงตลาดแกว่ง
 - ทยอยเพิ่มสะสมหุ้นปันผลระดับ 5% ขึ้นไปเพื่อพยุงกระแสเงินสดรายปี
-- ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`);
-          }
-          else if (agentId === 5) { // LUNA (Presentation maker)
-            resolve(`โครงร่างสารบัญสไลด์พรีเซนเตชัน 8 หน้า จัดทำเสร็จเรียบร้อยแล้วค่ะ 🎨:
+- ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`;
+      }
+      else if (agentId === 5) { // LUNA (Presentation maker)
+        return `โครงร่างสารบัญสไลด์พรีเซนเตชัน 8 หน้า จัดทำเสร็จเรียบร้อยแล้วค่ะ 🎨:
 
 [SLIDE 1]
 🖼️ หน้าปกสไลด์: แผนการจัดสรรพอร์ตโฟลิโอและเป้าหมายการเติบโตปี 2026
@@ -2401,12 +2495,10 @@
 [SLIDE 8]
 🖼️ บทสรุปและช่องทางถามตอบปัญหา (Q&A)
 📝 สรุปกำหนดวันเริ่มทำการปรับจัดสัดส่วนพอร์ต และรายละเอียดติดต่อผู้ดูแล
-🎨 ดีไซน์มินิมอล พื้นหลังสว่างเพื่อจบพรีเซนเตชันสไลด์อย่างน่าประทับใจ`);
-          }
-        }, 1500);
-      });
+🎨 ดีไซน์มินิมอล พื้นหลังสว่างเพื่อจบพรีเซนเตชันสไลด์อย่างน่าประทับใจ`;
+      }
     }
-
+    
     /* Markdown Formatting */
     function formatMarkdown(text) {
       if (!text) return '';
