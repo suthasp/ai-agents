@@ -414,14 +414,15 @@
       image-rendering: pixelated;
     }
     
-    .draggable[data-type="agent"] svg {
+    /* Exclude Robot Vacuum from human agent heights */
+    .draggable[data-type="agent"]:not([data-id="6"]) svg {
       width: 40px;
       height: 66px;
       transform: scaleX(var(--scale-x, 1));
       transition: transform 0.2s ease-in-out;
     }
     
-    .draggable[data-type="agent"].walking:not(.dragging) {
+    .draggable[data-type="agent"]:not([data-id="6"]).walking:not(.dragging) {
       transition: left 4s ease-in-out, top 4s ease-in-out;
     }
     
@@ -442,6 +443,33 @@
 
     .draggable[data-type="agent"].dragging {
       transform: translate(-50%, -85%) scale(1.1) !important;
+    }
+
+    /* SPECIFIC OVERRIDES FOR SMART VACUUM ROBOT (ROBO ID 6) */
+    .draggable[data-type="agent"][data-id="6"] {
+      transform: translate(-50%, -50%); /* Centered flat on floor */
+    }
+    .draggable[data-type="agent"][data-id="6"].dragging {
+      transform: translate(-50%, -50%) scale(1.1) !important;
+    }
+    .draggable[data-type="agent"][data-id="6"] svg {
+      width: 48px;
+      height: 30px;
+      transform: scaleX(var(--scale-x, 1));
+      transition: transform 0.2s ease-in-out;
+    }
+    .draggable[data-type="agent"][data-id="6"].walking:not(.dragging) {
+      transition: left 5s linear, top 5s linear; /* Linear mechanical movement */
+    }
+    .draggable[data-type="agent"][data-id="6"]::before {
+      display: none; /* Hide default drop-shadow since it has its own SVG shadow */
+    }
+    @keyframes roboVacuum {
+      0%, 100% { transform: scaleX(var(--scale-x, 1)) translateY(0px); }
+      50% { transform: scaleX(var(--scale-x, 1)) translateY(-0.8px); }
+    }
+    .draggable[data-type="agent"][data-id="6"]:not(.dragging) svg {
+      animation: roboVacuum 0.15s linear infinite; /* Mechanical low vibration */
     }
 
     /* Desks use a different offset so they align center */
@@ -1034,6 +1062,14 @@
               <option value="OFFLINE">OFFLINE</option>
             </select>
           </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">ROBO (หุ่นยนต์ดูดฝุ่น)</span>
+            <select class="status-select" onchange="changeAgentStatus(6, this.value)">
+              <option value="RUNNING" selected>CLEANING</option>
+              <option value="IDLE">CHARGING</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
         </div>
       </div>
     </aside>
@@ -1209,6 +1245,40 @@
           <div class="agent-tag" id="tag-5" style="--theme-color: var(--color-luna);">
             <span class="agent-tag-dot" id="dot-5"></span>
             <span class="agent-tag-text">LUNA</span>
+          </div>
+        </div>
+        
+        <!-- ROBO (ID: 6) - หุ่นยนต์ดูดฝุ่น -->
+        <div class="draggable" data-type="agent" data-id="6" style="left: 77%; top: 48%;" onclick="handleAgentClick(6)">
+          <div class="agent-bubble" id="bubble-6" style="--theme-color: var(--color-robo); display:none;">
+            <div class="agent-bubble-title">ROBO</div>
+            <div class="agent-bubble-text" id="bubble-text-6">ปี๊บ! ดูดฝุ่น...</div>
+          </div>
+          <!-- SVG for Robot Vacuum -->
+          <svg width="48" height="30" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <!-- Floor Shadow -->
+            <ellipse cx="24" cy="25" rx="18" ry="4" fill="rgba(0,0,0,0.3)" />
+            <!-- Sweeping brushes -->
+            <line x1="8" y1="18" x2="3" y2="21" stroke="#eab308" stroke-width="2" stroke-linecap="round" />
+            <line x1="40" y1="18" x2="45" y2="21" stroke="#eab308" stroke-width="2" stroke-linecap="round" />
+            <!-- Underbody shadow path -->
+            <path d="M 6,15 A 18 6 0 0 0 42,15 L 42,20 A 18 6 0 0 1 6,20 Z" fill="#1e293b" />
+            <!-- Bumper -->
+            <path d="M 6,15 A 18 6 0 0 0 42,15 L 42,17 A 18 6 0 0 1 6,17 Z" fill="#475569" />
+            <!-- Top Lid -->
+            <ellipse cx="24" cy="15" rx="18" ry="6" fill="#334155" />
+            <!-- Glowing Ring -->
+            <ellipse cx="24" cy="15" rx="14" ry="4.7" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.8" />
+            <!-- Inner Disc -->
+            <ellipse cx="24" cy="15" rx="10" ry="3.3" fill="#0f172a" />
+            <!-- Lidar Turret -->
+            <path d="M 21,12 A 3 1.2 0 0 0 27,12 L 27,14 A 3 1.2 0 0 1 21,14 Z" fill="#1e293b" />
+            <ellipse cx="24" cy="12" rx="3" ry="1" fill="#475569" />
+            <circle cx="24" cy="12" r="0.8" fill="#ef4444" />
+          </svg>
+          <div class="agent-tag" id="tag-6" style="--theme-color: var(--color-robo);">
+            <span class="agent-tag-dot" id="dot-6"></span>
+            <span class="agent-tag-text">ROBO</span>
           </div>
         </div>
 
@@ -1429,11 +1499,24 @@
         themeGlowSolid: "rgba(244, 63, 94, 0.7)",
         intro: "สวัสดีค่ะ! ฉัน Luna นักออกแบบ Outline Presentation นำเสนอค่ะ 🎨\nฉันสามารถใช้ผลงาน Insights ที่ Ken วิเคราะห์ไว้มาสร้างโครงสร้างสไลด์นำเสนอ หรือถ้าคุณมีหัวข้ออื่นๆ ที่อยากสร้างสไลด์ใหม่เอง ก็พิมพ์บอกฉันได้เลยค่ะ!",
         quickReplies: ["สร้างสไลด์จาก Insights ล่าสุดของ Ken", "สไลด์เรื่อง 'แนวโน้มการลงทุนยุค AI 2026'", "แนะนำธีมการนำเสนอ"]
+      },
+      6: {
+        id: 6,
+        name: "ROBO 🧹 (หุ่นยนต์ดูดฝุ่น)",
+        role: "Smart Vacuum Cleaner",
+        bio: "ทำหน้าที่ดูดฝุ่นทำความสะอาดห้อง Co-Working Space ตลอดทั้งวัน",
+        avatar: "🧹",
+        theme: "#eab308",
+        themeOp: "rgba(234, 179, 8, 0.15)",
+        themeGlow: "rgba(234, 179, 8, 0.4)",
+        themeGlowSolid: "rgba(234, 179, 8, 0.7)",
+        intro: "ปี๊บ! 🧹 ผมคือ ROBO หุ่นยนต์ดูดฝุ่นอัจฉริยะ กำลังทำความสะอาดพื้นห้องอยู่ครับ! พิมพ์บอกให้ผมไปทำงาน ชาร์จแบต หรือถามสถานะการทำความสะอาดได้เลยครับ!",
+        quickReplies: ["เริ่มทำความสะอาด 🧹", "กลับแท่นชาร์จ 🔌", "รายงานสถานะแบตเตอรี่"]
       }
     };
 
     // Chat Logs stored in memory
-    const chatLogs = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    const chatLogs = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
 
     /* Draggable Positions Engine (Professional Floor Layout Coordinates) */
     const DEFAULT_POSITIONS = {
@@ -1443,7 +1526,8 @@
         2: { left: "38%", top: "27%" }, // ALEX - curved desk top-left
         3: { left: "59%", top: "33%" }, // MAYA - next to water dispenser/copier desk
         4: { left: "69%", top: "53%" }, // KEN - right side desk
-        5: { left: "60%", top: "75%" }  // LUNA - bottom desk
+        5: { left: "60%", top: "75%" }, // LUNA - bottom desk
+        6: { left: "77%", top: "48%" }  // ROBO - starts at dock
       },
       decor: {
         1: { left: "53%", top: "38%" }, // Water Dispenser
@@ -1981,6 +2065,28 @@
       appendMessageUI('user', queryText);
       chatLogs[currentAgentId].push({ sender: 'user', text: queryText });
       
+      // Intercept vacuum commands physically
+      if (currentAgentId === 6) {
+        const lowerText = queryText.toLowerCase();
+        if (lowerText.includes('เริ่ม') || lowerText.includes('clean') || lowerText.includes('ทำงาน')) {
+          setTimeout(() => {
+            const statusSelects = document.querySelectorAll('.status-select');
+            if (statusSelects && statusSelects[5]) {
+              statusSelects[5].value = 'RUNNING';
+              changeAgentStatus(6, 'RUNNING');
+            }
+          }, 500);
+        } else if (lowerText.includes('ชาร์จ') || lowerText.includes('dock') || lowerText.includes('charge')) {
+          setTimeout(() => {
+            const statusSelects = document.querySelectorAll('.status-select');
+            if (statusSelects && statusSelects[5]) {
+              statusSelects[5].value = 'IDLE';
+              changeAgentStatus(6, 'IDLE');
+            }
+          }, 500);
+        }
+      }
+      
       playClickSound();
       showLoadingIndicator();
       
@@ -2403,6 +2509,42 @@
 📝 สรุปกำหนดวันเริ่มทำการปรับจัดสัดส่วนพอร์ต และรายละเอียดติดต่อผู้ดูแล
 🎨 ดีไซน์มินิมอล พื้นหลังสว่างเพื่อจบพรีเซนเตชันสไลด์อย่างน่าประทับใจ`;
       }
+      else if (agentId === 6) { // ROBO (Vacuum Cleaner)
+        if (prompt.includes('เริ่ม') || prompt.includes('clean') || prompt.includes('ทำงาน')) {
+          setTimeout(() => {
+            const statusSelects = document.querySelectorAll('.status-select');
+            if (statusSelects && statusSelects[5]) {
+              statusSelects[5].value = 'RUNNING';
+              changeAgentStatus(6, 'RUNNING');
+            }
+          }, 500);
+          return `ปี๊บ! 🧹 ได้รับคำสั่งให้เริ่มทำความสะอาดครับ เริ่มเปิดมอเตอร์ดูดฝุ่นแรงสูง 4000Pa และปล่อยแปรงกวาดข้างทำงานทั่วห้อง Co-Working Space แล้วครับ!`;
+        }
+        else if (prompt.includes('ชาร์จ') || prompt.includes('dock') || prompt.includes('charge')) {
+          setTimeout(() => {
+            const statusSelects = document.querySelectorAll('.status-select');
+            if (statusSelects && statusSelects[5]) {
+              statusSelects[5].value = 'IDLE';
+              changeAgentStatus(6, 'IDLE');
+            }
+          }, 500);
+          return `ปี๊บ! 🔌 รับทราบครับ กำลังวิ่งกลับไปยังแท่นชาร์จบริเวณมุมขวาบนข้างตู้กดน้ำเพื่อทำการเติมพลังงานครับ!`;
+        }
+        else if (prompt.includes('แบต') || prompt.includes('battery') || prompt.includes('สถานะ')) {
+          const isCleaning = document.querySelectorAll('.status-select')[5]?.value === 'RUNNING';
+          const statusText = isCleaning ? 'กำลังดูดฝุ่นทำความสะอาดห้อง' : 'กำลังชาร์จไฟที่แท่นชาร์จ';
+          const batteryLevel = isCleaning ? '82%' : '100% (ชาร์จเต็ม)';
+          return `ปี๊บ! 📊 รายงานสถานะตัวเครื่องอัจฉริยะ:
+- **โหมดปัจจุบัน**: ${statusText} 🧹
+- **ระดับแบตเตอรี่**: ${batteryLevel} 🔋
+- **ระดับกล่องเก็บฝุ่น**: 24% (ยังว่างอยู่เยอะครับ)
+- **อัตราการทำงาน**: ปกติ 100%`;
+        }
+        return `ปี๊บ! 🧹 ผมคือ ROBO หุ่นยนต์ดูดฝุ่นอัจฉริยะในห้องนี้ครับ
+- พิมพ์ **"เริ่มทำความสะอาด"** เพื่อให้ผมเริ่มดูดฝุ่นรอบห้อง
+- พิมพ์ **"กลับแท่นชาร์จ"** เพื่อให้ผมวิ่งกลับแท่นชาร์จไฟ
+- พิมพ์ **"รายงานสถานะ"** เพื่อเช็คแบตเตอรี่และกล่องเก็บฝุ่นครับ`;
+      }
     }
     
     /* Markdown Formatting */
@@ -2737,7 +2879,8 @@
       2: { timer: null },
       3: { timer: null },
       4: { timer: null },
-      5: { timer: null }
+      5: { timer: null },
+      6: { timer: null }
     };
 
     function initAgentWandering() {
@@ -2745,7 +2888,7 @@
       setInterval(ySortWorkspace, 150);
 
       // Plan first walk for all agents with staggered delays
-      for (let id = 1; id <= 5; id++) {
+      for (let id = 1; id <= 6; id++) {
         const initialDelay = 3000 + Math.random() * 5000;
         agentWalkStates[id].timer = setTimeout(() => {
           tryWander(id);
@@ -2757,8 +2900,13 @@
       if (agentWalkStates[agentId].timer) {
         clearTimeout(agentWalkStates[agentId].timer);
       }
-      // Idle pause before next walk: 6 to 18 seconds
-      const delay = 6000 + Math.random() * 12000;
+      
+      // Pause delay before next walk:
+      // The vacuum robot (ROBO ID 6) continuous cleans with a tiny 100ms delay.
+      // Human agents stand idle for 6 to 18 seconds.
+      const isVacuum = (agentId === 6);
+      const delay = isVacuum ? 100 : (6000 + Math.random() * 12000);
+      
       agentWalkStates[agentId].timer = setTimeout(() => {
         tryWander(agentId);
       }, delay);
@@ -2790,6 +2938,23 @@
         return;
       }
 
+      const isVacuum = (agentId === 6);
+
+      // Special handling for Vacuum Charging Mode (IDLE status)
+      if (isVacuum && status === 'IDLE') {
+        el.classList.add('walking');
+        el.style.left = '77%';
+        el.style.top = '48%';
+        el.style.setProperty('--scale-x', '1'); // Face the charging dock
+        if (itemPositions.agent) {
+          itemPositions.agent[agentId] = { left: '77%', top: '48%' };
+        }
+        setTimeout(() => {
+          el.classList.remove('walking');
+        }, 5000); // matching vacuum transition time
+        return; // Stop wandering loop while charging
+      }
+
       // Get current positions to determine target direction
       const currentLeft = parseFloat(el.style.left || '50');
 
@@ -2815,11 +2980,12 @@
         itemPositions.agent[agentId] = { left: el.style.left, top: el.style.top };
       }
 
-      // Walk duration: 4 seconds (matching CSS transition duration)
+      // Walk duration: 5s for linear vacuum sweeps, 4s for human hops
+      const walkDuration = isVacuum ? 5000 : 4000;
       setTimeout(() => {
         el.classList.remove('walking');
         planNextWalk(agentId);
-      }, 4000);
+      }, walkDuration);
     }
 
     /* Page load init triggers */
