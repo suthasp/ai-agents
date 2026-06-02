@@ -29,7 +29,8 @@
     }
 
     body {
-      background: #06060c;
+      background: #06060c url('office_background.png') no-repeat center center;
+      background-size: cover;
       color: #cbd5e0;
       font-family: var(--font-sans);
       height: 100vh;
@@ -48,7 +49,7 @@
     .sidebar {
       width: 280px;
       min-width: 280px;
-      background: rgba(10, 11, 24, 0.85);
+      background: rgba(10, 11, 24, 0.6);
       border-right: 1px solid var(--panel-border);
       display: flex;
       flex-direction: column;
@@ -56,7 +57,7 @@
       padding: 12px;
       overflow-y: auto;
       z-index: 10;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
     }
 
     .right-sidebar {
@@ -71,7 +72,7 @@
       position: relative;
       height: 100%;
       overflow: hidden;
-      background: #020205;
+      background: transparent;
     }
 
     /* Panels styling (Glassmorphism & neon glows) */
@@ -179,7 +180,8 @@
     /* Action bar */
     .action-bar {
       height: 48px;
-      background: rgba(13, 14, 30, 0.9);
+      background: rgba(13, 14, 30, 0.6);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--panel-border);
       padding: 0 16px;
       display: flex;
@@ -371,10 +373,6 @@
     #office-canvas {
       flex: 1;
       position: relative;
-      background-image: url('office_background.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       overflow: hidden;
       box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
     }
@@ -463,7 +461,8 @@
       right: 0;
       bottom: 0;
       width: 360px;
-      background: #090912;
+      background: rgba(9, 9, 18, 0.7);
+      backdrop-filter: blur(16px);
       border-left: 2px solid var(--theme-color, #503cb4);
       display: flex;
       flex-direction: column;
