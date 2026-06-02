@@ -1231,15 +1231,15 @@
         </div>
         <div class="stat-row">
           <span class="stat-label">SET INDEX</span>
-          <span class="stat-value" id="index-set" style="color: #22c55e;">1,380.20 (+0.4%)</span>
+          <span class="stat-value" id="index-set" style="color: #64748b;">กำลังโหลด...</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">NASDAQ</span>
-          <span class="stat-value" id="index-nasdaq" style="color: #22c55e;">16,240.50 (+1.1%)</span>
+          <span class="stat-value" id="index-nasdaq" style="color: #64748b;">กำลังโหลด...</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">S&P 500</span>
-          <span class="stat-value" id="index-sp500" style="color: #22c55e;">5,120.30 (+0.8%)</span>
+          <span class="stat-value" id="index-sp500" style="color: #64748b;">กำลังโหลด...</span>
         </div>
         <!-- Progress Bar -->
         <div class="progress-bar-container">
@@ -2654,26 +2654,36 @@
     /* Update market indices from Yahoo Finance dynamically */
     async function updateMarketIndices() {
       const indices = [
-        { symbol: 'SET.BK', elementId: 'index-set' },
-        { symbol: '^IXIC', elementId: 'index-nasdaq' },
-        { symbol: '^GSPC', elementId: 'index-sp500' }
+        { symbol: '^SETI',    label: 'SET INDEX', elementId: 'index-set' },
+        { symbol: '^IXIC',    label: 'NASDAQ',    elementId: 'index-nasdaq' },
+        { symbol: '^GSPC',    label: 'S&P 500',   elementId: 'index-sp500' }
       ];
       
       logActivity("REFRESHING MARKET INDICES: Fetching real-time quotes...");
       
       for (const index of indices) {
+        const el = document.getElementById(index.elementId);
+        if (!el) continue;
+        
         try {
           const data = await fetchRealTimeStock(index.symbol);
-          const el = document.getElementById(index.elementId);
-          if (el && data.success) {
+          if (data.success) {
             const numPrice = parseFloat(data.price);
-            const formattedPrice = isNaN(numPrice) ? data.price : numPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const formattedPrice = isNaN(numPrice)
+              ? data.price
+              : numPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             el.textContent = `${formattedPrice} (${data.changePercent})`;
             const isNegative = data.changePercent.startsWith('-');
             el.style.color = isNegative ? '#ef4444' : '#22c55e';
+          } else {
+            // Mark element as unable to load
+            el.textContent = 'N/A';
+            el.style.color = '#64748b';
           }
         } catch (e) {
           console.error(`Failed to update index ${index.symbol}:`, e);
+          el.textContent = 'N/A';
+          el.style.color = '#64748b';
         }
       }
       logActivity("MARKET INDICES UPDATED: Real-time quotes loaded.");
