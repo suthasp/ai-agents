@@ -414,19 +414,30 @@
       image-rendering: pixelated;
     }
     
+    .draggable[data-type="agent"] svg {
+      width: 40px;
+      height: 66px;
+      transform: scaleX(var(--scale-x, 1));
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    .draggable[data-type="agent"].walking:not(.dragging) {
+      transition: left 4s ease-in-out, top 4s ease-in-out;
+    }
+    
     .draggable[data-type="agent"]::before {
       content: "";
       position: absolute;
-      bottom: -4px;
+      bottom: -2px;
       left: 50%;
-      width: 36px;
-      height: 10px;
+      width: 24px;
+      height: 6px;
       background: rgba(0, 0, 0, 0.3);
       border-radius: 50%;
       transform: translate(-50%, 0);
       z-index: -1;
       pointer-events: none;
-      filter: blur(2px);
+      filter: blur(1.5px);
     }
 
     .draggable[data-type="agent"].dragging {
@@ -888,7 +899,8 @@
     /* Speech bubbles above agents */
     .agent-bubble {
       position: absolute;
-      top: -65px;
+      bottom: 100%;
+      margin-bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(9, 9, 20, 0.95);
@@ -939,12 +951,22 @@
 
     /* Chibi idle bob animation */
     @keyframes chibiBob {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      0%, 100% { transform: scaleX(var(--scale-x, 1)) translateY(0px); }
+      50% { transform: scaleX(var(--scale-x, 1)) translateY(-5px); }
+    }
+
+    /* Chibi walk hop animation */
+    @keyframes chibiWalk {
+      0%, 100% { transform: scaleX(var(--scale-x, 1)) translateY(0px) scaleY(1); }
+      50% { transform: scaleX(var(--scale-x, 1)) translateY(-8px) scaleY(0.9); }
     }
 
     .draggable[data-type="agent"]:not(.dragging) svg {
       animation: chibiBob 2.8s ease-in-out infinite;
+    }
+
+    .draggable[data-type="agent"].walking:not(.dragging) svg {
+      animation: chibiWalk 0.6s ease-in-out infinite !important;
     }
 
     /* Each agent gets a different timing offset */
@@ -1598,12 +1620,32 @@
         if (status === 'OFFLINE') {
           dot.classList.add('offline');
           postTeamChatMsg(id, status, "OFFLINE - Stopped analyst monitoring");
+          
+          // Interrupt walking if offline
+          const el = document.querySelector(`.draggable[data-type="agent"][data-id="${id}"]`);
+          if (el) {
+            el.classList.remove('walking');
+          }
+          if (agentWalkStates[id] && agentWalkStates[id].timer) {
+            clearTimeout(agentWalkStates[id].timer);
+            agentWalkStates[id].timer = null;
+          }
         } else if (status === 'IDLE') {
           dot.classList.add('idle');
           postTeamChatMsg(id, status, "IDLE - Standing by");
+          
+          // Resume planning walk if it was stopped
+          if (agentWalkStates[id] && !agentWalkStates[id].timer) {
+            planNextWalk(id);
+          }
         } else {
           // Running
           postTeamChatMsg(id, status, "RUNNING - Scanning active targets");
+          
+          // Resume planning walk if it was stopped
+          if (agentWalkStates[id] && !agentWalkStates[id].timer) {
+            planNextWalk(id);
+          }
         }
       }
     }
@@ -2689,6 +2731,97 @@
       logActivity("MARKET INDICES UPDATED: Real-time quotes loaded.");
     }
 
+    /* Dynamic Agent Wandering / Movement System */
+    const agentWalkStates = {
+      1: { timer: null },
+      2: { timer: null },
+      3: { timer: null },
+      4: { timer: null },
+      5: { timer: null }
+    };
+
+    function initAgentWandering() {
+      // Start continuous y-sorting to keep layered order perfect during transitions
+      setInterval(ySortWorkspace, 150);
+
+      // Plan first walk for all agents with staggered delays
+      for (let id = 1; id <= 5; id++) {
+        const initialDelay = 3000 + Math.random() * 5000;
+        agentWalkStates[id].timer = setTimeout(() => {
+          tryWander(id);
+        }, initialDelay);
+      }
+    }
+
+    function planNextWalk(agentId) {
+      if (agentWalkStates[agentId].timer) {
+        clearTimeout(agentWalkStates[agentId].timer);
+      }
+      // Idle pause before next walk: 6 to 18 seconds
+      const delay = 6000 + Math.random() * 12000;
+      agentWalkStates[agentId].timer = setTimeout(() => {
+        tryWander(agentId);
+      }, delay);
+    }
+
+    function tryWander(agentId) {
+      const el = document.querySelector(`.draggable[data-type="agent"][data-id="${agentId}"]`);
+      if (!el) {
+        planNextWalk(agentId);
+        return;
+      }
+
+      // Check current agent status from select dropdown
+      let status = 'RUNNING';
+      const statusSelects = document.querySelectorAll('.status-select');
+      if (statusSelects && statusSelects[agentId - 1]) {
+        status = statusSelects[agentId - 1].value;
+      }
+
+      // If agent is offline, they shouldn't walk
+      if (status === 'OFFLINE') {
+        planNextWalk(agentId);
+        return;
+      }
+
+      // If we are in move mode, or agent is currently selected/dragged, skip walk
+      if (isMoveMode || el.classList.contains('dragging') || el.classList.contains('selected') || activeDragEl === el) {
+        planNextWalk(agentId);
+        return;
+      }
+
+      // Get current positions to determine target direction
+      const currentLeft = parseFloat(el.style.left || '50');
+
+      // Random walkable coordinates (isometric floor bounds)
+      // Walkable area: left: 28% to 76%, top: 32% to 78%
+      const newLeft = 28 + Math.random() * 48;
+      const newTop = 32 + Math.random() * 46;
+
+      // Set facing direction based on horizontal movement direction
+      if (newLeft < currentLeft) {
+        el.style.setProperty('--scale-x', '-1');
+      } else {
+        el.style.setProperty('--scale-x', '1');
+      }
+
+      // Start walking
+      el.classList.add('walking');
+      el.style.left = newLeft.toFixed(2) + '%';
+      el.style.top = newTop.toFixed(2) + '%';
+
+      // Update positions in memory so dragging and other systems work from the new spot
+      if (itemPositions.agent) {
+        itemPositions.agent[agentId] = { left: el.style.left, top: el.style.top };
+      }
+
+      // Walk duration: 4 seconds (matching CSS transition duration)
+      setTimeout(() => {
+        el.classList.remove('walking');
+        planNextWalk(agentId);
+      }, 4000);
+    }
+
     /* Page load init triggers */
     window.addEventListener('load', () => {
       loadPositions();
@@ -2696,6 +2829,7 @@
       refreshWeather();
       updateMarketIndices();
       setInterval(updateMarketIndices, 60000); // refresh every 1 minute
+      initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
   </script>
