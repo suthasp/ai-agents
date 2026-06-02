@@ -29,8 +29,7 @@
     }
 
     body {
-      background: #06060c url('office_background.png') no-repeat center center;
-      background-size: cover;
+      background: #000;
       color: #cbd5e0;
       font-family: var(--font-sans);
       height: 100vh;
@@ -44,25 +43,27 @@
       width: 100%;
       height: 100vh;
       overflow: hidden;
+      background: #06060c url('office_background.png') no-repeat center center;
+      background-size: cover;
     }
 
     .sidebar {
       width: 280px;
       min-width: 280px;
-      background: rgba(10, 11, 24, 0.4);
-      border-right: 1px solid var(--panel-border);
+      background: rgba(10, 11, 24, 0.25);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       flex-direction: column;
       gap: 12px;
       padding: 12px;
       overflow-y: auto;
       z-index: 10;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
     }
 
     .right-sidebar {
       border-right: none;
-      border-left: 1px solid var(--panel-border);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .main-content {
@@ -77,14 +78,15 @@
 
     /* Panels styling (Glassmorphism & neon glows) */
     .panel {
-      background: rgba(15, 17, 36, 0.2);
-      border: 1px solid var(--panel-border);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 8px;
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
     }
 
     .panel-header {
@@ -984,370 +986,7 @@
       <div id="office-canvas">
         
         <!-- ==================== DESKS ==================== -->
-        <!-- Desk 1 (News Desk - Bottom Left Area) -->
-        <div class="draggable" data-type="desk" data-id="1" style="left: 32%; top: 54%;">
-          <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
-            <!-- Shadows on floor -->
-            <polygon points="-45,10 5,-15 45,5 -5,30" fill="rgba(0,0,0,0.2)" />
-            
-            <!-- Couch Base Structure -->
-            <!-- Backrest Back -->
-            <polygon points="-40,-15 15,-42.5 15,-17.5 -40,10" fill="#172554" />
-            <!-- Backrest Top -->
-            <polygon points="-40,-15 -35,-17.5 20,-45 15,-42.5" fill="#3b82f6" />
-            <!-- Backrest Front -->
-            <polygon points="-35,-17.5 20,-45 20,-20 -35,7.5" fill="#1d4ed8" />
-            
-            <!-- Left Armrest -->
-            <polygon points="-45,-5 -35,-10 -20,-2.5 -30,2.5" fill="#3b82f6" />
-            <polygon points="-45,-5 -30,2.5 -30,17.5 -45,10" fill="#1d4ed8" />
-            <polygon points="-30,2.5 -20,-2.5 -20,12.5 -30,17.5" fill="#1e40af" />
-
-            <!-- Right Armrest -->
-            <polygon points="10,-30 20,-35 35,-27.5 25,-22.5" fill="#3b82f6" />
-            <polygon points="10,-30 25,-22.5 25,-7.5 10,-15" fill="#1d4ed8" />
-            <polygon points="25,-22.5 35,-27.5 35,-12.5 25,-7.5" fill="#1e40af" />
-
-            <!-- Seat Cushions (two cushions side-by-side) -->
-            <!-- Cushion 1 (Left) -->
-            <polygon points="-30,2.5 -10,-7.5 5,0 -15,10" fill="#2563eb" />
-            <polygon points="-30,2.5 -15,10 -15,18 -30,10.5" fill="#1d4ed8" />
-            <polygon points="-15,10 5,0 5,8 -15,18" fill="#1e40af" />
-
-            <!-- Cushion 2 (Right) -->
-            <polygon points="-10,-7.5 10,-17.5 25,-10 5,0" fill="#2563eb" />
-            <polygon points="5,0 25,-10 25,-2 5,8" fill="#1e40af" />
-
-            <!-- Pillow (Orange, placed on left cushion) -->
-            <polygon points="-20,-5 -10,-10 -5,-7.5 -15,-2.5" fill="#f97316" />
-            <polygon points="-20,-5 -15,-2.5 -15,3.5 -20,1" fill="#ea580c" />
-            <polygon points="-15,-2.5 -5,-7.5 -5,-1.5 -15,3.5" fill="#c2410c" />
-
-            <!-- Coffee Table (on the left front side) -->
-            <polygon points="-45,15 -35,10 -25,15 -35,20" fill="#ebdcd0" stroke="#9a8470" stroke-width="0.5" />
-            <line x1="-45" y1="15" x2="-45" y2="27" stroke="#7a6652" stroke-width="1.5" />
-            <line x1="-35" y1="20" x2="-35" y2="32" stroke="#7a6652" stroke-width="1.5" />
-            <line x1="-25" y1="15" x2="-25" y2="27" stroke="#7a6652" stroke-width="1.5" />
-            <line x1="-35" y1="10" x2="-35" y2="22" stroke="#7a6652" stroke-width="0.8" opacity="0.7" />
-            <!-- Coffee Cup on Table -->
-            <ellipse cx="-35" cy="14" rx="2" ry="1" fill="#f8fafc" />
-            <path d="M-35,14 L-35,12" stroke="#f8fafc" stroke-width="1.5" />
-            <path d="M-35,10 Q-36,8 -35,6" stroke="rgba(255,255,255,0.5)" stroke-width="0.5" fill="none" />
-          </svg>
-        </div>
-
-        <!-- Desk 2 (Ticker Analyst - Center Back Area) -->
-        <div class="draggable" data-type="desk" data-id="2" style="left: 45%; top: 48%;">
-          <svg width="100" height="75" viewBox="-50 -35 100 75" xmlns="http://www.w3.org/2000/svg">
-            <!-- Floor Shadow for Chair and Desk -->
-            <ellipse cx="-15" cy="5" rx="15" ry="7" fill="rgba(0,0,0,0.2)" />
-            <polygon points="-40,15 0,-5 40,15 0,25" fill="rgba(0,0,0,0.15)" />
-
-            <!-- RED ERGONOMIC CHAIR (Behind the desk) -->
-            <!-- Chair Base -->
-            <path d="M-25,12 L-11,8 M-18,15 L-18,2 M-11,12 L-25,8" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" />
-            <!-- Chair Cylinder Post -->
-            <line x1="-18" y1="9" x2="-18" y2="-2" stroke="#64748b" stroke-width="3" />
-            <!-- Chair Seat -->
-            <polygon points="-27,-7 -18,-11 -9,-7 -18,-3" fill="#991b1b" />
-            <polygon points="-27,-7 -18,-3 -18,0 -27,-4" fill="#7f1d1d" />
-            <polygon points="-18,-3 -9,-7 -9,-4 -18,0" fill="#7f1d1d" />
-            <!-- Chair Backrest Support -->
-            <path d="M-18,-7 L-18,-16" stroke="#475569" stroke-width="2.5" />
-            <!-- High Backrest -->
-            <polygon points="-25,-25 -18,-29 -11,-25 -18,-21" fill="#b91c1c" />
-            <polygon points="-25,-25 -18,-21 -18,-7 -25,-11" fill="#991b1b" />
-            <polygon points="-18,-21 -11,-25 -11,-11 -18,-7" fill="#7f1d1d" />
-            <!-- Armrests -->
-            <!-- Left armrest -->
-            <path d="M-28,-10 L-28,-3 L-23,-6 L-23,-13 Z" fill="#475569" />
-            <polygon points="-28,-10 -23,-13 -20,-11 -25,-8" fill="#991b1b" />
-            <!-- Right armrest -->
-            <path d="M-13,-14 L-13,-7 L-8,-10 L-8,-17 Z" fill="#334155" />
-            <polygon points="-13,-14 -8,-17 -5,-15 -10,-12" fill="#991b1b" />
-
-            <!-- NEW LIGHT WOOD DESK WITH METAL LEGS & DRAWER -->
-            <!-- Left Metal Leg -->
-            <line x1="-35" y1="-5" x2="-35" y2="15" stroke="#475569" stroke-width="3" />
-            <line x1="-38" y1="15" x2="-32" y2="15" stroke="#1e293b" stroke-width="4" />
-            
-            <!-- Drawer Cabinet Unit (on the right) -->
-            <polygon points="12,-4 27,-11.5 27,11 12,18.5" fill="#451a03" />
-            <polygon points="27,-11.5 42,-4 42,18.5 27,11" fill="#2d0f02" />
-            <!-- Drawers -->
-            <polygon points="14,-2 25,-7.5 25,-4 14,1.5" fill="#78350f" />
-            <line x1="18" y1="-3" x2="21" y2="-4" stroke="#cbd5e0" stroke-width="1.5" />
-            <polygon points="14,6 25,0.5 25,4 14,9.5" fill="#78350f" />
-            <line x1="18" y1="5" x2="21" y2="4" stroke="#cbd5e0" stroke-width="1.5" />
-
-            <!-- Modesty Panel -->
-            <polygon points="-33,-2 10,12 10,2 -33,-12" fill="#64748b" opacity="0.9" />
-            <circle cx="-25" cy="-8" r="0.6" fill="#1e293b" />
-            <circle cx="-15" cy="-5" r="0.6" fill="#1e293b" />
-            <circle cx="-5" cy="-2" r="0.6" fill="#1e293b" />
-            <circle cx="5" cy="1" r="0.6" fill="#1e293b" />
-
-            <!-- Desk Top Surface -->
-            <polygon points="-40,-5 0,-25 40,-5 0,15" fill="#f6d5a1" />
-            <!-- Desk Top Edges -->
-            <polygon points="-40,-5 0,15 0,18 -40,8" fill="#ebdcd0" />
-            <polygon points="40,-5 0,15 0,18 40,8" fill="#f6d5a1" opacity="0.6" />
-
-            <!-- Laptop on Desk -->
-            <polygon points="-10,-3 -2,-7 6,-3 -2,1" fill="#f1f5f9" />
-            <!-- Screen -->
-            <polygon points="-2,-7 6,-3 6,-11 -2,-15" fill="#1e293b" stroke="#3b82f6" stroke-width="0.8" />
-            <polygon points="-1,-8 5,-5 5,-10 -1,-13" fill="#000" />
-            <polygon points="-1,-8 5,-5 5,-10 -1,-13" fill="rgba(34,211,238,0.25)" />
-          </svg>
-        </div>
-
-        <!-- Desk 3 (Scanner Desk - Center Front Area) -->
-        <div class="draggable" data-type="desk" data-id="3" style="left: 36%; top: 72%;">
-          <svg width="120" height="90" viewBox="-60 -45 120 90" xmlns="http://www.w3.org/2000/svg">
-            <!-- Floor Shadows -->
-            <ellipse cx="-20" cy="15" rx="12" ry="6" fill="rgba(0,0,0,0.2)" />
-            <polygon points="-45,20 -15,5 25,25 -5,40" fill="rgba(0,0,0,0.15)" />
-            <polygon points="20,10 40,0 55,7.5 35,17.5" fill="rgba(0,0,0,0.25)" />
-
-            <!-- RED ERGONOMIC CHAIR -->
-            <!-- Base -->
-            <path d="M-27,17 L-13,10 M-20,20 L-20,7 M-13,17 L-27,10" stroke="#1e293b" stroke-width="2" />
-            <!-- Cylinder Post -->
-            <line x1="-20" y1="14" x2="-20" y2="5" stroke="#64748b" stroke-width="2.5" />
-            <!-- Seat Cushion -->
-            <polygon points="-28,1 -20,-3 -12,1 -20,5" fill="#991b1b" />
-            <polygon points="-28,1 -20,5 -20,8 -28,4" fill="#7f1d1d" />
-            <polygon points="-20,5 -12,1 -12,4 -20,8" fill="#7f1d1d" />
-            <!-- Backrest Support -->
-            <path d="M-20,1 L-20,-8" stroke="#475569" stroke-width="2" />
-            <!-- High Backrest -->
-            <polygon points="-26,-15 -20,-18 -14,-15 -20,-12" fill="#b91c1c" />
-            <polygon points="-26,-15 -20,-12 -20,-6 -26,-9" fill="#991b1b" />
-            <polygon points="-20,-12 -14,-15 -14,-9 -20,-6" fill="#7f1d1d" />
-            <!-- Armrests -->
-            <!-- Left armrest -->
-            <path d="M-30,-2 L-30,5 L-25,2 L-25,-5 Z" fill="#475569" />
-            <polygon points="-30,-2 -25,-5 -22,-3 -27,0" fill="#991b1b" />
-            <!-- Right armrest -->
-            <path d="M-15,-6 L-15,1 L-10,-2 L-10,-9 Z" fill="#334155" />
-            <polygon points="-15,-6 -10,-9 -7,-7 -12,-4" fill="#991b1b" />
-
-            <!-- NEW LIGHT WOOD DESK WITH METAL LEGS & DRAWER -->
-            <!-- Left Metal Leg -->
-            <line x1="-40" y1="10" x2="-40" y2="28" stroke="#475569" stroke-width="3" />
-            <line x1="-43" y1="28" x2="-37" y2="28" stroke="#1e293b" stroke-width="4" />
-            
-            <!-- Drawer Cabinet Unit (on the right) -->
-            <polygon points="12,11 22,6 22,25 12,30" fill="#451a03" />
-            <polygon points="22,6 32,11 32,30 22,25" fill="#2d0f02" />
-            <!-- Drawers -->
-            <polygon points="14,13 20,10 20,13 14,16" fill="#78350f" />
-            <line x1="16" y1="13.5" x2="18" y2="12.5" stroke="#cbd5e0" stroke-width="1.5" />
-            <polygon points="14,20 20,17 20,20 14,23" fill="#78350f" />
-            <line x1="16" y1="20.5" x2="18" y2="19.5" stroke="#cbd5e0" stroke-width="1.5" />
-
-            <!-- Modesty Panel -->
-            <polygon points="-38,12 10,24 10,14 -38,2" fill="#64748b" opacity="0.9" />
-
-            <!-- Desk Top -->
-            <polygon points="-45,10 0,-12.5 35,5 -10,27.5" fill="#f6d5a1" />
-            <!-- Desk Edge -->
-            <polygon points="-45,10 -10,27.5 -10,30.5 -45,13" fill="#ebdcd0" />
-            <polygon points="35,5 -10,27.5 -10,30.5 35,8" fill="#f6d5a1" opacity="0.6" />
-
-            <!-- Calculator / Scanner Device on Desk -->
-            <polygon points="-25,12 -18,8.5 -11,12 -18,15.5" fill="#334155" />
-            <polygon points="-23,11 -18,8.5 -13,11 -18,13.5" fill="#10b981" opacity="0.7" />
-
-            <!-- BLUE OPEN BOOKSHELF (On the right side) -->
-            <!-- Bookshelf Back Wall -->
-            <polygon points="25,10 40,2.5 40,-27.5 25,-20" fill="#1d4ed8" />
-            <!-- Bookshelf Left Side Wall -->
-            <polygon points="25,10 25,-20 35,-15 35,15" fill="#2563eb" />
-            <!-- Bookshelf Right Side Wall -->
-            <polygon points="40,2.5 40,-27.5 50,-22.5 50,7.5" fill="#1e40af" />
-            
-            <!-- Bottom Shelf -->
-            <polygon points="25,2.5 35,7.5 50,0 40,-5" fill="#1e40af" />
-            <polygon points="28,1 32,3 32,-3 28,-5" fill="#ef4444" />
-            <polygon points="32,3 36,5 36,-1 32,-3" fill="#f59e0b" />
-            <polygon points="38,1 42,-1 42,-7 38,-5" fill="#cbd5e0" />
-
-            <!-- Middle Shelf -->
-            <polygon points="25,-7.5 35,-2.5 50,-10 40,-15" fill="#1e40af" />
-            <polygon points="28,-9 32,-7 32,-13 28,-15" fill="#10b981" />
-            <polygon points="34,-6 40,-9 40,-15 34,-12" fill="#3b82f6" />
-
-            <!-- Top Shelf / Top Cover -->
-            <polygon points="25,-17.5 35,-12.5 50,-20 40,-25" fill="#3b82f6" />
-            <polygon points="25,-17.5 35,-12.5 35,-15 25,-20" fill="#2563eb" />
-            <polygon points="35,-12.5 50,-20 50,-22.5 35,-15" fill="#1e40af" />
-
-            <!-- Potted Flower on Top -->
-            <polygon points="33,-17 37,-15 39,-16 35,-18" fill="#d97706" />
-            <polygon points="33,-17 35,-18 35,-21 33,-20" fill="#b45309" />
-            <polygon points="37,-15 35,-18 35,-21 37,-18" fill="#92400e" />
-            <circle cx="35" cy="-21" r="3" fill="#22c55e" />
-            <circle cx="37" cy="-22" r="2.5" fill="#10b981" />
-            <circle cx="34" cy="-22" r="1" fill="#ef4444" />
-            <circle cx="37" cy="-20" r="1.2" fill="#f43f5e" />
-            <circle cx="36" cy="-23" r="0.8" fill="#f43f5e" />
-          </svg>
-        </div>
-
-        <!-- Desk 4 (Insights Desk - Right Middle Area) -->
-        <div class="draggable" data-type="desk" data-id="4" style="left: 64%; top: 56%;">
-          <svg width="100" height="80" viewBox="-50 -40 100 80" xmlns="http://www.w3.org/2000/svg">
-            <!-- Floor Shadows -->
-            <polygon points="-45,0 -15,-15 50,15 20,30" fill="rgba(0,0,0,0.15)" />
-            <ellipse cx="15" cy="12" rx="10" ry="5" fill="rgba(0,0,0,0.2)" />
-
-            <!-- BLUE OPEN BOOKSHELF (On the left side) -->
-            <!-- Back Wall -->
-            <polygon points="-40,-2 -25,-9.5 -25,-39.5 -40,-32" fill="#1d4ed8" />
-            <!-- Left Side Wall -->
-            <polygon points="-40,-2 -40,-32 -30,-27 -30,3" fill="#2563eb" />
-            <!-- Right Side Wall -->
-            <polygon points="-25,-9.5 -25,-39.5 -15,-34.5 -15,-4.5" fill="#1e40af" />
-            
-            <!-- Bottom Shelf -->
-            <polygon points="-40,-9.5 -30,-4.5 -15,-12 -25,-17" fill="#1e40af" />
-            <polygon points="-37,-11 -33,-9 -33,-15 -37,-17" fill="#ef4444" />
-            <polygon points="-33,-9 -29,-7 -29,-13 -33,-15" fill="#f59e0b" />
-            
-            <!-- Middle Shelf -->
-            <polygon points="-40,-19.5 -30,-14.5 -15,-22 -25,-27" fill="#1e40af" />
-            <polygon points="-37,-21 -33,-19 -33,-25 -37,-27" fill="#10b981" />
-            
-            <!-- Top Shelf / Cover -->
-            <polygon points="-40,-29.5 -30,-24.5 -15,-32 -25,-37" fill="#3b82f6" />
-            <polygon points="-40,-29.5 -30,-24.5 -30,-27 -40,-32" fill="#2563eb" />
-            <polygon points="-30,-24.5 -15,-32 -15,-34.5 -30,-27" fill="#1e40af" />
-
-            <!-- RED ERGONOMIC CHAIR -->
-            <!-- Base -->
-            <path d="M8,14 L22,7 M15,17 L15,4 M22,14 L8,7" stroke="#1e293b" stroke-width="1.8" />
-            <line x1="15" y1="11" x2="15" y2="2" stroke="#64748b" stroke-width="2.5" />
-            <!-- Seat Cushion -->
-            <polygon points="6,-5 15,-9 24,-5 15,-1" fill="#991b1b" />
-            <polygon points="6,-5 15,-1 15,2 6,-2" fill="#7f1d1d" />
-            <polygon points="15,-1 24,-5 24,-2 15,2" fill="#7f1d1d" />
-            <!-- Backrest Support -->
-            <path d="M15,-5 L15,-14" stroke="#475569" stroke-width="2" />
-            <!-- High Backrest -->
-            <polygon points="8,-23 15,-27 22,-23 15,-19" fill="#b91c1c" />
-            <polygon points="8,-23 15,-19 15,-5 8,-9" fill="#991b1b" />
-            <polygon points="15,-19 22,-23 22,-9 15,-5" fill="#7f1d1d" />
-            <!-- Armrests -->
-            <!-- Left armrest -->
-            <path d="M5,-8 L5,-1 Q10,-4 10,-11 Z" fill="#475569" />
-            <polygon points="5,-8 10,-11 13,-9 8,-6" fill="#991b1b" />
-            <!-- Right armrest -->
-            <path d="M20,-12 L20,-5 Q25,-8 25,-15 Z" fill="#334155" />
-            <polygon points="20,-12 25,-15 28,-13 23,-10" fill="#991b1b" />
-
-            <!-- NEW LIGHT WOOD DESK WITH METAL LEGS & DRAWER -->
-            <!-- Right Metal Leg -->
-            <line x1="45" y1="5" x2="45" y2="23" stroke="#475569" stroke-width="3" />
-            <line x1="42" y1="23" x2="48" y2="23" stroke="#1e293b" stroke-width="4" />
-            
-            <!-- Drawer Cabinet Unit (on the left) -->
-            <polygon points="-12,4 3,-3.5 3,19 -12,26.5" fill="#451a03" />
-            <polygon points="3,-3.5 18,4 18,26.5 3,19" fill="#2d0f02" />
-            <!-- Drawers -->
-            <polygon points="-10,6 1,0.5 1,3.5 -10,9" fill="#78350f" />
-            <line x1="-8" y1="6.5" x2="-5" y2="5.5" stroke="#cbd5e0" stroke-width="1.5" />
-            <polygon points="-10,13 1,7.5 1,10.5 -10,16" fill="#78350f" />
-            <line x1="-8" y1="13.5" x2="-5" y2="12.5" stroke="#cbd5e0" stroke-width="1.5" />
-
-            <!-- Modesty Panel -->
-            <polygon points="-10,5 42,18.5 42,8.5 -10,-5" fill="#64748b" opacity="0.9" />
-
-            <!-- Desk Top -->
-            <polygon points="-15,10 20,-7.5 50,7.5 15,25" fill="#f6d5a1" />
-            <!-- Desk Edges -->
-            <polygon points="-15,10 15,25 15,28 -15,13" fill="#ebdcd0" />
-            <polygon points="50,7.5 15,25 15,28 50,10.5" fill="#f6d5a1" opacity="0.6" />
-
-            <!-- Computer monitor on desk -->
-            <polygon points="12,5 18,2 20,3 14,6" fill="#475569" />
-            <line x1="16" y1="4" x2="16" y2="-1" stroke="#475569" stroke-width="2" />
-            <polygon points="6,-10 26,-20 26,-9 6,1" fill="#1e293b" stroke="#3b82f6" stroke-width="0.8" />
-            <polygon points="8,-9 24,-17 24,-11 8,-3" fill="#000" />
-            <polygon points="8,-9 24,-17 24,-11 8,-3" fill="rgba(34,211,238,0.25)" />
-
-            <!-- Globe on desk (far right) -->
-            <path d="M37,0 L37,4 M35,4 L39,4" stroke="#475569" stroke-width="1" />
-            <circle cx="37" cy="-3" r="3.5" fill="#3b82f6" />
-            <path d="M35,-4 Q37,-2 39,-5 M34,-2 Q36,-2 39,-2 M36,0 Q38,0 39,-1" stroke="#22c55e" stroke-width="1.2" fill="none" />
-          </svg>
-        </div>
-
-        <!-- Desk 5 (Presentation Desk - Right Front Area) -->
-        <div class="draggable" data-type="desk" data-id="5" style="left: 60%; top: 74%;">
-          <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
-            <!-- Shadows -->
-            <polygon points="-45,5 -10,-12.5 45,15 10,32.5" fill="rgba(0,0,0,0.15)" />
-            <ellipse cx="-15" cy="10" rx="10" ry="5" fill="rgba(0,0,0,0.2)" />
-
-            <!-- RED ERGONOMIC CHAIR -->
-            <!-- Base -->
-            <path d="M-22,12 L-8,5 M-15,15 L-15,2 M-8,12 L-22,5" stroke="#1e293b" stroke-width="1.8" />
-            <line x1="-15" y1="9" x2="-15" y2="0" stroke="#64748b" stroke-width="2.5" />
-            <!-- Seat Cushion -->
-            <polygon points="-24,-9 -15,-13 -6,-9 -15,-5" fill="#991b1b" />
-            <polygon points="-24,-9 -15,-5 -15,-2 -24,-6" fill="#7f1d1d" />
-            <polygon points="-15,-5 -6,-9 -6,-6 -15,-2" fill="#7f1d1d" />
-            <!-- Backrest Support -->
-            <path d="M-15,-9 L-15,-18" stroke="#475569" stroke-width="2" />
-            <!-- High Backrest -->
-            <polygon points="-22,-27 -15,-31 -8,-27 -15,-23" fill="#b91c1c" />
-            <polygon points="-22,-27 -15,-23 -15,-9 -22,-13" fill="#991b1b" />
-            <polygon points="-15,-23 -8,-27 -8,-13 -15,-9" fill="#7f1d1d" />
-            <!-- Armrests -->
-            <!-- Left armrest -->
-            <path d="M-26,-11 L-26,-4 L-21,-7 L-21,-14 Z" fill="#475569" />
-            <polygon points="-26,-11 -21,-14 -18,-12 -23,-9" fill="#991b1b" />
-            <!-- Right armrest -->
-            <path d="M-10,-15 L-10,-8 L-5,-11 L-5,-18 Z" fill="#334155" />
-            <polygon points="-10,-15 -5,-18 -2,-16 -7,-13" fill="#991b1b" />
-
-            <!-- NEW LIGHT WOOD DESK WITH METAL LEGS & DRAWER -->
-            <!-- Left Metal Leg -->
-            <line x1="-40" y1="2" x2="-40" y2="22" stroke="#475569" stroke-width="3" />
-            <line x1="-43" y1="22" x2="-37" y2="22" stroke="#1e293b" stroke-width="4" />
-            
-            <!-- Drawer Cabinet Unit (on the right) -->
-            <polygon points="12,11 22,6 22,25 12,30" fill="#451a03" />
-            <polygon points="22,6 32,11 32,30 22,25" fill="#2d0f02" />
-            <!-- Drawers -->
-            <polygon points="14,13 20,10 20,13 14,16" fill="#78350f" />
-            <line x1="16" y1="13.5" x2="18" y2="12.5" stroke="#cbd5e0" stroke-width="1.5" />
-            <polygon points="14,20 20,17 20,20 14,23" fill="#78350f" />
-            <line x1="16" y1="20.5" x2="18" y2="19.5" stroke="#cbd5e0" stroke-width="1.5" />
-
-            <!-- Modesty Panel -->
-            <polygon points="-38,4 10,16 10,6 -38,-6" fill="#64748b" opacity="0.9" />
-
-            <!-- Desk Top Surface -->
-            <polygon points="-45,0 -10,-17.5 45,10 10,27.5" fill="#f6d5a1" />
-            <!-- Desk Edges -->
-            <polygon points="-45,0 10,27.5 10,30.5 -45,3" fill="#ebdcd0" />
-            <polygon points="45,10 10,27.5 10,30.5 45,13" fill="#f6d5a1" opacity="0.6" />
-
-            <!-- Artist Tablet (Wacom) on Desk -->
-            <polygon points="12,14 20,10 28,14 20,18" fill="#18181b" stroke="#f43f5e" stroke-width="0.8" />
-            <path d="M16,14 L20,12 L24,15 L20,16 Z" fill="#27272a" />
-            <path d="M18,13 L22,15" stroke="#f43f5e" stroke-width="1" fill="none" opacity="0.8" />
-
-            <!-- Paint Palette (Luna Style) -->
-            <polygon points="-5,7 1,4 7,7 1,10" fill="#cbd5e0" />
-            <circle cx="-1" cy="7" r="0.8" fill="#ef4444" />
-            <circle cx="1" cy="6" r="0.8" fill="#eab308" />
-            <circle cx="3" cy="7" r="0.8" fill="#3b82f6" />
-          </svg>
-        </div>
+        <!-- Draggable desks removed (baked into the new background image) -->
 
         <!-- ==================== DECORATIONS ==================== -->
         <!-- Decor 1 (Water Dispenser - Back Right Area) -->
@@ -1415,33 +1054,7 @@
           </svg>
         </div>
 
-        <!-- Decor 5 (Conference Table - Meeting Area) -->
-        <div class="draggable" data-type="decor" data-id="5" style="left: 50%; top: 82%;">
-          <svg width="110" height="75" viewBox="-55 -37 110 75" xmlns="http://www.w3.org/2000/svg">
-            <!-- Floor Shadow -->
-            <polygon points="-48,22 0,0 48,22 0,44" fill="rgba(0,0,0,0.18)" />
-            
-            <!-- Table Legs -->
-            <line x1="-35" y1="10" x2="-35" y2="28" stroke="#475569" stroke-width="3" />
-            <line x1="-37" y1="28" x2="-33" y2="28" stroke="#1e293b" stroke-width="4.5" />
-            <line x1="0" y1="18" x2="0" y2="34" stroke="#475569" stroke-width="4" />
-            <ellipse cx="0" cy="34" rx="10" ry="4" fill="#1e293b" />
-            <line x1="35" y1="10" x2="35" y2="28" stroke="#475569" stroke-width="3" />
-            <line x1="33" y1="28" x2="37" y2="28" stroke="#1e293b" stroke-width="4.5" />
-
-            <!-- Wooden Table Top -->
-            <path d="M-50,6 C-50,6 0,26 50,6 L50,9 C50,9 0,29 -50,9 Z" fill="#78350f" />
-            <ellipse cx="0" cy="6" rx="50" ry="20" fill="#b45309" stroke="#78350f" stroke-width="0.8" />
-            <ellipse cx="0" cy="6" rx="45" ry="17" fill="#d97706" />
-
-            <!-- Cable Slot -->
-            <polygon points="-15,6 0,11 15,6 0,1" fill="#1e293b" />
-            
-            <!-- Document -->
-            <polygon points="-8,4 -2,6 1,4 -5,2" fill="#f8fafc" />
-            <line x1="-5" y1="4" x2="-2" y2="5" stroke="#64748b" stroke-width="0.5" />
-          </svg>
-        </div>
+        <!-- Removed duplicate baked-in Decor 5 table -->
 
         <!-- ==================== AGENTS ==================== -->
         <!-- SAM (ID: 1) - ชาย - สรุปข่าวหุ้นล่าสุด -->
@@ -2351,28 +1964,21 @@
 
     /* Draggable Positions Engine (Professional Floor Layout Coordinates) */
     const DEFAULT_POSITIONS = {
-      desk: {
-        1: { left: "32%", top: "54%" },
-        2: { left: "45%", top: "48%" },
-        3: { left: "36%", top: "72%" },
-        4: { left: "64%", top: "56%" },
-        5: { left: "60%", top: "74%" }
-      },
+      desk: {},
       agent: {
-        1: { left: "32%", top: "52%" },
-        2: { left: "45%", top: "46%" },
-        3: { left: "36%", top: "70%" },
-        4: { left: "64%", top: "54%" },
-        5: { left: "60%", top: "72%" }
+        1: { left: "46%", top: "49%" }, // SAM - placing at central table
+        2: { left: "38%", top: "27%" }, // ALEX - curved desk top-left
+        3: { left: "59%", top: "33%" }, // MAYA - next to water dispenser/copier desk
+        4: { left: "69%", top: "53%" }, // KEN - right side desk
+        5: { left: "60%", top: "75%" }  // LUNA - bottom desk
       },
       decor: {
-        1: { left: "78%", top: "42%" },
-        4: { left: "72%", top: "46%" },
-        5: { left: "50%", top: "82%" }
+        1: { left: "53%", top: "38%" }, // Water Dispenser
+        4: { left: "71%", top: "71%" }  // Projector Screen
       }
     };
 
-    let itemPositions = JSON.parse(localStorage.getItem('pdoPositions_v6')) || JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
+    let itemPositions = JSON.parse(localStorage.getItem('pdoPositions_v7')) || JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
 
     function loadPositions() {
       for (const type in itemPositions) {
@@ -2390,13 +1996,13 @@
     function savePosition(type, id, left, top) {
       if (!itemPositions[type]) itemPositions[type] = {};
       itemPositions[type][id] = { left, top };
-      localStorage.setItem('pdoPositions_v6', JSON.stringify(itemPositions));
+      localStorage.setItem('pdoPositions_v7', JSON.stringify(itemPositions));
     }
 
     function resetPositions() {
       playClickSound();
       itemPositions = JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
-      localStorage.setItem('pdoPositions_v6', JSON.stringify(itemPositions));
+      localStorage.setItem('pdoPositions_v7', JSON.stringify(itemPositions));
       loadPositions();
       logActivity("LAYOUT RESET: Desks and Agents aligned to professional positions on the floor.");
     }
