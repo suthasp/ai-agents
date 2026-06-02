@@ -408,6 +408,30 @@
       transform: translate(-50%, -85%); /* Offset pivot point for isometric base standing */
     }
 
+    /* Isometric projection and shadow for agents */
+    .draggable[data-type="agent"] {
+      transform: translate(-50%, -85%) skewY(-20deg) scaleX(0.95);
+    }
+    
+    .draggable[data-type="agent"]::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 24px;
+      height: 10px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 50%;
+      transform: translate(-50%, 40%) rotate(-30deg);
+      z-index: -1;
+      pointer-events: none;
+      filter: blur(1px);
+    }
+
+    .draggable[data-type="agent"].dragging {
+      transform: translate(-50%, -85%) skewY(-20deg) scaleX(0.95) scale(1.1) !important;
+    }
+
     /* Desks use a different offset so they align center */
     .draggable[data-type="desk"] {
       transform: translate(-50%, -50%);
@@ -433,7 +457,7 @@
       position: absolute;
       bottom: -16px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) scaleX(1.053) skewY(20deg);
       background: rgba(5, 5, 10, 0.9);
       border: 1px solid rgba(80, 70, 160, 0.6);
       border-radius: 4px;
@@ -865,7 +889,7 @@
       position: absolute;
       top: -65px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) scaleX(1.053) skewY(20deg);
       background: rgba(9, 9, 20, 0.95);
       border: 1.5px solid var(--theme-color, #10b981);
       border-radius: 6px;
@@ -908,8 +932,8 @@
     }
 
     @keyframes floatBubble {
-      from { transform: translate(-50%, 0); }
-      to { transform: translate(-50%, -4px); }
+      from { margin-top: 0px; }
+      to { margin-top: -4px; }
     }
   </style>
 </head>
