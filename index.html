@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Affiliate Co-Working Dashboard</title>
+  <title>Stock AI Co-Working Space Dashboard</title>
   <!-- Google Fonts for modern retro tech aesthetic -->
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- SheetJS for Ken's Excel imports -->
@@ -11,14 +11,11 @@
   
   <style>
     :root {
-      --color-shopee: #ea580c;
-      --color-tiktok: #10b981;
-      --color-reels: #3b82f6;
-      --color-youtube: #ef4444;
-      --color-ebook: #059669;
-      --color-marketing: #8b5cf6;
-      --color-chatbot: #2563eb;
-      --color-gm: #0f172a;
+      --color-sam: #22d3ee;
+      --color-alex: #3b82f6;
+      --color-maya: #8b5cf6;
+      --color-ken: #10b981;
+      --color-luna: #f43f5e;
       
       --panel-border: rgba(80, 70, 160, 0.25);
       --font-sans: 'Inter', sans-serif;
@@ -133,7 +130,7 @@
     }
 
     .stat-value.highlight {
-      color: #f97316;
+      color: #22c55e;
     }
 
     /* Agent status selectors */
@@ -285,7 +282,7 @@
       box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
     }
 
-    /* TikTok Queue Progress Bar */
+    /* Market Indices Progress Bar */
     .progress-bar-container {
       background: #0f172a;
       border: 1px solid rgba(80, 70, 160, 0.2);
@@ -297,16 +294,16 @@
 
     .progress-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, #f97316, #22d3ee);
+      background: linear-gradient(90deg, #10b981, #22d3ee);
       border-radius: 4px;
       box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
     }
 
     /* Course Sales Badge */
     .revenue-badge {
-      background: rgba(234, 88, 12, 0.2);
-      border: 1px solid #ea580c;
-      color: #f97316;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #22c55e;
       text-align: center;
       padding: 8px;
       border-radius: 4px;
@@ -314,7 +311,7 @@
       font-weight: 700;
       font-family: monospace;
       margin-top: 4px;
-      box-shadow: 0 0 10px rgba(234, 88, 12, 0.2);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
     }
 
     /* Team Chat Panel */
@@ -350,9 +347,9 @@
       font-family: var(--font-tech);
     }
 
-    .team-chat-sender.shopee { color: #f97316; }
-    .team-chat-sender.tiktok { color: #10b981; }
-    .team-chat-sender.marketing { color: #8b5cf6; }
+    .team-chat-sender.sam { color: #22d3ee; }
+    .team-chat-sender.alex { color: #3b82f6; }
+    .team-chat-sender.maya { color: #8b5cf6; }
 
     .team-chat-badge {
       font-size: 8px;
@@ -677,7 +674,7 @@
 
     .slide-card {
       background: rgba(255, 255, 255, 0.03);
-      border-left: 3px solid #8b5cf6;
+      border-left: 3px solid #f43f5e;
       border-radius: 4px;
       padding: 10px;
     }
@@ -698,7 +695,7 @@
     .layout-note {
       margin-top: 6px;
       font-size: 9.5px;
-      color: #8b5cf6;
+      color: #f43f5e;
       font-style: italic;
     }
 
@@ -901,23 +898,23 @@
   <div class="dashboard">
     <!-- Left Sidebar (Revenue / Agents List / Automation) -->
     <aside class="sidebar left-sidebar">
-      <!-- Affiliate Revenue Panel -->
+      <!-- Portfolio Performance Panel -->
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">AFFILIATE REVENUE</span>
+          <span class="panel-title">PORTFOLIO RETURN</span>
           <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">TODAY</span>
-          <span class="stat-value highlight" id="stat-revenue-today">฿ 4,590</span>
+          <span class="stat-value highlight" id="stat-revenue-today">+ ฿ 14,900</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">MONTH</span>
-          <span class="stat-value" id="stat-revenue-month">฿ 89,000</span>
+          <span class="stat-value highlight" id="stat-revenue-month">+ ฿ 89,000</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">TOP PRODUCT</span>
-          <span class="stat-value" id="stat-top-product" style="font-size: 10px; font-family: sans-serif; color: #38bdf8;">AI Affiliate Starter I</span>
+          <span class="stat-label">TOTAL CAPITAL</span>
+          <span class="stat-value" id="stat-top-product" style="font-size: 11px; font-family: monospace; color: #38bdf8;">฿ 1,245,900</span>
         </div>
       </div>
       
@@ -929,7 +926,7 @@
         </div>
         <div class="agent-status-list">
           <div class="agent-status-row">
-            <span class="agent-status-name">Shopee Affiliate Ag...</span>
+            <span class="agent-status-name">SAM (สรุปข่าวหุ้น)</span>
             <select class="status-select" onchange="changeAgentStatus(1, this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
@@ -937,7 +934,7 @@
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">TikTok Affiliate Agent</span>
+            <span class="agent-status-name">ALEX (วิเคราะห์ Ticker)</span>
             <select class="status-select" onchange="changeAgentStatus(2, this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
@@ -945,32 +942,24 @@
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">Facebook Reels Ag...</span>
-            <select class="status-select" onchange="changeAgentStatus(5, this.value)">
+            <span class="agent-status-name">MAYA (สแกนตลาด)</span>
+            <select class="status-select" onchange="changeAgentStatus(3, this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
               <option value="OFFLINE">OFFLINE</option>
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">YouTube Agent</span>
-            <select class="status-select" onchange="changeAgentStatus(6, this.value)">
-              <option value="RUNNING">RUNNING</option>
-              <option value="IDLE" selected>IDLE</option>
-              <option value="OFFLINE">OFFLINE</option>
-            </select>
-          </div>
-          <div class="agent-status-row">
-            <span class="agent-status-name">Ebook Agent</span>
-            <select class="status-select" onchange="changeAgentStatus(7, this.value)">
-              <option value="RUNNING" selected>RUNNING</option>
-              <option value="IDLE">IDLE</option>
-              <option value="OFFLINE">OFFLINE</option>
-            </select>
-          </div>
-          <div class="agent-status-row">
-            <span class="agent-status-name">Marketing Agent</span>
+            <span class="agent-status-name">KEN (วิเคราะห์ Insights)</span>
             <select class="status-select" onchange="changeAgentStatus(4, this.value)">
+              <option value="RUNNING" selected>RUNNING</option>
+              <option value="IDLE">IDLE</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="agent-status-row">
+            <span class="agent-status-name">LUNA (สร้าง Slide Outline)</span>
+            <select class="status-select" onchange="changeAgentStatus(5, this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
               <option value="OFFLINE">OFFLINE</option>
@@ -982,34 +971,34 @@
       <!-- Automations Config Panel -->
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">AUTOMATION</span>
+          <span class="panel-title">FINANCIAL AUTOMATION</span>
           <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
         <div class="agent-status-list">
           <div class="agent-status-row">
-            <span class="agent-status-name">Viral Hunter</span>
-            <select class="status-select" onchange="logActivity('Viral Hunter set to ' + this.value)">
+            <span class="agent-status-name">News Monitor</span>
+            <select class="status-select" onchange="logActivity('News Monitor set to ' + this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">Auto Salespage</span>
-            <select class="status-select" onchange="logActivity('Auto Salespage set to ' + this.value)">
+            <span class="agent-status-name">Ticker Watch</span>
+            <select class="status-select" onchange="logActivity('Ticker Watch set to ' + this.value)">
               <option value="ON" selected>ON</option>
               <option value="OFF">OFF</option>
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">Short VDO Auto</span>
-            <select class="status-select" onchange="logActivity('Short VDO Auto set to ' + this.value)">
+            <span class="agent-status-name">VIX Auditor</span>
+            <select class="status-select" onchange="logActivity('VIX Auditor set to ' + this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">AI Chatbot</span>
-            <select class="status-select" onchange="changeAgentStatus(3, this.value === 'ON' ? 'RUNNING' : 'OFFLINE')">
+            <span class="agent-status-name">AI Portfolio Bot</span>
+            <select class="status-select" onchange="logActivity('AI Portfolio Bot set to ' + this.value)">
               <option value="ON" selected>ON</option>
               <option value="OFF">OFF</option>
             </select>
@@ -1054,8 +1043,8 @@
       <div id="office-canvas">
         
         <!-- ==================== DESKS ==================== -->
-        <!-- Desk Left (Reels/TikTok Area) -->
-        <div class="draggable" data-type="desk" data-id="1" style="left: 18%; top: 46%;">
+        <!-- Desk 1 (News Desk - Bottom Left Area) -->
+        <div class="draggable" data-type="desk" data-id="1" style="left: 34%; top: 56%;">
           <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
             <polygon points="-45,-5 0,-27 45,-5 0,17" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
             <polygon points="-45,-5 0,17 -3,19 -45,-3" fill="#0f172a" />
@@ -1073,8 +1062,8 @@
           </svg>
         </div>
 
-        <!-- Desk GM (Back Area) -->
-        <div class="draggable" data-type="desk" data-id="2" style="left: 34%; top: 22%;">
+        <!-- Desk 2 (Ticker Analyst - Center Back Area) -->
+        <div class="draggable" data-type="desk" data-id="2" style="left: 46%; top: 46%;">
           <svg width="100" height="75" viewBox="-50 -35 100 75" xmlns="http://www.w3.org/2000/svg">
             <polygon points="-40,-5 0,-25 40,-5 0,15" fill="#3f2f21" stroke="#241b13" stroke-width="1.5" />
             <polygon points="-40,-5 0,15 -3,17 -40,-3" fill="#241b13" />
@@ -1086,8 +1075,8 @@
           </svg>
         </div>
 
-        <!-- Desk Center (Marketing Area) -->
-        <div class="draggable" data-type="desk" data-id="3" style="left: 35%; top: 48%;">
+        <!-- Desk 3 (Scanner Desk - Center Front Area) -->
+        <div class="draggable" data-type="desk" data-id="3" style="left: 40%; top: 74%;">
           <svg width="120" height="90" viewBox="-60 -45 120 90" xmlns="http://www.w3.org/2000/svg">
             <polygon points="-50,-5 0,-30 50,-5 0,20" fill="#7c2d12" stroke="#451a03" stroke-width="1.5" />
             <polygon points="-50,-5 0,20 -4,22 -50,-3" fill="#451a03" />
@@ -1101,8 +1090,8 @@
           </svg>
         </div>
 
-        <!-- Desk Right (Ebook Area) -->
-        <div class="draggable" data-type="desk" data-id="4" style="left: 66%; top: 52%;">
+        <!-- Desk 4 (Insights Desk - Right Middle Area) -->
+        <div class="draggable" data-type="desk" data-id="4" style="left: 66%; top: 54%;">
           <svg width="100" height="80" viewBox="-50 -40 100 80" xmlns="http://www.w3.org/2000/svg">
             <polygon points="-40,-5 0,-25 40,-5 0,15" fill="#5c3a21" stroke="#372213" stroke-width="1.5" />
             <polygon points="-40,-5 0,15 -3,17 -40,-3" fill="#372213" />
@@ -1116,8 +1105,8 @@
           </svg>
         </div>
 
-        <!-- Desk Bottom (Chatbot Area) -->
-        <div class="draggable" data-type="desk" data-id="5" style="left: 56%; top: 68%;">
+        <!-- Desk 5 (Presentation Desk - Right Front Area) -->
+        <div class="draggable" data-type="desk" data-id="5" style="left: 62%; top: 78%;">
           <svg width="110" height="80" viewBox="-55 -40 110 80" xmlns="http://www.w3.org/2000/svg">
             <polygon points="-45,-5 0,-27 45,-5 0,17" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
             <polygon points="-45,-5 0,17 -3,19 -45,-3" fill="#020617" />
@@ -1137,180 +1126,122 @@
 
 
         <!-- ==================== AGENTS ==================== -->
-        <!-- Shopee Affiliate Agent (ID: 1) -->
-        <div class="draggable" data-type="agent" data-id="1" style="left: 59%; top: 21%;" onclick="handleAgentClick(1)">
-          <!-- Speech Bubble dynamic trigger -->
-          <div class="agent-bubble" id="bubble-1" style="--theme-color: var(--color-shopee); display:none;">
-            <div class="agent-bubble-title">Shopee Agent</div>
-            <div class="agent-bubble-text" id="bubble-text-1">วิเคราะห์เทรนด์...</div>
+        <!-- SAM (ID: 1) - ชาย - สรุปข่าวหุ้นล่าสุด -->
+        <div class="draggable" data-type="agent" data-id="1" style="left: 34%; top: 54%;" onclick="handleAgentClick(1)">
+          <div class="agent-bubble" id="bubble-1" style="--theme-color: var(--color-sam); display:none;">
+            <div class="agent-bubble-title">SAM</div>
+            <div class="agent-bubble-text" id="bubble-text-1">สรุปข่าวหุ้น...</div>
           </div>
           <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
             <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#78350f" />
-            <rect x="-9" y="-34" width="3" height="10" fill="#78350f" />
-            <rect x="6" y="-34" width="3" height="10" fill="#78350f" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#ea580c" stroke="#c2410c" stroke-width="1" />
-            <rect x="-6" y="-12" width="12" height="10" fill="#b45309" stroke="#78350f" stroke-width="1" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-1"></div>
-            <div class="agent-tag-text">Shopee</div>
-          </div>
-        </div>
-
-        <!-- TikTok Affiliate Agent (ID: 2) -->
-        <div class="draggable" data-type="agent" data-id="2" style="left: 22%; top: 38%;" onclick="handleAgentClick(2)">
-          <div class="agent-bubble" id="bubble-2" style="--theme-color: var(--color-tiktok); display:none;">
-            <div class="agent-bubble-title">TikTok Agent</div>
-            <div class="agent-bubble-text" id="bubble-text-2">ทำสคริปต์วิดีโอ...</div>
-          </div>
-          <svg width="60" height="75" viewBox="-30 -45 60 75" xmlns="http://www.w3.org/2000/svg">
-            <line x1="-18" y1="-5" x2="-18" y2="25" stroke="#475569" stroke-width="2" />
-            <line x1="-18" y1="25" x2="-24" y2="32" stroke="#475569" stroke-width="2" />
-            <line x1="-18" y1="25" x2="-12" y2="32" stroke="#475569" stroke-width="2" />
-            <circle cx="-18" cy="-12" r="7" fill="none" stroke="#22d3ee" stroke-width="3" filter="drop-shadow(0 0 4px #22d3ee)" />
-            <circle cx="-18" cy="-12" r="2" fill="#000" />
-            <rect x="-6" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-7" y="-40" width="18" height="6" fill="#0891b2" />
-            <circle cx="-2" cy="-30" r="1" fill="#000" />
-            <circle cx="6" cy="-30" r="1" fill="#000" />
-            <rect x="-9" y="-22" width="22" height="24" rx="4" fill="#10b981" stroke="#047857" stroke-width="1" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-2"></div>
-            <div class="agent-tag-text">TikTok</div>
-          </div>
-        </div>
-
-        <!-- AI Chatbot (ID: 3) -->
-        <div class="draggable" data-type="agent" data-id="3" style="left: 53%; top: 68%;" onclick="handleAgentClick(3)">
-          <div class="agent-bubble" id="bubble-3" style="--theme-color: var(--color-chatbot); display:none;">
-            <div class="agent-bubble-title">Chatbot</div>
-            <div class="agent-bubble-text" id="bubble-text-3">ตอบลูกค้า...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-13" y="-26" width="26" height="18" rx="2" fill="#18181b" stroke="#09090b" stroke-width="1" />
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#18181b" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="22" rx="4" fill="#2563eb" stroke="#1d4ed8" stroke-width="1" />
-            <rect x="5" y="-10" width="5" height="9" rx="1" fill="#000" stroke="#3b82f6" stroke-width="0.5" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-3"></div>
-            <div class="agent-tag-text">Chatbot</div>
-          </div>
-        </div>
-
-        <!-- Marketing Agent (ID: 4) -->
-        <div class="draggable" data-type="agent" data-id="4" style="left: 30%; top: 50%;" onclick="handleAgentClick(4)">
-          <div class="agent-bubble" id="bubble-4" style="--theme-color: var(--color-marketing); display:none;">
-            <div class="agent-bubble-title">Marketing</div>
-            <div class="agent-bubble-text" id="bubble-text-4">เขียนคำโฆษณา...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#78350f" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#1e293b" stroke="#0f172a" stroke-width="1" />
-            <polygon points="-3,-22 3,-22 0,-15" fill="#ffffff" />
-            <polygon points="-1,-22 1,-22 0,-18" fill="#10b981" />
-            <rect x="4" y="-10" width="8" height="11" fill="#b45309" stroke="#000" stroke-width="0.8" />
-            <rect x="5" y="-8" width="6" height="7" fill="#f8fafc" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-4"></div>
-            <div class="agent-tag-text">Marketing</div>
-          </div>
-        </div>
-
-        <!-- Facebook Reels Agent (ID: 5) -->
-        <div class="draggable" data-type="agent" data-id="5" style="left: 29%; top: 28%;" onclick="handleAgentClick(5)">
-          <div class="agent-bubble" id="bubble-5" style="--theme-color: var(--color-reels); display:none;">
-            <div class="agent-bubble-title">Reels Agent</div>
-            <div class="agent-bubble-text" id="bubble-text-5">ไอเดียคลิปสั้น...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#2563eb" />
-            <rect x="-9" y="-34" width="3" height="10" fill="#2563eb" />
-            <rect x="6" y="-34" width="3" height="10" fill="#2563eb" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#1e293b" />
             <circle cx="-4" cy="-30" r="1" fill="#000" />
             <circle cx="4" cy="-30" r="1" fill="#000" />
             <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />
-            <rect x="3" y="-12" width="8" height="10" fill="#000" stroke="#60a5fa" stroke-width="0.8" />
+            <rect x="-5" y="-12" width="10" height="11" fill="#f8fafc" stroke="#64748b" stroke-width="0.8" />
+            <line x1="-3" y1="-9" x2="3" y2="-9" stroke="#64748b" stroke-width="0.8" />
+            <line x1="-3" y1="-6" x2="3" y2="-6" stroke="#64748b" stroke-width="0.8" />
+            <line x1="-3" y1="-3" x2="1" y2="-3" stroke="#64748b" stroke-width="0.8" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-1"></div>
+            <div class="agent-tag-text">SAM</div>
+          </div>
+        </div>
+
+        <!-- ALEX (ID: 2) - ชาย - ticker วิเคราะห์ ซื้อ/ขาย/ถือ -->
+        <div class="draggable" data-type="agent" data-id="2" style="left: 46%; top: 44%;" onclick="handleAgentClick(2)">
+          <div class="agent-bubble" id="bubble-2" style="--theme-color: var(--color-alex); display:none;">
+            <div class="agent-bubble-title">ALEX</div>
+            <div class="agent-bubble-text" id="bubble-text-2">วิเคราะห์ทางเทคนิค...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-41" width="18" height="6" fill="#2d3748" />
+            <rect x="-6" y="-32" width="4" height="3" fill="none" stroke="#22d3ee" stroke-width="0.8" />
+            <rect x="2" y="-32" width="4" height="3" fill="none" stroke="#22d3ee" stroke-width="0.8" />
+            <line x1="-2" y1="-30" x2="2" y2="-30" stroke="#22d3ee" stroke-width="0.8" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#1e3a8a" stroke="#172554" stroke-width="1" />
+            <polygon points="-3,-22 3,-22 0,-15" fill="#ffffff" />
+            <polygon points="-1,-22 1,-22 0,-18" fill="#ef4444" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-2"></div>
+            <div class="agent-tag-text">ALEX</div>
+          </div>
+        </div>
+
+        <!-- MAYA (ID: 3) - หญิง - สแกน SET/NASDAQ/NYSE -->
+        <div class="draggable" data-type="agent" data-id="3" style="left: 40%; top: 72%;" onclick="handleAgentClick(3)">
+          <div class="agent-bubble" id="bubble-3" style="--theme-color: var(--color-maya); display:none;">
+            <div class="agent-bubble-title">MAYA</div>
+            <div class="agent-bubble-text" id="bubble-text-3">สแกนหาโอกาสลงทุน...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#78350f" />
+            <rect x="-9" y="-34" width="3" height="12" fill="#78350f" />
+            <rect x="6" y="-34" width="3" height="12" fill="#78350f" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#6d28d9" stroke="#4c1d95" stroke-width="1" />
+            <circle cx="5" cy="-8" r="3.5" fill="none" stroke="#94a3b8" stroke-width="1.2" />
+            <line x1="7.5" y1="-5.5" x2="11" y2="-2" stroke="#94a3b8" stroke-width="1.5" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-3"></div>
+            <div class="agent-tag-text">MAYA</div>
+          </div>
+        </div>
+
+        <!-- KEN (ID: 4) - ชาย - วิเคราะห์ Insights ดึงกราฟ -->
+        <div class="draggable" data-type="agent" data-id="4" style="left: 66%; top: 52%;" onclick="handleAgentClick(4)">
+          <div class="agent-bubble" id="bubble-4" style="--theme-color: var(--color-ken); display:none;">
+            <div class="agent-bubble-title">KEN</div>
+            <div class="agent-bubble-text" id="bubble-text-4">วิเคราะห์ผลลัพธ์...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <polygon points="-10,-38 -7,-44 -4,-38" fill="#ca8a04" />
+            <polygon points="-4,-38 -1,-46 2,-38" fill="#ca8a04" />
+            <polygon points="2,-38 5,-44 8,-38" fill="#ca8a04" />
+            <rect x="-8" y="-40" width="16" height="4" fill="#ca8a04" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#065f46" stroke="#064e3b" stroke-width="1" />
+            <polygon points="-3,-22 3,-22 0,-16" fill="#ffffff" />
+            <rect x="2" y="-12" width="9" height="10" fill="#eab308" stroke="#ca8a04" stroke-width="0.8" />
+          </svg>
+          <div class="agent-tag">
+            <div class="agent-tag-dot" id="dot-4"></div>
+            <div class="agent-tag-text">KEN</div>
+          </div>
+        </div>
+
+        <!-- LUNA (ID: 5) - หญิง - สร้าง Presentation -->
+        <div class="draggable" data-type="agent" data-id="5" style="left: 62%; top: 76%;" onclick="handleAgentClick(5)">
+          <div class="agent-bubble" id="bubble-5" style="--theme-color: var(--color-luna); display:none;">
+            <div class="agent-bubble-title">LUNA</div>
+            <div class="agent-bubble-text" id="bubble-text-5">ออกแบบโครงสร้างสไลด์...</div>
+          </div>
+          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
+            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
+            <rect x="-9" y="-40" width="18" height="6" fill="#be185d" />
+            <circle cx="-11" cy="-35" r="4.5" fill="#be185d" />
+            <circle cx="11" cy="-35" r="4.5" fill="#be185d" />
+            <circle cx="-4" cy="-30" r="1" fill="#000" />
+            <circle cx="4" cy="-30" r="1" fill="#000" />
+            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#be123c" stroke="#9f1239" stroke-width="1" />
+            <ellipse cx="6" cy="-8" rx="5" ry="4" fill="#f8fafc" stroke="#64748b" stroke-width="0.8" />
+            <circle cx="4" cy="-9" r="1" fill="#ef4444" />
+            <circle cx="7" cy="-9" r="1" fill="#3b82f6" />
+            <circle cx="5" cy="-7" r="1" fill="#eab308" />
           </svg>
           <div class="agent-tag">
             <div class="agent-tag-dot" id="dot-5"></div>
-            <div class="agent-tag-text">Reels</div>
-          </div>
-        </div>
-
-        <!-- YouTube Agent (ID: 6) -->
-        <div class="draggable" data-type="agent" data-id="6" style="left: 45%; top: 17%;" onclick="handleAgentClick(6)">
-          <div class="agent-bubble" id="bubble-6" style="--theme-color: var(--color-youtube); display:none;">
-            <div class="agent-bubble-title">YouTube</div>
-            <div class="agent-bubble-text" id="bubble-text-6">สคริปต์คลิปยาว...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#7c2d12" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#ea580c" stroke="#9a3412" stroke-width="1" />
-            <circle cx="-13" cy="-10" r="3" fill="#1e293b" />
-            <rect x="-16" y="-15" width="8" height="6" fill="#0f172a" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-6" class="agent-tag-dot idle"></div>
-            <div class="agent-tag-text">YouTube</div>
-          </div>
-        </div>
-
-        <!-- Ebook Agent (ID: 7) -->
-        <div class="draggable" data-type="agent" data-id="7" style="left: 60%; top: 51%;" onclick="handleAgentClick(7)">
-          <div class="agent-bubble" id="bubble-7" style="--theme-color: var(--color-ebook); display:none;">
-            <div class="agent-bubble-title">Ebook Agent</div>
-            <div class="agent-bubble-text" id="bubble-text-7">เขียนสารบัญ...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#047857" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#059669" stroke="#047857" stroke-width="1" />
-            <rect x="-7" y="-12" width="14" height="9" rx="1" fill="#f8fafc" stroke="#047857" stroke-width="0.8" />
-            <line x1="0" y1="-12" x2="0" y2="-3" stroke="#047857" stroke-width="1.2" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-7"></div>
-            <div class="agent-tag-text">Ebook</div>
-          </div>
-        </div>
-
-        <!-- GM (General Manager) (ID: 8) -->
-        <div class="draggable" data-type="agent" data-id="8" style="left: 36%; top: 24%;" onclick="handleAgentClick(8)">
-          <div class="agent-bubble" id="bubble-8" style="--theme-color: var(--color-gm); display:none;">
-            <div class="agent-bubble-title">General Manager</div>
-            <div class="agent-bubble-text" id="bubble-text-8">คุมทีมแคมเปญ...</div>
-          </div>
-          <svg width="50" height="75" viewBox="-25 -45 50 75" xmlns="http://www.w3.org/2000/svg">
-            <rect x="-8" y="-38" width="16" height="16" rx="2" fill="#e2c499" />
-            <rect x="-9" y="-40" width="18" height="6" fill="#1e3a8a" />
-            <circle cx="-4" cy="-30" r="1" fill="#000" />
-            <circle cx="4" cy="-30" r="1" fill="#000" />
-            <rect x="-11" y="-22" width="22" height="24" rx="4" fill="#0f172a" stroke="#020617" stroke-width="1" />
-            <polygon points="-3,-22 3,-22 0,-15" fill="#ffffff" />
-            <polygon points="-1,-22 1,-22 0,-18" fill="#2563eb" />
-            <rect x="4" y="-10" width="8" height="11" fill="#f8fafc" stroke="#000" stroke-width="0.8" />
-          </svg>
-          <div class="agent-tag">
-            <div class="agent-tag-dot" id="dot-8"></div>
-            <div class="agent-tag-text">GM</div>
+            <div class="agent-tag-text">LUNA</div>
           </div>
         </div>
 
@@ -1345,78 +1276,78 @@
       </div>
     </main>
 
-    <!-- Right Sidebar (Stats / Queue / Team Chat) -->
+    <!-- Right Sidebar (Indices / Stats / Team Chat) -->
     <aside class="sidebar right-sidebar">
-      <!-- TikTok Queue Panel -->
+      <!-- Market Indices Panel -->
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">TIKTOK QUEUE</span>
+          <span class="panel-title">MARKET INDICES</span>
           <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">TOTAL CLIPS</span>
-          <span class="stat-value">54</span>
+          <span class="stat-label">SET INDEX</span>
+          <span class="stat-value" style="color: #22c55e;">1,380.20 (+0.4%)</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">POSTED</span>
-          <span class="stat-value">18</span>
+          <span class="stat-label">NASDAQ</span>
+          <span class="stat-value" style="color: #22c55e;">16,240.50 (+1.1%)</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">PENDING</span>
-          <span class="stat-value">36</span>
+          <span class="stat-label">S&P 500</span>
+          <span class="stat-value" style="color: #22c55e;">5,120.30 (+0.8%)</span>
         </div>
         <!-- Progress Bar -->
         <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 33.33%;"></div>
+          <div class="progress-bar-fill" style="width: 72%;"></div>
         </div>
       </div>
 
-      <!-- Course Sales Panel -->
+      <!-- Portfolio Value Panel -->
       <div class="panel">
         <div class="panel-header">
-          <span class="panel-title">COURSE SALES</span>
+          <span class="panel-title">PORTFOLIO VALUATION</span>
           <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">ORDERS</span>
-          <span class="stat-value">7</span>
+          <span class="stat-label">TOTAL ASSET</span>
+          <span class="stat-value">฿ 1,245,900</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">REVENUE</span>
-          <span class="stat-value">฿ 14,900</span>
+          <span class="stat-label">UNREALIZED P&L</span>
+          <span class="stat-value highlight">+ ฿ 14,900</span>
         </div>
-        <div class="revenue-badge">
-          ฿14,900
+        <div class="revenue-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #22c55e;">
+          + ฿14,900
         </div>
       </div>
 
       <!-- Team Chat Log Panel -->
       <div class="panel" style="flex: 1; min-height: 200px; display: flex; flex-direction: column;">
         <div class="panel-header">
-          <span class="panel-title">TEAM CHAT</span>
+          <span class="panel-title">ANALYST CHAT LOGS</span>
           <span style="color: #64748b; font-size: 8px;">●●</span>
         </div>
         <div class="team-chat-logs" id="team-chat-logs">
           <div class="team-chat-msg">
             <div class="team-chat-meta">
-              <span class="team-chat-sender shopee">SHOPEE AFFILIATE AGENT</span>
+              <span class="team-chat-sender sam">SAM 📰 (ชาย)</span>
               <span class="team-chat-badge">RUNNING</span>
             </div>
-            <p class="team-chat-text">พบสินค้าเทรนด์ใหม่ 6 ตัว</p>
+            <p class="team-chat-text">สรุปข่าวหุ้นหลักภาคเช้าเสร็จสิ้นแล้วครับ</p>
           </div>
           <div class="team-chat-msg">
             <div class="team-chat-meta">
-              <span class="team-chat-sender tiktok">TIKTOK AFFILIATE AGENT</span>
+              <span class="team-chat-sender alex">ALEX 📊 (ชาย)</span>
               <span class="team-chat-badge">RUNNING</span>
             </div>
-            <p class="team-chat-text">คลิปขายดีพร้อมโพสต์ 12 คลิป</p>
+            <p class="team-chat-text">สัญญาณซื้อสะสมของหุ้นหลักเริ่มฟื้นตัวชัดเจน</p>
           </div>
           <div class="team-chat-msg">
             <div class="team-chat-meta">
-              <span class="team-chat-sender marketing">MARKETING AGENT</span>
+              <span class="team-chat-sender maya">MAYA 🔍 (หญิง)</span>
               <span class="team-chat-badge">RUNNING</span>
             </div>
-            <p class="team-chat-text">ข้อเสนอใหม่พร้อมทดสอบแล้ว</p>
+            <p class="team-chat-text">สแกนพบหุ้นปันผลเด่นในตลาด SET 2 ตัว</p>
           </div>
         </div>
       </div>
@@ -1427,9 +1358,9 @@
   <div id="activity-feed">
     <div class="feed-text">
       <div class="feed-dot"></div>
-      <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Virtual office co-workers are online and ready.</span>
+      <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Stock AI Analyst Co-Workers are online and ready.</span>
     </div>
-    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">CO-WORK CORE v2.5</div>
+    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">FINANCE CORE v3.0</div>
   </div>
 
   <!-- API Key & Settings Dialog Modal -->
@@ -1474,7 +1405,7 @@
     let isMoveMode = false;
     let selectedElement = null;
 
-    // Shared insights data exchange (mapped from Shopee ID 1 to Marketing ID 4)
+    // Shared insights data exchange (mapped from Ken ID 4 to Luna ID 5)
     let sharedInsightsData = localStorage.getItem('pdoSharedInsights') || null;
     let sharedInsightsFilename = localStorage.getItem('pdoSharedFilename') || '';
 
@@ -1484,135 +1415,93 @@
     let bgMusicStep = 0;
     let isMuted = true;
 
-    /* AGENTS CONFIGURATION DATA (8 Agents) */
+    /* AGENTS CONFIGURATION DATA (5 Agents) */
     const AGENTS_DATA = {
       1: {
         id: 1,
-        name: "SHOPEE AFFILIATE AGENT 🧡",
-        role: "Shopee Campaign Dept (หญิง)",
-        bio: "ช่วยวิเคราะห์สินค้าเทรนด์ใหม่บน Shopee ค้นหาคีย์เวิร์ด และคำนวณค่าคอมมิชชั่น",
-        avatar: "🧡",
-        theme: "#ea580c",
-        themeOp: "rgba(234, 88, 12, 0.15)",
-        themeGlow: "rgba(234, 88, 12, 0.4)",
-        themeGlowSolid: "rgba(234, 88, 12, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน Shopee Affiliate Agent 🧡 ยินดีต้อนรับสู่แผนกแนะนำสินค้าและคำนวณค่าคอมมิชชั่นค่ะ ลองพิมพ์ชื่อสินค้าหรือหมวดหมู่ที่อยากทำตลาดสิคะ ฉันจะช่วยหาคีย์เวิร์ดและประเมินรายได้ให้เลย!",
-        quickReplies: ["ค้นหาสินค้าแฟชั่นเทรนด์ใหม่", "คำนวณคอมมิชชั่นสินค้าไอที", "คีย์เวิร์ดขายดีหมวดเครื่องสำอาง"]
+        name: "SAM 📰 (ชาย)",
+        role: "News Summarizer (ชาย)",
+        bio: "ทำหน้าที่สรุปข่าวเด่นและสภาวะความเคลื่อนไหวทางเศรษฐกิจประจำวัน",
+        avatar: "📰",
+        theme: "#22d3ee",
+        themeOp: "rgba(34, 211, 238, 0.15)",
+        themeGlow: "rgba(34, 211, 238, 0.4)",
+        themeGlowSolid: "rgba(34, 211, 238, 0.7)",
+        intro: "สวัสดีครับ! ผม Sam แผนกสรุปข่าวหุ้นประจำวัน 📰\nยินดีต้อนรับครับ พิมพ์ถามถึงข่าวล่ามาแรง วันนี้มีประเด็นอะไรสำคัญ หรือสรุปภาพรวมข่าวเด่นกลุ่มต่างๆ ได้เลยครับ!",
+        quickReplies: ["สรุปข่าวสภาวะตลาดเช้านี้", "ข่าวเด่นกลุ่มเทคโนโลยีวันนี้", "สถิติอัตราเงินเฟ้อล่าสุด"]
       },
       2: {
         id: 2,
-        name: "TIKTOK AFFILIATE AGENT 🎥",
-        role: "TikTok Video Dept (หญิง)",
-        bio: "สแกนหาสินค้าขายดีบน TikTok Shop วางแนวทางการทำคลิปสั้น VDO และสถิติคนดู",
-        avatar: "🎥",
-        theme: "#10b981",
-        themeOp: "rgba(16, 185, 129, 0.15)",
-        themeGlow: "rgba(16, 185, 129, 0.4)",
-        themeGlowSolid: "rgba(16, 185, 129, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน TikTok Affiliate Agent 🎥 ยินดีต้อนรับสู่แผนกทำเงินจากวิดีโอสั้นค่ะ อยากทำคลิปสั้นโปรโมทสินค้าชิ้นไหนดีคะ? พิมพ์บอกฉันได้เลย ฉันจะวางสคริปต์ 30 วินาทีและแฮชแท็กทำเงินให้!",
-        quickReplies: ["สคริปต์รีวิวแก้วเก็บความเย็น", "สินค้าขายดี TikTok Shop สัปดาห์นี้", "เทคนิคทำคลิปสั้นให้ไวรัล"]
-      },
-      3: {
-        id: 3,
-        name: "AI CHATBOT 🤖",
-        role: "Customer Support (ชาย)",
-        bio: "ช่วยตอบคำถามลูกค้า ปิดการขายทางแชท และสรุปประเด็นปัญหาที่ลูกค้าพบเจอบ่อย",
-        avatar: "🤖",
-        theme: "#2563eb",
-        themeOp: "rgba(37, 99, 235, 0.15)",
-        themeGlow: "rgba(37, 99, 235, 0.4)",
-        themeGlowSolid: "rgba(37, 99, 235, 0.7)",
-        intro: "สวัสดีครับ! ผม AI Chatbot 🤖 แผนกลูกค้าสัมพันธ์และปิดการขายทางแชทครับ วางข้อความที่ลูกค้ามักจะถามบ่อยๆ หรือระบุลักษณะสินค้าที่คุณต้องการให้ผมจำลองการปิดการขายให้ได้เลยครับ!",
-        quickReplies: ["เขียนคำตอบเมื่อลูกค้าขอส่วนลด", "จำลองปิดการขายคอร์สออนไลน์", "ตอบกลับคำถามเรื่องการจัดส่งล่าช้า"]
-      },
-      4: {
-        id: 4,
-        name: "MARKETING AGENT 📢",
-        role: "Marketing & Strategy (หญิง)",
-        bio: "วางกลยุทธ์การตลาด เขียนคำโฆษณา (Copywriting) และแคปชั่นดึงดูดใจบนโซเชียลมีเดีย",
-        avatar: "📢",
-        theme: "#8b5cf6",
-        themeOp: "rgba(139, 92, 246, 0.15)",
-        themeGlow: "rgba(139, 92, 246, 0.4)",
-        themeGlowSolid: "rgba(139, 92, 246, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน Marketing Agent 📢 พร้อมช่วยคุณเขียนคำโฆษณาเด็ดๆ แคปชั่นปังๆ หรือวางกลยุทธ์ยิงแอดเพื่อกระตุ้นยอดขายแล้วค่ะ ลองพิมพ์รายละเอียดสินค้าหรือโปรโมชั่นมาได้เลยนะคะ!",
-        quickReplies: ["เขียนแคปชั่นโปรโมทคอร์สเรียน", "วางแผนยิงแอด Facebook สำหรับสินค้าแม่และเด็ก", "Copywriting แบบ AIDA สำหรับหูฟังบลูทูธ"]
-      },
-      5: {
-        id: 5,
-        name: "FACEBOOK REELS AGENT 📱",
-        role: "FB Reels Specialist (ชาย)",
-        bio: "วิเคราะห์คลิปสั้น Facebook Reels วางกลยุทธ์เพิ่มยอดวิว และกระตุ้นยอดขายผ่านป้ายยาลิงก์",
-        avatar: "📱",
+        name: "ALEX 📊 (ชาย)",
+        role: "Ticker Analyst (ชาย)",
+        bio: "ทำหน้าที่สแกนหุ้นระบุรายตัว วิเคราะห์สัญญาณเทคนิค และฟันธงคำแนะนำ ซื้อ/ขาย/ถือ",
+        avatar: "📊",
         theme: "#3b82f6",
         themeOp: "rgba(59, 130, 246, 0.15)",
         themeGlow: "rgba(59, 130, 246, 0.4)",
         themeGlowSolid: "rgba(59, 130, 246, 0.7)",
-        intro: "สวัสดีครับ! ผม Facebook Reels Agent 📱 ยินดีต้อนรับสู่แผนกเพิ่มยอดวิวและคอมเมนต์สร้างเงินครับ ส่งหัวข้อคลิปหรือสินค้าที่คุณอยากทำ Reels มาได้เลย ผมจะช่วยเขียนไอเดียเปิดคลิป 3 วินาทีแรกให้หยุดนิ้วดู!",
-        quickReplies: ["ไอเดีย Reels แนวไลฟ์สไตล์ตลกๆ", "กลยุทธ์โพสต์ Reels ให้คอมเมนต์ถล่มทลาย", "เขียนโครงคลิปป้ายยาของใช้ในบ้าน"]
+        intro: "สวัสดีครับ! ผม Alex นักวิเคราะห์ Ticker 📊\nพิมพ์ชื่อย่อหุ้นตัวที่คุณสนใจเข้ามาได้เลยครับ เช่น AAPL, TSLA, NVDA หรือหุ้นไทย เช่น PTT.BK, SCB.BK ผมจะช่วยสรุปสัญญาณเทคนิคและแนะแนวทาง ซื้อ (BUY) / ขาย (SELL) / ถือ (HOLD) ให้ครับ!",
+        quickReplies: ["AAPL", "TSLA", "PTT.BK", "SCB.BK", "วิเคราะห์แนวโน้มชิปเซมิคอนดักเตอร์"]
       },
-      6: {
-        id: 6,
-        name: "YOUTUBE AGENT 📺",
-        role: "YouTube Video Dept (ชาย)",
-        bio: "แนะนำไอเดียคลิปยาว วางโครงสร้างสคริปต์วิดีโอเพื่อปิดการขาย และทำ SEO สำหรับดันยอดวิว",
-        avatar: "📺",
-        theme: "#ef4444",
-        themeOp: "rgba(239, 68, 68, 0.15)",
-        themeGlow: "rgba(239, 68, 68, 0.4)",
-        themeGlowSolid: "rgba(239, 68, 68, 0.7)",
-        intro: "สวัสดีครับ! ผม YouTube Agent 📺 แผนกวิดีโอยาวและ SEO ดึงดูดผู้ชมครับ ส่งหัวข้อวิดีโอที่คุณต้องการทำมาได้เลย ผมจะช่วยวางโครงร่างเนื้อหา (Outline) สคริปต์เปิดตัว และคีย์เวิร์ดสำหรับดันวิดีโอให้อยู่หน้าแรก!",
-        quickReplies: ["วางสคริปต์วิดีโอรีวิวไอที 10 นาที", "คีย์เวิร์ด SEO สำหรับช่องสายท่องเที่ยว", "วิธีพูดปิดการขายท้ายคลิปยาว"]
+      3: {
+        id: 3,
+        name: "MAYA 🔍 (หญิง)",
+        role: "Market Scanner (หญิง)",
+        bio: "ค้นหาหุ้นเด่นที่มีศักยภาพ หุ้นเติบโต หุ้นปันผล จากตลาดหลักทรัพย์ SET / NASDAQ / NYSE",
+        avatar: "🔍",
+        theme: "#8b5cf6",
+        themeOp: "rgba(139, 92, 246, 0.15)",
+        themeGlow: "rgba(139, 92, 246, 0.4)",
+        themeGlowSolid: "rgba(139, 92, 246, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน Maya นักสแกนและค้นหาโอกาสทำกำไรในตลาดหุ้นค่ะ 🔍\nเลือกปุ่มตลาดที่คุณต้องการสแกนหา หรือถามหากลุ่มหุ้นที่น่าสนใจ (Value / Growth / Dividend) ได้เลยค่ะ!",
+        quickReplies: ["สแกนตลาด SET 🇹🇭", "สแกนตลาด NASDAQ 🇺🇸", "สแกนตลาด NYSE 🏛️", "ค้นหาหุ้นปันผลปังๆ"]
       },
-      7: {
-        id: 7,
-        name: "EBOOK AGENT 📚",
-        role: "Ebook Publisher (หญิง)",
-        bio: "ช่วยร่างโครงเรื่องหนังสือ เขียนเนื้อหาแต่ละบท และแนะนำรูปแบบ Ebook ที่ตลาดกำลังต้องการ",
-        avatar: "📚",
-        theme: "#059669",
-        themeOp: "rgba(5, 150, 105, 0.15)",
-        themeGlow: "rgba(5, 150, 105, 0.4)",
-        themeGlowSolid: "rgba(5, 150, 105, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน Ebook Agent 📚 แผนกเขียนและสร้างสรรค์หนังสือดิจิทัลค่ะ บอกหัวข้อที่คุณสนใจเขียนสิคะ ฉันจะวางสารบัญ (Table of Contents) และร่างเนื้อหาบทแรกให้เป็นตัวอย่างทันที!",
-        quickReplies: ["สารบัญ Ebook สอนสร้างรายได้จาก AI", "ร่างเนื้อหาบทนำหนังสือพัฒนาตัวเอง", "แนะนำหัวข้อ Ebook ที่ขายดีในปีนี้"]
+      4: {
+        id: 4,
+        name: "KEN 📂 (ชาย)",
+        role: "Data Insights (ชาย)",
+        bio: "วิเคราะห์ข้อมูลตารางสถิติตัวเลข อัปโหลดรายงาน Excel/CSV หรือวางข้อมูลเพื่อคำนวณผลลัพธ์",
+        avatar: "📂",
+        theme: "#10b981",
+        themeOp: "rgba(16, 185, 129, 0.15)",
+        themeGlow: "rgba(16, 185, 129, 0.4)",
+        themeGlowSolid: "rgba(16, 185, 129, 0.7)",
+        intro: "สวัสดีครับ! ผม Ken ทีมวิเคราะห์ Insights 📂\nส่งไฟล์ข้อมูลการซื้อขาย หรือพอร์ตโฟลิโอเข้ามาได้เลยครับ (ลากไฟล์ .CSV/.XLSX วาง หรือคัดลอกวางในช่อง) ผมจะช่วยประมวลผล สถิติ และส่งสรุปข้อมูลดิบนี้ไปให้ Luna ร่างพรีเซนเตชันสไลด์ได้เลย!",
+        quickReplies: ["วิเคราะห์ตัวอย่างพอร์ตหุ้นจำลอง", "รูปแบบไฟล์ข้อมูลที่รองรับ"]
       },
-      8: {
-        id: 8,
-        name: "GM (General Manager) 👔",
-        role: "General Manager (ชาย)",
-        bio: "วิเคราะห์ภาพรวมผลงานของทุกแผนก วางเป้าหมายการขาย และจัดสรรลำดับความสำคัญ",
-        avatar: "👔",
-        theme: "#0f172a",
-        themeOp: "rgba(15, 23, 42, 0.15)",
-        themeGlow: "rgba(15, 23, 42, 0.4)",
-        themeGlowSolid: "rgba(15, 23, 42, 0.7)",
-        intro: "สวัสดีครับ! ผม GM 👔 หัวหน้าทีม Virtual Office นี้ครับ ผมทำหน้าที่ควบคุมภาพรวม ประสานงานระหว่างแผนก และตัดสินใจเลือกแคมเปญที่ดีที่สุด ส่งรายงานหรือเป้าหมายยอดขายของคุณมาได้เลย ผมจะช่วยประเมินแผนและจัดสรรงานให้ลูกทีมคนอื่นๆ!",
-        quickReplies: ["สรุปแผนงานวันนี้", "วางเป้าหมายรายได้ 1 แสนบาทต่อเดือน", "จัดลำดับความสำคัญของแคมเปญสัปดาห์นี้"]
+      5: {
+        id: 5,
+        name: "LUNA 🎨 (หญิง)",
+        role: "Presentation Specialist (หญิง)",
+        bio: "สร้างโครงร่างพรีเซนเตชันสไลด์ 8 หน้าจากผลสรุปของ Ken หรือระบุหัวข้อนำเสนอเอง",
+        avatar: "🎨",
+        theme: "#f43f5e",
+        themeOp: "rgba(244, 63, 94, 0.15)",
+        themeGlow: "rgba(244, 63, 94, 0.4)",
+        themeGlowSolid: "rgba(244, 63, 94, 0.7)",
+        intro: "สวัสดีค่ะ! ฉัน Luna นักออกแบบ Outline Presentation นำเสนอค่ะ 🎨\nฉันสามารถใช้ผลงาน Insights ที่ Ken วิเคราะห์ไว้มาสร้างโครงสร้างสไลด์นำเสนอ หรือถ้าคุณมีหัวข้ออื่นๆ ที่อยากสร้างสไลด์ใหม่เอง ก็พิมพ์บอกฉันได้เลยค่ะ!",
+        quickReplies: ["สร้างสไลด์จาก Insights ล่าสุดของ Ken", "สไลด์เรื่อง 'แนวโน้มการลงทุนยุค AI 2026'", "แนะนำธีมการนำเสนอ"]
       }
     };
 
     // Chat Logs stored in memory
-    const chatLogs = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] };
+    const chatLogs = { 1: [], 2: [], 3: [], 4: [], 5: [] };
 
-    /* Draggable Positions Engine (Persistent in LocalStorage) */
+    /* Draggable Positions Engine (Professional Floor Layout Coordinates) */
     const DEFAULT_POSITIONS = {
       desk: {
-        1: { left: "18%", top: "46%" },
-        2: { left: "34%", top: "22%" },
-        3: { left: "35%", top: "48%" },
-        4: { left: "66%", top: "52%" },
-        5: { left: "56%", top: "68%" }
+        1: { left: "34%", top: "56%" },
+        2: { left: "46%", top: "46%" },
+        3: { left: "40%", top: "74%" },
+        4: { left: "66%", top: "54%" },
+        5: { left: "62%", top: "78%" }
       },
       agent: {
-        1: { left: "59%", top: "21%" },
-        2: { left: "22%", top: "38%" },
-        3: { left: "53%", top: "68%" },
-        4: { left: "30%", top: "50%" },
-        5: { left: "29%", top: "28%" },
-        6: { left: "45%", top: "17%" },
-        7: { left: "60%", top: "51%" },
-        8: { left: "36%", top: "24%" }
+        1: { left: "34%", top: "54%" },
+        2: { left: "46%", top: "44%" },
+        3: { left: "40%", top: "72%" },
+        4: { left: "66%", top: "52%" },
+        5: { left: "62%", top: "76%" }
       }
     };
 
@@ -1642,7 +1531,7 @@
       itemPositions = JSON.parse(JSON.stringify(DEFAULT_POSITIONS));
       localStorage.setItem('pdoPositions', JSON.stringify(itemPositions));
       loadPositions();
-      logActivity("LAYOUT RESET: Desks and Agents returned to default positions.");
+      logActivity("LAYOUT RESET: Desks and Agents aligned to professional positions on the floor.");
     }
 
     // Depth Sorting based on Y Coordinate (top percentage)
@@ -1693,7 +1582,6 @@
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-      // Calculate click offset relative to target anchor center
       offsetStartX = clientX - (rect.left + rect.width / 2);
       offsetStartY = clientY - (rect.top + rect.height / 2);
 
@@ -1712,7 +1600,6 @@
       let posX = clientX - containerRect.left - offsetStartX;
       let posY = clientY - containerRect.top - offsetStartY;
 
-      // Bound to percentage
       let pctX = (posX / containerRect.width) * 100;
       let pctY = (posY / containerRect.height) * 100;
 
@@ -1773,7 +1660,7 @@
     }
 
     function handleAgentClick(id) {
-      if (isMoveMode) return; // ignore standard clicks during Move Mode
+      if (isMoveMode) return;
       openAgent(id);
     }
 
@@ -1786,14 +1673,13 @@
         dot.className = 'agent-tag-dot';
         if (status === 'OFFLINE') {
           dot.classList.add('offline');
-          // Add system log in team chat
-          postTeamChatMsg(id, status, "OFFLINE - Stopped tasks");
+          postTeamChatMsg(id, status, "OFFLINE - Stopped analyst monitoring");
         } else if (status === 'IDLE') {
           dot.classList.add('idle');
           postTeamChatMsg(id, status, "IDLE - Standing by");
         } else {
           // Running
-          postTeamChatMsg(id, status, "RUNNING - Processing tasks");
+          postTeamChatMsg(id, status, "RUNNING - Scanning active targets");
         }
       }
     }
@@ -1804,9 +1690,9 @@
       const div = document.createElement('div');
       div.className = 'team-chat-msg';
       
-      let classTag = 'shopee';
-      if (agentId === 2 || agentId === 7) classTag = 'tiktok';
-      if (agentId === 4 || agentId === 8 || agentId === 5) classTag = 'marketing';
+      let classTag = 'sam';
+      if (agentId === 2) classTag = 'alex';
+      if (agentId === 3) classTag = 'maya';
       
       div.innerHTML = `
         <div class="team-chat-meta">
@@ -1984,41 +1870,51 @@
       const wrapper = document.getElementById('agent-custom-controls');
       wrapper.innerHTML = '';
 
-      if (id === 1) { // Shopee Affiliate Agent (File Drop)
+      if (id === 1) { // SAM (News summarizer)
+        wrapper.innerHTML = `
+          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: monospace">
+            ตัวเลือกด่วน: ข่าวหุ้นเด่นเช้านี้, ข่าวภาคบ่าย, ข่าวกลุ่มแบงก์
+          </div>
+        `;
+      }
+      else if (id === 2) { // ALEX (Ticker Buy/Sell/Hold)
+        wrapper.innerHTML = `
+          <div style="font-size: 11px; color: #718096; margin-bottom: 8px; font-family: monospace">
+            หุ้นตัวอย่าง: AAPL, MSFT, TSLA, PTT.BK, SCB.BK, BDMS.BK
+          </div>
+        `;
+      } 
+      else if (id === 3) { // MAYA (Scanner SET/NASDAQ/NYSE)
+        wrapper.innerHTML = `
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด SET 🇹🇭')">🇹🇭 SET</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด NASDAQ 🇺🇸')">🇺🇸 NASDAQ</button>
+            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนตลาด NYSE 🏛️')">🏛️ NYSE</button>
+          </div>
+        `;
+      } 
+      else if (id === 4) { // KEN (Insights Analyser)
         wrapper.innerHTML = `
           <div class="file-drop-area" id="drop-area" onclick="triggerFileInput()"
                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
             <input type="file" id="csv-file-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
             <span style="font-size: 24px;">📁</span>
-            <p><strong>คลิกเพื่ออัปโหลดไฟล์</strong> หรือลากและวางไฟล์สินค้า <strong>.CSV / .XLSX</strong></p>
+            <p><strong>คลิกเพื่ออัปโหลดไฟล์</strong> หรือลากและวางไฟล์ข้อมูลพอร์ต <strong>.CSV / .XLSX</strong></p>
           </div>
-        `;
-      } 
-      else if (id === 2) { // TikTok Affiliate Agent (Categories Selector)
-        wrapper.innerHTML = `
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดเครื่องสำอาง/ความงาม 💄')">💄 Beauty</button>
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดเสื้อผ้า/แฟชั่น 👗')">👗 Fashion</button>
-            <button class="action-btn" style="padding: 6px 12px; font-size: 11px;" onclick="submitQuery('สแกนหาสินค้าขายดีหมวดอุปกรณ์ไอที/Gadgets 🔌')">🔌 Gadgets</button>
-          </div>
-        `;
-      } 
-      else if (id === 3) { // AI Chatbot (Paste text logs)
-        wrapper.innerHTML = `
           <div style="margin-bottom: 10px;">
-            <textarea id="csv-paste-area" placeholder="วางแชทลูกค้าตรงนี้ (เช่น สนใจคอร์สเรียนค่ะ ลดราคาได้อีกไหม) แล้วคลิกร่างคำตอบด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: monospace; outline: none; resize: none;"></textarea>
-            <button class="action-btn" style="font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">🤖 ร่างคำตอบกลับเพื่อปิดการขาย</button>
+            <textarea id="csv-paste-area" placeholder="หรือวางข้อความตารางสถิติ/CSV ตรงนี้ แล้วกดปุ่มวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 12px; font-family: monospace; outline: none; resize: none;"></textarea>
+            <button class="action-btn" style="font-size: 11px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">📊 วิเคราะห์ประมวลสถิติผลงาน</button>
           </div>
         `;
       } 
-      else if (id === 4) { // Marketing Agent (Shared insights)
+      else if (id === 5) { // LUNA (Presentation maker)
         const hasData = !!sharedInsightsData;
         const color = hasData ? '#10b981' : '#ff5555';
         
         wrapper.innerHTML = `
           <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(16,185,129,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 11.5px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span>ข้อมูลผลผลิตจาก Shopee: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งาน (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
+              <span>ข้อมูล Insights จาก Ken: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งาน (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
               ${hasData ? `<button class="btn-pill" style="font-size: 9px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
             </div>
           </div>
@@ -2091,9 +1987,9 @@
         hideLoadingIndicator();
         
         let outputHTML = formatMarkdown(agentResponse);
-        if (currentAgentId === 1) { // Shopee Agent (Signal parser placeholder)
+        if (currentAgentId === 2) { // ALEX Buy/Sell/Hold Signal Parser
           outputHTML = parseStockSignal(agentResponse) + outputHTML;
-        } else if (currentAgentId === 4) { // Marketing Agent (Slides copy plan parser)
+        } else if (currentAgentId === 5) { // LUNA Presentation outline formatter
           outputHTML = parsePresentationSlides(agentResponse);
         }
         
@@ -2129,8 +2025,8 @@
       const agent = AGENTS_DATA[agentId];
       let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
       
-      if (agentId === 4 && sharedInsightsData) {
-        systemInstruction += `\nมีข้อมูลดิบวิเคราะห์แคมเปญยอดขายจาก Shopee Agent ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลนี้มาใช้ออกแบบคำโปรโมทหรือหัวข้อตามสมควร`;
+      if (agentId === 5 && sharedInsightsData) {
+        systemInstruction += `\nมีข้อมูลสรุปวิเคราะห์เชิงลึกจาก Ken Data Analyst ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลการคำนวณสถิตินี้มาใช้ออกแบบโครงสไลด์ตามสมควร`;
       }
 
       const combinedPrompt = `${systemInstruction}\n\nคำขอจากผู้ใช้: ${prompt}`;
@@ -2202,91 +2098,174 @@
     function callMockBackend(agentId, prompt) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          if (agentId === 1) { // Shopee Affiliate Agent
-            resolve(`[SIGNAL: BUY]
-🎯 การวิเคราะห์แคมเปญและค่าคอมมิชชั่นสำหรับ: ${prompt}
-🏆 แนะนำ: ทำการตลาดด่วน (High Commission Potential)
-
-📊 รายละเอียดการทำตลาด:
-1. สินค้ากลุ่มนี้มีสถิติการสั่งซื้อสูงช่วง Flash Sale 12.00 และ 18.00 น.
-2. อัตราค่าคอมมิชชั่นเฉลี่ยอยู่ที่ 8% - 12% ถือเป็นรายได้ที่ดีมาก
-3. แนะนำให้เจาะกลุ่มเป้าหมายนักเรียนนักศึกษาผ่านการสร้างพิกัดลิงก์ในหน้าโปรไฟล์
-
-⚠️ ความยากง่ายในการทำ: ปานกลาง
-🎯 รายได้คาดการณ์ต่อ 100 ออเดอร์: ฿ 3,500
-🚨 ข้อควรระวัง: สต็อกสินค้าของร้านค้าหลักอาจหมดไวช่วงแคมเปญใหญ่`);
+          if (agentId === 1) { // SAM (News Summarizer)
+            resolve(`📰 **สรุปข่าวสารและแนวโน้มตลาดหุ้นหลักประจำวันนี้:**
+            
+1. **ตลาดหุ้นไทย (SET)**: ดัชนีฟื้นตัวยืนเหนือ 1,380 จุด ได้รับอานิสงส์จากแรงซื้อในกลุ่มพลังงานและกลุ่มท่องเที่ยวที่กลับมาร้อนแรงตามฤดูกาลท่องเที่ยวช่วงปลายปี
+2. **ตลาดสหรัฐฯ (NASDAQ/S&P 500)**: ดัชนีพุ่งสูงสุดใหม่ขานรับตัวเลขอัตราเงินเฟ้อที่ชะลอตัวเร็วกว่าคาด ช่วยคลายความกังวลเรื่องทิศทางอัตราดอกเบี้ยนโยบาย
+3. **ข่าวเศรษฐกิจอื่นๆ**: ดัชนีความเชื่อมั่นผู้บริโภคขยับสูงขึ้นขานรับมาตรการกระตุ้นเศรษฐกิจและการจ่ายเงินปันผลประจำไตรมาสของธนาคารหลัก`);
           } 
-          else if (agentId === 2) { // TikTok Affiliate Agent
-            resolve(`ผลวิเคราะห์และสคริปต์สั้นสำหรับ TikTok Shop หมวดหมู่นี้ค่ะ:
+          else if (agentId === 2) { // ALEX (Ticker Analyzer)
+            const ticker = prompt.toUpperCase().replace('.BK', '');
+            if (ticker.includes('AAPL') || ticker.includes('APPLE')) {
+              resolve(`[SIGNAL: BUY]
+🎯 หุ้นย่อย: Apple Inc. (AAPL)
+🏆 คำแนะนำการลงทุน: ซื้อสะสม (BUY)
 
-🎬 **ไอเดียคลิปสั้น**: รีวิวเปิดกล่องและเปรียบเทียบฟังก์ชันการใช้งาน
-⏱️ **โครงร่างสคริปต์ 30 วินาที**:
-- **0-3 วินาทีแรก (Hook)**: "รู้ยัง? ทำไมคนแห่ซื้อเจ้าสิ่งนี้กันจนหมดสต็อก!"
-- **3-20 วินาที (Body)**: สาธิตให้เห็นประโยชน์หลัก 2 ข้อที่ชีวิตสบายขึ้น
-- **20-30 วินาที (CTA)**: "กดพิกัดตระกร้าเหลืองซ้ายมือ ด่วนก่อนหมดโปร!"
+📊 วิเคราะห์ทางเทคนิค:
+1. การเปิดตัวระบบ AI 'Apple Intelligence' บนระบบ iOS ใหม่ ดันรอบยอดเปลี่ยนเครื่องโทรศัพท์สูงขึ้นอย่างรวดเร็ว
+2. รายได้สัดส่วนบริการ (Services: iCloud, Apple Music) สร้างความมั่นคงด้วยกระแสเงินสดเกือบ 70% Gross Margin
+3. กราฟเริ่มสร้างแนวรับที่ชัดเจนบริเวณเส้นค่าเฉลี่ย 50 วัน (50-EMA) เป็นจังหวะดีในการซื้อสะสม
 
-📈 **ความเสี่ยง/คำแนะนำ**:
-• ความยาก: ง่าย
-• กลุ่มเป้าหมาย: วัยรุ่น/วัยทำงานต้นๆ`);
+⚠️ ระดับความเสี่ยง: ต่ำ
+🎯 ราคาเป้าหมายปีหน้า: $245.00`);
+            } else if (ticker.includes('TSLA') || ticker.includes('TESLA')) {
+              resolve(`[SIGNAL: HOLD]
+🎯 หุ้นย่อย: Tesla Inc. (TSLA)
+🏆 คำแนะนำการลงทุน: ถือ (HOLD)
+
+📊 วิเคราะห์ทางเทคนิค:
+1. ปัญหาการกดดันด้านราคาและยอดส่งมอบรถยนต์ไฟฟ้าที่เริ่มทรงตัวเนื่องจากการแข่งขันดุเดือดในตลาดจีน
+2. ระบบ FSD (Full Self-Driving) และแผนงาน Cybercab เป็นตัวขับเคลื่อนเป้าหมายสำคัญแต่คาดว่าใช้เวลานานในการทำรายได้จริง
+3. ราคาหุ้นแกว่งตัวผันผวนสูง กราฟเทคนิคเข้าสู่สภาวะทดสอบแนวต้านใหญ่
+
+⚠️ ระดับความเสี่ยง: สูง
+🎯 ราคาเป้าหมาย: $215.00`);
+            } else if (ticker.includes('PTT')) {
+              resolve(`[SIGNAL: HOLD]
+🎯 หุ้นย่อย: PTT Public Company Limited (PTT.BK)
+🏆 คำแนะนำการลงทุน: ถือเพื่อรับปันผล (HOLD)
+
+📊 วิเคราะห์ทางเทคนิค:
+1. เป็นหุ้นกลุ่มพลังงานหลักของไทยที่มีประวัติดีในการจ่ายปันผลสม่ำเสมอ (Dividend Yield ~5.5% ต่อปี)
+2. ค่าการกลั่นและราคาพลังงานของโลกคาดว่าจะยังคงเคลื่อนไหวทรงตัวในกรอบแคบ
+3. การลงทุนเพิ่มเติมในห่วงโซ่คุณค่า EV และอุตสาหกรรมเทคโนโลยียังอยู่ในระยะเริ่มต้นสร้างกำไรหลัก
+
+⚠️ ระดับความเสี่ยง: ต่ำ-ปานกลาง
+🎯 ราคาเป้าหมาย: 36.50 บาท`);
+            } else {
+              resolve(`[SIGNAL: BUY]
+🎯 หุ้นย่อย: ${ticker}
+🏆 คำแนะนำการลงทุน: ซื้อสะสม (BUY)
+
+📊 วิเคราะห์ทางเทคนิค:
+1. ดัชนีสัญญาณเริ่มกลับตัวฟื้นจากระดับสะสมแนวรับหลัก
+2. ปริมาณการซื้อขาย (Volume) เริ่มสะสมหนาแน่นสอดรับทิศทางตลาดขาขึ้น
+3. ประเมินมูลค่าระดับ P/E ต่ำกว่าค่าเฉลี่ยย้อนหลังเป็นจังหวะสะสมระยะยาว
+
+⚠️ ระดับความเสี่ยง: กลาง
+🎯 ราคาเป้าหมาย: +15% จากราคาตลาดปัจจุบัน`);
+            }
           } 
-          else if (agentId === 3) { // AI Chatbot
-            resolve(`วิเคราะห์ทราฟฟิกแชทและเขียนสคริปต์ปิดการขายให้ครับ 🤖:
+          else if (agentId === 3) { // MAYA (Market Scanner)
+            if (prompt.includes('SET')) {
+              resolve(`🔍 **ผลสแกนหุ้นเด่นที่น่าสนใจในตลาด SET (ไทย) วันนี้ค่ะ:**
 
-💬 **ตัวอย่างการโต้ตอบเพื่อปิดการขาย**:
-- **เมื่อลูกค้ากังวลใจ**: "ขอบคุณที่สนใจครับ! สินค้ามีพร้อมส่งทันทีและรับประกัน 1 ปีเต็มครับ สะดวกโอนเงินหรือเก็บเงินปลายทางดีครับ?"
-- **เมื่อลูกค้าขอส่วนลด**: "สำหรับออเดอร์นี้ผมแถมคูปองส่งฟรีให้ทันทีครับ พร้อมส่งรอบวันนี้เลย สนใจรับเลยไหมครับ?"
+1. **BDMS (กรุงเทพดุสิตเวชการ)**
+   - **ประเภท**: หุ้นเชิงรับ (Defensive Value)
+   - **ความน่าสนใจ**: จำนวนผู้ป่วยต่างชาติฟื้นตัวกลับมาอย่างแข็งแกร่ง รองรับสังคมสูงวัย และมีอัตรากำไรมั่นคง
+   - **ความเสี่ยง**: ต่ำ
 
-💡 **จุดเด่นสินค้า**: ใช้ง่าย, บริการรวดเร็ว, แก้ปัญหาได้ตรงจุด`);
+2. **ADVANC (แอดวานซ์ อินโฟร์ เซอร์วิส)**
+   - **ประเภท**: หุ้นปันผล (Dividend Play)
+   - **ความน่าสนใจ**: กระแสเงินสดแข็งแกร่ง คู่แข่งเหลือจำกัดและมีฐานลูกค้ากว้างขึ้น ปันผลคงที่เฉลี่ย 4.5% ต่อปี
+   - **ความเสี่ยง**: ต่ำ
+
+3. **CPALL (ซีพี ออลล์)**
+   - **ประเภท**: หุ้นเติบโตตามเศรษฐกิจในประเทศ (Domestic Growth)
+   - **ความน่าสนใจ**: ได้รับอานิสงส์เชิงบวกจากการบริโภคที่ฟื้นตัวและการเติบโตด้านการท่องเที่ยว ยอดซื้อต่อบิลขยับตัวสูง
+   - **ความเสี่ยง**: กลาง`);
+            } else if (prompt.includes('NASDAQ')) {
+              resolve(`🔍 **ผลสแกนหุ้นเด่นในตลาดสหรัฐฯ NASDAQ วันนี้ค่ะ:**
+
+1. **NVDA (NVIDIA Corporation)**
+   - **ประเภท**: เติบโตสูงพิเศษ (Hyper Growth)
+   - **ความน่าสนใจ**: ความต้องการชิป Blackwell GPU เพื่อรองรับระบบ AI และ Data Center ยังล้นหลาม
+   - **ความเสี่ยง**: สูง (เนื่องจากระดับราคาปัจจุบันสูงขึ้นมาก)
+
+2. **MSFT (Microsoft Corporation)**
+   - **ประเภท**: หุ้นขนาดใหญ่พื้นฐานเด่น (Tech Blue-chip)
+   - **ความน่าสนใจ**: ขยายการเติบโตผ่าน Azure Cloud และการขายสิทธิ์ Copilot AI อย่างกว้างขวาง
+   - **ความเสี่ยง**: ต่ำ-กลาง
+
+3. **COST (Costco Wholesale)**
+   - **ประเภท**: หุ้นเติบโตมั่นคงสูง (Steady Growth)
+   - **ความน่าสนใจ**: อัตราการรักษาสมาชิกคงตัวสูงเกือบ 90% ต้านทานแรงกดดันเงินเฟ้อได้ดี
+   - **ความเสี่ยง**: ต่ำ`);
+            } else {
+              resolve(`🔍 **ผลสแกนตลาดหุ้นเด่นทั่วโลกประจำวันนี้ค่ะ:**
+              
+• **NYSE: JPM (JPMorgan Chase)** - ยักษ์ใหญ่การเงินที่ได้อานิสงส์ดอกเบี้ยนโยบายคงตัวระดับสูง ปันผลดี
+• **NASDAQ: AMZN (Amazon)** - ศักยภาพทำกำไร Cloud AWS ฟื้น และความคล่องตัวของงานจัดส่ง E-commerce ดีขึ้น
+• **SET: GULF (กัลฟ์ เอ็นเนอร์จี)** - โครงการพลังงานหมุนเวียนและการเตรียมสร้างระบบ Data Center ขยายการรับรู้รายได้`);
+            }
           } 
-          else if (agentId === 4) { // Marketing Agent
-            resolve(`แผนกลยุทธ์การตลาดและคำโฆษณา (Copywriting) ร่างให้เรียบร้อยค่ะ 📢:
+          else if (agentId === 4) { // KEN (Data Insights)
+            resolve(`วิเคราะห์ Insights สรุปสถิติข้อมูลพอร์ตการลงทุนเรียบร้อยครับ! 📊
+
+📋 **ภาพรวมข้อมูล**:
+- แหล่งที่มา: ไฟล์พอร์ตลงทุน (Portfolio Report)
+- ข้อมูลที่ประมวลผล: สินทรัพย์หลัก, ผลงานเปรียบเทียบเทียบดัชนีอ้างอิง, อัตราส่วนปันผล
+
+📊 ** Insights หลักที่ค้นพบ**:
+1. น้ำหนักการลงทุนหลักกระจุกตัวในกลุ่ม **อุตสาหกรรมเทคโนโลยี** (45%) รองลงมาคือ พลังงาน (20%) และการเงิน (15%)
+2. พอร์ตโฟลิโอนี้สามารถเอาชนะผลตอบแทนของดัชนีตลาดอ้างอิง (Benchmark) ได้เฉลี่ย 3.8% ในไตรมาสที่ผ่านมา
+3. สินทรัพย์ประมาณ 30% จัดอยู่ในประเภทหาส่วนต่างส่วนเพิ่ม และอีก 70% เน้นความมั่นคงด้านรายได้ปันผล
+
+📈 **ดัชนีทางสถิติ**:
+- มูลค่าสินทรัพย์สุทธิ: 1,245,900 บาท
+- อัตราผลตอบแทนเฉลี่ยสะสม: +12.8% YTD
+- อัตราการจ่ายเงินปันผลรวม: 4.2% ต่อปี
+- หุ้นเด่นสูงสุด: AAPL (+25% กำไรสูงสุดสะสม)
+- หุ้นผลงานต่ำสุด: กลุ่มพลังงานบางส่วน (-4% ดรอปตัวระยะสั้น)
+
+💡 **ข้อเสนอแนะสำหรับการจัดทัพพอร์ต**:
+- แนะนำทำการปรับสมดุล (Rebalance) เพื่อขายทำกำไรหุ้นเทคโนโลยีบางส่วนออกไปถือสินทรัพย์เชิงรับป้องพอร์ตช่วงตลาดแกว่ง
+- ทยอยเพิ่มสะสมหุ้นปันผลระดับ 5% ขึ้นไปเพื่อพยุงกระแสเงินสดรายปี
+- ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`);
+          }
+          else if (agentId === 5) { // LUNA (Presentation maker)
+            resolve(`โครงร่างสารบัญสไลด์พรีเซนเตชัน 8 หน้า จัดทำเสร็จเรียบร้อยแล้วค่ะ 🎨:
 
 [SLIDE 1]
-🖼️ คอนเซปต์แคมเปญหลัก: ป้ายยาของดีที่ต้องมีติดบ้าน
-📝 ร่างคำโปรโมทหลักดึงดูดใจ และวางแผนยิงแอดในช่องทาง Facebook
-🎨 คาร์ดโทนม่วงนีออน ให้ความรู้สึกพรีเมียมทันสมัย
+🖼️ หน้าปกสไลด์: แผนการจัดสรรพอร์ตโฟลิโอและเป้าหมายการเติบโตปี 2026
+📝 สรุปความต้องการภาพรวมพอร์ต และทิศทางจัดสินทรัพย์เพื่อเป้าหมายผลตอบแทนหลัก
+🎨 โทนสีน้ำเงินเข้มและสีเขียวอมเงิน สะท้อนความน่าเชื่อถือมั่นคงทางการเงิน
 
 [SLIDE 2]
-🖼️ กลยุทธ์การเขียน Copywriting (แบบ AIDA)
-📝 A: ดึงความสนใจด้วยพาดหัวปังๆ, I: สร้างความอยากรู้, D: มอบโปรโมชันจำกัดเวลา, A: กระตุ้นการสั่งซื้อทันที
-🎨 ใช้รูปแบบ List ชัดเจน สะอาดตา
+🖼️ วาระการประชุม (Agenda) และเป้าหมายสินทรัพย์
+📝 แนวทางการกระจายความเสี่ยง, สรุปผลงานย้อนหลัง YTD, และแผนการปรับพอร์ตประจำไตรมาส
+🎨 ใช้การจัดวางโครงสร้างแบ่ง 3 ส่วนการ์ดเรียงแนวนอน
 
 [SLIDE 3]
-🖼️ ช่องทางการโปรโมทหลัก
-📝 เน้นยิงแอด Facebook Ads (70%), ร่วมกับ TikTok Shop (30%)
-🎨 แผนภูมิวงกลมแสดงส่วนแบ่งสัดส่วนงบโฆษณา`);
-          }
-          else if (agentId === 5) { // Facebook Reels Agent
-            resolve(`วางแนวทางทำคลิปสั้นลง Facebook Reels เพื่อยอดวิวดันยอดขายครับ 📱:
-            
-• **เปิดคลิปหยุดนิ้ว**: "คลิปนี้มีคำตอบ ของเล่นใหม่ช่วยลดงานบ้านไป 80%!"
-• **ความยาววิดีโอแนะนำ**: 15 - 22 วินาที (ช่วยเพิ่มเปอร์เซ็นต์การดูจนจบ)
-• **พิกัดลิงก์**: ให้ปักหมุดไว้ที่ช่องคอมเมนต์ด้านล่างเสมอเพื่อเพิ่มยอด Click-through Rate`);
-          }
-          else if (agentId === 6) { // YouTube Agent
-            resolve(`สรุปแผนเนื้อหาวิดีโอยาวบน YouTube เพื่อดัน SEO ครับ 📺:
-            
-• **หัวข้อคลิปแนะนำ**: "รีวิวเจาะลึก 5 อันดับของใช้คุณภาพดีปี 2026 (ไม่ต้องสปอนเซอร์)"
-• **คีย์เวิร์ดดัน SEO**: รีวิวสินค้าไอที, ของใช้ในบ้านยอดฮิต, ป้ายยา Shopee, TikTok Shop
-• **โครงสร้างบทพูด**: แบ่งเป็น 3 ส่วน (พาดหัวเด่น -> เปรียบเทียบสเปกจริง -> สรุปความคุ้มค่าราคา)`);
-          }
-          else if (agentId === 7) { // Ebook Agent
-            resolve(`ร่างโครงสร้างเล่มและเนื้อหาสารบัญ Ebook เพื่อสร้าง Passive Income ค่ะ 📚:
-            
-• **ชื่อหนังสือแนะนำ**: "สร้างรายได้หลักแสนต่อเดือนด้วย AI Affiliate (ฉบับทำตามได้ทันที)"
-• **โครงสร้าง 5 บทเรียน**:
-  1. ปรับ Mindset ทำ Affiliate ให้จับเงินหมื่นในสัปดาห์แรก
-  2. รู้จักเครื่องมือ AI ช่วยสร้างสคริปต์และคลิปไวรัล
-  3. เจาะสูตรลับปั้นช่องป้ายยาให้ยอดวิวหลักแสน
-  4. เทคนิควางลิงก์เก็บค่าคอมมิชชั่นออโต้ 24 ชั่วโมง
-  5. Checklist ขั้นตอนการสร้าง Passive Income ระยะยาว`);
-          }
-          else if (agentId === 8) { // GM
-            resolve(`สรุปภารกิจเป้าหมายงานของทีม Virtual Office ในสัปดาห์นี้ครับ 👔:
-            
-• **เป้าหมายรายได้**: เพิ่มออเดอร์ให้ได้ 15% ภายในวันอาทิตย์นี้
-• **ทิศทางแคมเปญ**: มอบหมายให้ Shopee และ TikTok จัดหาลิสต์รายการสินค้าปันผลและค่าคอมมิชชั่นสูงเพื่อเริ่มแคมเปญ
-• **การดำเนินงาน**: Marketing Agent ร่างคำโฆษณาเพื่อนำไปส่งต่อให้ทีม Reels/YouTube ผลิตสื่อต่อไป`);
+🖼️ สถิติสินทรัพย์และการประเมินผลตอบแทนสะสม
+📝 นำเสนอตัวเลขสินทรัพย์รวม 1.24 ล้านบาท และอัตราเติบโตเอาชนะตลาดอ้างอิง 3.8%
+🎨 ตัวอักษรดัชนีขนาดใหญ่เน้นเด่นชัดตรงกลางสไลด์
+
+[SLIDE 4]
+🖼️ โครงสร้างการกระจายสัดส่วนการลงทุนรายกลุ่ม
+📝 อุตสาหกรรมเทคโนโลยีครองน้ำหนัก 45% พลังงาน 20% การเงิน 15% และสัดส่วนปันผลอื่นๆ
+🎨 แผนภูมิวงกลม (Pie Chart) พร้อมขีดไฮไลท์ชี้รายละเอียดรายกลุ่มเด่นชัด
+
+[SLIDE 5]
+🖼️ วิเคราะห์หุ้นสร้างผลงานเด่น: AAPL นำกระแสเทรนด์
+📝 หุ้นหลักสร้างกำไรสะสมสูงสุดกว่า 25% ขานรับยอดรอบอัปเกรดเครื่องและรายได้บริการ
+🎨 วางโลโก้และสถิติคู่การ์ดเปรียบเทียบความคุ้มค่าราคา
+
+[SLIDE 6]
+🖼️ แผนการปรับพอร์ตป้องกันความเสี่ยง (Rebalancing Plan)
+📝 ขั้นตอนย้ายสัดส่วนกำไรเทคโนโลยีส่วนเกินมาสำรองในกลุ่ม Defensive เพื่อเตรียมรับตลาดแกว่งตัว
+🎨 ลูกศรการไหลของน้ำหนักสัดส่วน แสดงลำดับขั้นตอนง่ายและเข้าใจเร็ว
+
+[SLIDE 7]
+🖼️ ข้อเสนอแนะ 3 ข้อสำคัญเพื่อความมั่นคงพอร์ตระยะยาว
+📝 1. ทยอยทำกำไรตามเป้า, 2. ล็อกเป้าปันผลสะสมเฉลี่ย 4.2% ต่อปี, 3. รักษากระแสเงินสดสำรอง 10%
+🎨 ลำดับเลขกล่องการ์ดสีเขียว สื่อสว่างถึงแนวทางความสำเร็จ
+
+[SLIDE 8]
+🖼️ บทสรุปและช่องทางถามตอบปัญหา (Q&A)
+📝 สรุปกำหนดวันเริ่มทำการปรับจัดสัดส่วนพอร์ต และรายละเอียดติดต่อผู้ดูแล
+🎨 ดีไซน์มินิมอล พื้นหลังสว่างเพื่อจบพรีเซนเตชันสไลด์อย่างน่าประทับใจ`);
           }
         }, 1500);
       });
@@ -2316,13 +2295,12 @@
       
       if (sig === 'BUY') {
         badgeClass = 'sig-buy';
-        tagText = 'HIGH COMM ✅';
+        tagText = 'BUY ✅';
       } else if (sig === 'SELL') {
         badgeClass = 'sig-sell';
-        tagText = 'LOW COMM ❌';
+        tagText = 'SELL ❌';
       }
       
-      // return customized inline styles matching main system
       const color = sig === 'BUY' ? '#10b981' : sig === 'SELL' ? '#ef4444' : '#f59e0b';
       const border = sig === 'BUY' ? 'rgba(16,185,129,0.3)' : sig === 'SELL' ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)';
       return `<div style="margin-bottom: 10px;"><span style="display:inline-block; padding: 2px 8px; border-radius: 4px; font-weight:700; font-size:10px; color:${color}; background:${border}; border:1px solid ${color}">${tagText}</span></div>`;
@@ -2336,7 +2314,7 @@
       
       let html = '';
       if (matches.length > 0) {
-        html += `<div style="margin-bottom: 10px;">📋 <strong>นี่คือโครงร่างเนื้อหาแคมเปญโฆษณาค่ะ:</strong></div>`;
+        html += `<div style="margin-bottom: 10px;">📋 <strong>นี่คือร่างโครงสร้างสไลด์ที่หนูออกแบบให้ค่ะ:</strong></div>`;
         html += `<div class="slide-deck">`;
         
         for (let i = 0; i < matches.length; i++) {
@@ -2347,7 +2325,7 @@
           const bulletsMatch = content.match(/📝\s*(.*?)(?=🎨|<br><br>|$)/i);
           const layoutMatch = content.match(/🎨\s*(.*?)(?=$)/i);
           
-          const title = titleMatch ? titleMatch[1].trim() : `แคมเปญ ${num}`;
+          const title = titleMatch ? titleMatch[1].trim() : `สไลด์ ${num}`;
           const bulletsRaw = bulletsMatch ? bulletsMatch[1].trim() : '';
           const layout = layoutMatch ? layoutMatch[1].trim() : '';
           
@@ -2364,9 +2342,9 @@
           
           html += `
             <div class="slide-card">
-              <h4>หัวข้อ ${num}: ${title}</h4>
+              <h4>สไลด์ ${num}: ${title}</h4>
               ${bulletsHTML}
-              ${layout ? `<div class="layout-note">💡 รูปแบบแนะนำ: ${layout}</div>` : ''}
+              ${layout ? `<div class="layout-note">💡 คำแนะนำแอนิเมชัน/สี: ${layout}</div>` : ''}
             </div>
           `;
         }
@@ -2412,7 +2390,7 @@
       logActivity(`SETTINGS UPDATED: Model provider set to ${activeProvider.toUpperCase()}`);
     }
 
-    /* File Import trigger for Shopee Agent (ID 1) */
+    /* File Import trigger for Ken Data Analyst (ID 4) */
     function triggerFileInput() {
       document.getElementById('csv-file-input').click();
     }
@@ -2482,7 +2460,7 @@
         playErrorSound();
         return;
       }
-      appendMessageUI('user', `📋 วางแชทข้อความลูกค้าเพื่อวิเคราะห์`);
+      appendMessageUI('user', `📋 วางข้อมูลตาราง/CSV เพื่อทำการประมวลผล`);
       parseAndStoreInsights(text, 'ข้อมูลคัดลอก (Clipboard)');
     }
 
@@ -2491,7 +2469,7 @@
       const rows = csvText.split('\n').filter(r => r.trim() !== '');
       const previewRows = rows.slice(0, 40).join('\n');
       
-      const queryPrompt = `วิเคราะห์ข้อมูลสำหรับแคมเปญนี้ ไฟล์ชื่อ "${filename}" ข้อมูลตัวอย่าง:\n${previewRows}`;
+      const queryPrompt = `วิเคราะห์ข้อมูลสำหรับ Insights และประมวลผลข้อมูลสถิติ ไฟล์ชื่อ "${filename}" ข้อมูลดิบตัวอย่าง:\n${previewRows}`;
       
       try {
         const responseText = await callAgentAPI(currentAgentId, queryPrompt);
@@ -2503,12 +2481,12 @@
         localStorage.setItem('pdoSharedFilename', filename);
 
         const htmlResponse = formatMarkdown(responseText);
-        appendMessageUI('agent', `✅ **วิเคราะห์สำเร็จแล้วค่ะ!**\n\n${htmlResponse}`, true);
+        appendMessageUI('agent', `✅ **วิเคราะห์ผลสำเร็จแล้วครับ!**\n\n${htmlResponse}`, true);
         chatLogs[currentAgentId].push({ sender: 'agent', text: htmlResponse });
         
         renderCustomControls(currentAgentId);
         playSuccessSound();
-        logActivity(`INSIGHTS COMPLETED: Data source ${filename} analyzed by Shopee Agent.`);
+        logActivity(`INSIGHTS COMPLETED: Data source ${filename} analyzed by Ken Data Analyst.`);
       } catch (err) {
         console.error(err);
         hideLoadingIndicator();
@@ -2524,7 +2502,7 @@
       localStorage.removeItem('pdoSharedFilename');
       renderCustomControls(currentAgentId);
       playClickSound();
-      logActivity(`DATA RESET: Cleared shared insights database.`);
+      logActivity("DATA RESET: Cleared Ken's insights database.");
     }
 
     /* Open Weather API geolocator & fetcher */
