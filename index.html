@@ -1249,7 +1249,7 @@
         </div>
         
         <!-- ROBO (ID: 6) - หุ่นยนต์ดูดฝุ่น -->
-        <div class="draggable" data-type="agent" data-id="6" style="left: 77%; top: 48%;" onclick="handleAgentClick(6)">
+        <div class="draggable" data-type="agent" data-id="6" style="left: 30%; top: 33%;" onclick="handleAgentClick(6)">
           <div class="agent-bubble" id="bubble-6" style="--theme-color: var(--color-robo); display:none;">
             <div class="agent-bubble-title">ROBO</div>
             <div class="agent-bubble-text" id="bubble-text-6">ปี๊บ! ดูดฝุ่น...</div>
@@ -1527,7 +1527,7 @@
         3: { left: "59%", top: "33%" }, // MAYA - next to water dispenser/copier desk
         4: { left: "69%", top: "53%" }, // KEN - right side desk
         5: { left: "60%", top: "75%" }, // LUNA - bottom desk
-        6: { left: "77%", top: "48%" }  // ROBO - starts at dock
+        6: { left: "30%", top: "33%" }  // ROBO - starts at dock
       },
       decor: {
         1: { left: "53%", top: "38%" }, // Water Dispenser
@@ -2528,7 +2528,7 @@
               changeAgentStatus(6, 'IDLE');
             }
           }, 500);
-          return `ปี๊บ! 🔌 รับทราบครับ กำลังวิ่งกลับไปยังแท่นชาร์จบริเวณมุมขวาบนข้างตู้กดน้ำเพื่อทำการเติมพลังงานครับ!`;
+          return `ปี๊บ! 🔌 รับทราบครับ กำลังวิ่งกลับไปยังแท่นชาร์จบริเวณมุมซ้ายข้างตู้กดน้ำเพื่อทำการเติมพลังงานครับ!`;
         }
         else if (prompt.includes('แบต') || prompt.includes('battery') || prompt.includes('สถานะ')) {
           const isCleaning = document.querySelectorAll('.status-select')[5]?.value === 'RUNNING';
@@ -2943,11 +2943,11 @@
       // Special handling for Vacuum Charging Mode (IDLE status)
       if (isVacuum && status === 'IDLE') {
         el.classList.add('walking');
-        el.style.left = '77%';
-        el.style.top = '48%';
-        el.style.setProperty('--scale-x', '1'); // Face the charging dock
+        el.style.left = '30%';
+        el.style.top = '33%';
+        el.style.setProperty('--scale-x', '-1'); // Face the charging dock (left)
         if (itemPositions.agent) {
-          itemPositions.agent[agentId] = { left: '77%', top: '48%' };
+          itemPositions.agent[agentId] = { left: '30%', top: '33%' };
         }
         setTimeout(() => {
           el.classList.remove('walking');
