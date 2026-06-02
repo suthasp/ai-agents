@@ -2798,17 +2798,39 @@
     /* Helper to fetch stock price from Yahoo Finance via CORS proxy */
     async function fetchRealTimeStock(symbol) {
       const cleanSymbol = symbol.toUpperCase().trim();
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}?ts=${Date.now()}`)}`;
+      const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}?ts=${Date.now()}`;
+      const primaryUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+      const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      
+      let res, data;
       try {
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error("Fetch failed");
-        const data = await res.json();
+        res = await fetch(primaryUrl);
+        if (!res.ok) throw new Error("Primary raw fetch failed");
+        data = await res.json();
+      } catch (err) {
+        console.warn("Primary raw proxy failed, trying JSON fallback for symbol: " + cleanSymbol, err);
+        try {
+          res = await fetch(fallbackUrl);
+          if (!res.ok) throw new Error("Fallback fetch failed");
+          const wrappedData = await res.json();
+          data = JSON.parse(wrappedData.contents);
+        } catch (fallbackErr) {
+          console.error("All proxies failed for symbol: " + cleanSymbol, fallbackErr);
+          return { success: false, symbol: cleanSymbol };
+        }
+      }
+
+      try {
         const result = data.chart?.result?.[0];
-        if (!result) throw new Error("No data found");
+        if (!result) throw new Error("No data found in chart result");
         
         const meta = result.meta;
         const price = meta.regularMarketPrice;
         const prevClose = meta.chartPreviousClose || meta.previousClose;
+        if (price === undefined || prevClose === undefined) {
+          throw new Error("Missing price or prevClose in meta");
+        }
+        
         const change = price - prevClose;
         const changePercent = (change / prevClose) * 100;
         const currency = meta.currency || 'USD';
@@ -2823,18 +2845,36 @@
           success: true
         };
       } catch (err) {
-        console.error("Error fetching live stock:", err);
+        console.error("Error parsing live stock data:", err);
         return { success: false, symbol: cleanSymbol };
       }
     }
 
     /* Helper to fetch stock news from Yahoo Finance RSS via CORS proxy */
     async function fetchRealTimeNews() {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://finance.yahoo.com/rss/topstories?ts=${Date.now()}`)}`;
+      const targetUrl = `https://finance.yahoo.com/rss/topstories?ts=${Date.now()}`;
+      const primaryUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+      const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      
+      let res, xmlText;
       try {
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error("Fetch news failed");
-        const xmlText = await res.text();
+        res = await fetch(primaryUrl);
+        if (!res.ok) throw new Error("Primary raw news fetch failed");
+        xmlText = await res.text();
+      } catch (err) {
+        console.warn("Primary news raw proxy failed, trying JSON fallback...", err);
+        try {
+          res = await fetch(fallbackUrl);
+          if (!res.ok) throw new Error("Fallback news fetch failed");
+          const wrappedData = await res.json();
+          xmlText = wrappedData.contents;
+        } catch (fallbackErr) {
+          console.error("All proxies failed for news", fallbackErr);
+          return { success: false };
+        }
+      }
+
+      try {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, "text/xml");
         const items = xmlDoc.getElementsByTagName("item");
@@ -2849,7 +2889,7 @@
         }
         return { success: true, news };
       } catch (err) {
-        console.error("Error fetching live news:", err);
+        console.error("Error parsing news xml:", err);
         return { success: false };
       }
     }
@@ -3353,7 +3393,7 @@
     /* Update market indices from Yahoo Finance dynamically */
     async function updateMarketIndices() {
       const indices = [
-        { symbol: '^SET', elementId: 'index-set' },
+        { symbol: 'SET.BK', elementId: 'index-set' },
         { symbol: '^IXIC', elementId: 'index-nasdaq' },
         { symbol: '^GSPC', elementId: 'index-sp500' }
       ];
