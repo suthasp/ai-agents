@@ -2062,6 +2062,42 @@
     }
 
     async function submitQuery(queryText) {
+      let targetAgentId = currentAgentId;
+      const lowerText = queryText.toLowerCase();
+      
+      const agentsList = [
+        { id: 1, names: ['sam', 'แซม'] },
+        { id: 2, names: ['alex', 'อเล็กซ์', 'อเล็ก'] },
+        { id: 3, names: ['maya', 'มายา'] },
+        { id: 4, names: ['ken', 'เคน'] },
+        { id: 5, names: ['luna', 'ลูน่า'] },
+        { id: 6, names: ['robo', 'โรโบ', 'โรโบ้'] }
+      ];
+      
+      for (const agent of agentsList) {
+        if (agent.id === currentAgentId) continue;
+        for (const name of agent.names) {
+          const patterns = [
+            `@${name}`,
+            `ถาม ${name}`,
+            `ถาม${name}`,
+            `ask ${name}`,
+            `คุยกับ ${name}`,
+            `คุยกับ${name}`
+          ];
+          if (patterns.some(p => lowerText.includes(p))) {
+            targetAgentId = agent.id;
+            break;
+          }
+        }
+        if (targetAgentId !== currentAgentId) break;
+      }
+
+      if (targetAgentId !== currentAgentId) {
+        logActivity(`Routing message to ${AGENTS_DATA[targetAgentId].name}`);
+        openAgent(targetAgentId);
+      }
+
       appendMessageUI('user', queryText);
       chatLogs[currentAgentId].push({ sender: 'user', text: queryText });
       
