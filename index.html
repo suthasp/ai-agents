@@ -6309,9 +6309,9 @@
 
         const headers = parseCSVRow(lines[0]);
         const idIdx = headers.indexOf('TICKETID');
+        const probIdx = headers.indexOf('SUBJECT');
         const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
-        const sevIdx = headers.indexOf('SEVERITY');
-        const probIdx = headers.indexOf('Sub_Problem_2') !== -1 ? headers.indexOf('Sub_Problem_2') : headers.indexOf('SUBJECT');
+        const slaIdx = headers.indexOf('SLA_Flag_Group');
 
         if (idIdx === -1) throw new Error("Invalid CSV format");
 
@@ -6320,14 +6320,15 @@
         for (let i = 1; i <= maxTickets; i++) {
           const row = parseCSVRow(lines[i]);
           const tId = row[idIdx] || 'UNKNOWN';
-          const tOwner = (ownerIdx !== -1 ? row[ownerIdx] : '');
-          const tSev = (sevIdx !== -1 ? row[sevIdx] : '');
           const tProb = (probIdx !== -1 ? row[probIdx] : '');
+          const tOwner = (ownerIdx !== -1 ? row[ownerIdx] : '');
+          const tSla = (slaIdx !== -1 ? row[slaIdx] : '');
 
-          let sevColor = '#94a3b8';
-          if (tSev.includes('1') || tSev.includes('High')) sevColor = '#ef4444';
-          else if (tSev.includes('2') || tSev.includes('Med')) sevColor = '#f59e0b';
-          else if (tSev.includes('3') || tSev.includes('Low')) sevColor = '#eab308';
+          let slaColor = '#94a3b8';
+          const lowerSla = tSla.toLowerCase();
+          if (lowerSla.includes('over')) slaColor = '#ef4444';
+          else if (lowerSla.includes('warn') || lowerSla.includes('near')) slaColor = '#f59e0b';
+          else if (lowerSla.includes('within')) slaColor = '#10b981';
 
           const probText = tProb.length > 20 ? tProb.substring(0, 20) + '...' : tProb;
           const ownerText = tOwner.length > 20 ? tOwner.substring(0, 20) + '...' : tOwner;
@@ -6336,10 +6337,10 @@
             <div class="stat-row" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; margin-bottom: 2px;">
               <div style="display:flex; flex-direction:column; gap:2px; overflow:hidden;">
                 <span style="color:#f1f5f9; font-weight:bold;">${tId}</span>
-                <span style="color:#94a3b8; font-size:8px; white-space:nowrap;">${probText}</span>
+                <span style="color:#94a3b8; font-size:8px; white-space:nowrap;" title="${tProb}">${probText}</span>
               </div>
               <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
-                <span style="color:${sevColor}; font-size:8px; font-weight:bold;">SEV: ${tSev}</span>
+                <span style="color:${slaColor}; font-size:8px; font-weight:bold;">${tSla}</span>
                 <span style="color:#10b981; font-size:8px; background:rgba(16,185,129,0.1); padding:1px 4px; border-radius:3px; white-space:nowrap;">${ownerText}</span>
               </div>
             </div>
