@@ -1923,11 +1923,11 @@
       chatBox.innerHTML = '';
       
       if (chatLogs[id].length === 0) {
-        chatLogs[id].push({ sender: 'agent', text: a.intro });
+        chatLogs[id].push({ sender: 'agent', text: a.intro.replace(/\n/g, '<br>') });
       }
       
       chatLogs[id].forEach(msg => {
-        appendMessageUI(msg.sender, msg.text);
+        appendMessageUI(msg.sender, msg.text, msg.sender === 'agent');
       });
 
       const quickBar = document.getElementById('quick-bar-options');
