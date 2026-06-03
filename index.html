@@ -2960,18 +2960,34 @@
         if (!el) continue;
         
         try {
-          const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${crypto.symbol}`);
+          const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${crypto.symbol}`);
           const data = await res.json();
-          if (data && data.price) {
-            const numPrice = parseFloat(data.price);
+          if (data && data.lastPrice) {
+            const numPrice = parseFloat(data.lastPrice);
+            const priceChange = parseFloat(data.priceChange);
+            const percentChange = parseFloat(data.priceChangePercent);
+            
             let formattedPrice;
+            let formattedChange;
             if (crypto.symbol === 'DOGEUSDT') {
               formattedPrice = numPrice.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+              formattedChange = priceChange.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
             } else {
               formattedPrice = numPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              formattedChange = priceChange.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
-            el.textContent = `$${formattedPrice}`;
-            el.style.color = '#10b981'; // Green color
+            
+            const isPositive = priceChange >= 0;
+            const sign = isPositive ? '+' : '';
+            const changeColor = isPositive ? '#10b981' : '#ef4444'; // Green or Red
+            
+            el.innerHTML = `
+              <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                <span style="color: #10b981; font-weight: bold;">$${formattedPrice}</span>
+                <span style="color: ${changeColor}; font-size: 8px; margin-top: 2px;">${sign}${formattedChange} (${sign}${percentChange.toFixed(2)}%)</span>
+              </div>
+            `;
+            el.style.color = ''; // let inner spans handle color
           }
         } catch (e) {
           console.error(`Failed to update crypto ${crypto.symbol}:`, e);
