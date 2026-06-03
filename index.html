@@ -2547,6 +2547,83 @@
 - ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`;
       }
       else if (agentId === 5) { // LUNA (Presentation maker)
+        if (prompt.includes('docs.google.com/spreadsheets') && prompt.includes('csv')) {
+          const urlMatch = prompt.match(/https:\/\/docs\.google\.com[^\s]+/);
+          if (urlMatch) {
+            try {
+              const res = await fetch(urlMatch[0]);
+              if (!res.ok) throw new Error("Fetch failed");
+              const text = await res.text();
+              const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+              
+              function parseCSVRow(str) {
+                var arr = [], quote = false, col = "";
+                for (var i = 0; i < str.length; i++) {
+                  var c = str[i];
+                  if (c === '"' && quote && str[i+1] === '"') { col += '"'; i++; }
+                  else if (c === '"') { quote = !quote; }
+                  else if (c === ',' && !quote) { arr.push(col.trim()); col = ""; }
+                  else { col += c; }
+                }
+                arr.push(col.trim());
+                return arr;
+              }
+
+              const headers = parseCSVRow(lines[0]);
+              const statusIdx = headers.indexOf('STATUS');
+              const sevIdx = headers.indexOf('SEVERITY');
+              const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
+              
+              let highSevCount = 0;
+              let totalTickets = lines.length - 1;
+              let openTickets = 0;
+              let teams = {};
+
+              for (let i = 1; i < lines.length; i++) {
+                const row = parseCSVRow(lines[i]);
+                const sev = sevIdx !== -1 ? row[sevIdx] : '';
+                const status = statusIdx !== -1 ? row[statusIdx] : '';
+                const owner = ownerIdx !== -1 ? row[ownerIdx] : 'Unknown';
+
+                if (sev.includes('1') || sev.includes('High') || sev.includes('NSA1')) highSevCount++;
+                if (status !== 'CLOSED' && status !== 'RESOLVED' && status !== 'COMPLETED') openTickets++;
+                if (owner) teams[owner] = (teams[owner] || 0) + 1;
+              }
+              
+              const sortedTeams = Object.keys(teams).sort((a,b) => teams[b] - teams[a]);
+              const topTeam = sortedTeams[0] || 'N/A';
+              const topTeamCount = teams[topTeam] || 0;
+
+              return `วิเคราะห์ข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets และสร้างเป็นโครงร่างสไลด์นำเสนอเสร็จเรียบร้อยค่ะ 🎨:
+
+[SLIDE 1]
+🖼️ หน้าปกสไลด์: รายงานสรุปสถานะการแก้ไขปัญหา (Incident Ticket Report)
+📝 ภาพรวมสรุปปัญหาทั้งหมด ${totalTickets} รายการที่กำลังดำเนินการ
+🎨 โทนสีน้ำเงินเข้มและสีแดง เพื่อสะท้อนถึงการปฏิบัติงานและความเร่งด่วน
+
+[SLIDE 2]
+🖼️ สรุปตัวเลขสำคัญ (Key Metrics)
+📝 • จำนวน Ticket ทั้งหมด: ${totalTickets} รายการ
+• จำนวน Ticket ที่ยังเปิดอยู่: ${openTickets} รายการ
+• ปัญหาที่มีความรุนแรงสูง (SEV 1/High): ${highSevCount} รายการ
+🎨 นำเสนอด้วยสถิติตัวเลขขนาดใหญ่ (Big Numbers) ให้เห็นเด่นชัด
+
+[SLIDE 3]
+🖼️ ทีมที่รับผิดชอบหลัก (Top Assigned Teams)
+📝 ทีมที่มีปริมาณงานสูงสุดในขณะนี้คือ: ${topTeam} (${topTeamCount} ทิคเก็ต)
+🎨 แผนภูมิแท่ง (Bar Chart) แสดงปริมาณงานของแต่ละทีม
+
+[SLIDE 4]
+🖼️ ข้อเสนอแนะและแนวทาง (Action Items)
+📝 1. เร่งจัดการปัญหา High Severity ทั้ง ${highSevCount} รายการให้เสร็จสิ้นก่อน
+2. กระจายโหลดงานจากทีม ${topTeam} ให้ทีมอื่นช่วย Support
+🎨 วางไอคอนเช็คลิสต์เพื่อให้ดูเป็น Action Item ที่ชัดเจนและนำไปปฏิบัติได้ทันทีค่ะ`;
+            } catch (err) {
+              return `ขออภัยค่ะ ฉันไม่สามารถโหลดข้อมูลจากลิงก์ที่ให้มาได้ (Error: ${err.message})`;
+            }
+          }
+        }
+
         return `โครงร่างสารบัญสไลด์พรีเซนเตชัน 8 หน้า จัดทำเสร็จเรียบร้อยแล้วค่ะ 🎨:
 
 [SLIDE 1]
