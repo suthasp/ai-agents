@@ -1126,7 +1126,7 @@
             </select>
           </div>
           <div class="agent-status-row">
-            <span class="agent-status-name">KEN (วิเคราะห์ Insights)</span>
+            <span class="agent-status-name">KEN (วิเคราะห์ Budget)</span>
             <select class="status-select" onchange="changeAgentStatus(4, this.value)">
               <option value="RUNNING" selected>RUNNING</option>
               <option value="IDLE">IDLE</option>
@@ -4548,16 +4548,16 @@
       },
       4: {
         id: 4,
-        name: "KEN 📂 (ชาย)",
-        role: "Data Insights (ชาย)",
-        bio: "วิเคราะห์ข้อมูลตารางสถิติตัวเลข อัปโหลดรายงาน Excel/CSV หรือวางข้อมูลเพื่อคำนวณผลลัพธ์",
-        avatar: "📂",
+        name: "KEN 📊 (ชาย)",
+        role: "Budget Analyst (ชาย)",
+        bio: "สรุปและวิเคราะห์รายงาน Budget ของหน่วยงาน CNO จาก Google Sheets",
+        avatar: "📊",
         theme: "#10b981",
         themeOp: "rgba(16, 185, 129, 0.15)",
         themeGlow: "rgba(16, 185, 129, 0.4)",
         themeGlowSolid: "rgba(16, 185, 129, 0.7)",
-        intro: "สวัสดีครับ! ผม Ken ทีมวิเคราะห์ Insights 📂\nส่งไฟล์ข้อมูลการซื้อขาย หรือพอร์ตโฟลิโอเข้ามาได้เลยครับ (ลากไฟล์ .CSV/.XLSX วาง หรือคัดลอกวางในช่อง) ผมจะช่วยประมวลผล สถิติ และส่งสรุปข้อมูลดิบนี้ไปให้ Luna ร่างพรีเซนเตชันสไลด์ได้เลย!",
-        quickReplies: ["วิเคราะห์ตัวอย่างพอร์ตหุ้นจำลอง", "รูปแบบไฟล์ข้อมูลที่รองรับ"]
+        intro: "สวัสดีครับ! ผม Ken ผู้เชี่ยวชาญด้านวิเคราะห์งบประมาณ (Budget) ของ CNO 📊\nผมมีหน้าที่ดึงข้อมูลจาก Google Sheets เพื่อสรุปและวิเคราะห์ให้คุณแบบเรียลไทม์ครับ สั่งงานผมได้เลย!",
+        quickReplies: ["สรุปสถานะงบประมาณ CNO ล่าสุด", "วิเคราะห์การใช้งบประมาณ"]
       },
       5: {
         id: 5,
@@ -5051,19 +5051,8 @@
           </div>
         `;
       }
-      else if (id === 4) { // KEN (Insights Analyser)
-        wrapper.innerHTML = `
-          <div class="file-drop-area" id="drop-area" onclick="triggerFileInput()"
-               ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-            <input type="file" id="csv-file-input" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileSelected(event)">
-            <span style="font-size: 22px;">📁</span>
-            <p><strong>คลิกเพื่ออัปโหลดไฟล์</strong> หรือลากและวางไฟล์ข้อมูลพอร์ต <strong>.CSV / .XLSX</strong></p>
-          </div>
-          <div style="margin-bottom: 10px;">
-            <textarea id="csv-paste-area" placeholder="หรือวางข้อความตารางสถิติ/CSV ตรงนี้ แล้วกดปุ่มวิเคราะห์ด้านล่าง" style="width: 100%; height: 50px; background: rgba(5,5,10,0.8); border: 1px solid rgba(80,70,160,0.3); border-radius: 8px; color: #fff; padding: 6px; font-size: 10px; font-family: monospace; outline: none; resize: none;"></textarea>
-            <button class="action-btn" style="font-size: 9px; padding: 6px 12px; margin-top: 6px; width: 100%; justify-content: center;" onclick="analyzePasteArea()">📊 วิเคราะห์ประมวลสถิติผลงาน</button>
-          </div>
-        `;
+      else if (id === 4) { // KEN (Budget Analyser)
+        wrapper.innerHTML = '';
       }
       else if (id === 5) { // LUNA (Presentation maker)
         wrapper.innerHTML = '';
@@ -5231,7 +5220,18 @@
       const agent = AGENTS_DATA[agentId];
       let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
 
-      if (agentId === 5) {
+      if (agentId === 4) {
+        try {
+          const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT1wdQs-QYgFhkMh3ik1wwkIwhi40UsFFthLSx0Er3K-piRHgJgJABwhN7lBUnMP5dN1A9LF5oUk_QK/pub?gid=1993846865&single=true&output=csv');
+          if (res.ok) {
+            const csvText = await res.text();
+            systemInstruction += `\nนี่คือข้อมูลงบประมาณ (Budget) ล่าสุดของหน่วยงาน CNO (รูปแบบ CSV):\n\n${csvText}\n\nกรุณาวิเคราะห์และสรุปภาพรวมงบประมาณ การเบิกจ่าย และงบคงเหลือ พร้อมให้คำแนะนำที่เหมาะสมโดยอ้างอิงจากข้อมูลนี้`;
+          }
+        } catch (e) {
+          console.error("Failed to fetch budget CSV", e);
+        }
+      }
+      else if (agentId === 5) {
         try {
           const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv');
           if (res.ok) {
