@@ -1375,7 +1375,25 @@
         </div>
       </div>
 
-
+      <!-- Cryptocurrencies Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">CRYPTOCURRENCIES</span>
+          <span style="color: #64748b; font-size: 6px;">●●</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">BITCOIN (BTC)</span>
+          <span class="stat-value" id="crypto-btc" style="color: #64748b;">กำลังโหลด...</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">ETHEREUM (ETH)</span>
+          <span class="stat-value" id="crypto-eth" style="color: #64748b;">กำลังโหลด...</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">DOGECOIN (DOGE)</span>
+          <span class="stat-value" id="crypto-doge" style="color: #64748b;">กำลังโหลด...</span>
+        </div>
+      </div>
     </aside>
   </div>
 
@@ -2917,6 +2935,40 @@
       logActivity("MARKET INDICES UPDATED: Real-time quotes loaded.");
     }
 
+    /* Update crypto prices from Binance */
+    async function updateCryptoPrices() {
+      const cryptos = [
+        { symbol: 'BTCUSDT', elementId: 'crypto-btc' },
+        { symbol: 'ETHUSDT', elementId: 'crypto-eth' },
+        { symbol: 'DOGEUSDT', elementId: 'crypto-doge' }
+      ];
+      
+      for (const crypto of cryptos) {
+        const el = document.getElementById(crypto.elementId);
+        if (!el) continue;
+        
+        try {
+          const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${crypto.symbol}`);
+          const data = await res.json();
+          if (data && data.price) {
+            const numPrice = parseFloat(data.price);
+            let formattedPrice;
+            if (crypto.symbol === 'DOGEUSDT') {
+              formattedPrice = numPrice.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+            } else {
+              formattedPrice = numPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            el.textContent = `$${formattedPrice}`;
+            el.style.color = '#10b981'; // Green color
+          }
+        } catch (e) {
+          console.error(`Failed to update crypto ${crypto.symbol}:`, e);
+          el.textContent = 'N/A';
+          el.style.color = '#64748b';
+        }
+      }
+    }
+
     /* Dynamic Agent Wandering / Movement System */
     const agentWalkStates = {
       1: { timer: null },
@@ -3039,6 +3091,8 @@
       refreshWeather();
       updateMarketIndices();
       setInterval(updateMarketIndices, 60000); // refresh every 1 minute
+      updateCryptoPrices();
+      setInterval(updateCryptoPrices, 15000); // refresh crypto every 15 seconds
       initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
