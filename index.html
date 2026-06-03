@@ -907,6 +907,36 @@
       font-style: italic;
     }
 
+    .oil-ticker-container {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      margin: 0 20px;
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .oil-ticker-content {
+      display: inline-block;
+      animation: ticker 25s linear infinite;
+    }
+    .oil-ticker-content:hover {
+      animation-play-state: paused;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .oil-item {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    .oil-station-ptt { color: #0ea5e9; font-weight: bold; }
+    .oil-station-bcp { color: #22c55e; font-weight: bold; }
+    .oil-station-caltex { color: #ef4444; font-weight: bold; }
+    .oil-price { color: #f8fafc; font-weight: bold; margin-left: 2px; }
+
     /* Realtime Console Feed at Bottom */
     #activity-feed {
       height: 38px;
@@ -4550,8 +4580,13 @@
       <div class="feed-dot"></div>
       <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Stock AI Analyst Co-Workers are online and ready.</span>
     </div>
-    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">6TOUCH 1.0
+    <div class="oil-ticker-container">
+      <div class="oil-ticker-content" id="oil-ticker-content">
+        <!-- Oil prices will be loaded here -->
+        <span style="color: #64748b;">กำลังโหลดราคาน้ำมัน...</span>
+      </div>
     </div>
+    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">6TOUCH 1.0</div>
   </div>
 
   <!-- API Key & Settings Dialog Modal -->
@@ -6429,6 +6464,50 @@
       }
     }
 
+    async function fetchOilPrices() {
+      const tickerContent = document.getElementById('oil-ticker-content');
+      if (!tickerContent) return;
+      try {
+        const response = await fetch('https://api.chnwt.dev/thai-oil-api/latest');
+        if (!response.ok) throw new Error('API failed');
+        const data = await response.json();
+        
+        let html = '';
+        if (data.status === 'success' && data.response && data.response.stations) {
+          const stations = data.response.stations;
+          const displayStations = [
+            { id: 'ptt', name: 'PTT', class: 'oil-station-ptt' },
+            { id: 'bcp', name: 'บางจาก', class: 'oil-station-bcp' },
+            { id: 'caltex', name: 'Caltex', class: 'oil-station-caltex' }
+          ];
+          
+          displayStations.forEach(station => {
+            const stData = stations[station.id];
+            if (stData) {
+              html += `<span class="${station.class}" style="margin-right:8px;">[${station.name}]</span>`;
+              // Get key fuels: gasohol_95, gasohol_91, gasohol_e20, diesel
+              const fuels = ['gasohol_95', 'gasohol_91', 'gasohol_e20', 'diesel'];
+              fuels.forEach(fuel => {
+                if (stData[fuel]) {
+                   html += `<span class="oil-item">${stData[fuel].name}: <span class="oil-price">${stData[fuel].price} ฿</span></span>`;
+                }
+              });
+              html += `<span style="margin-right: 20px;"></span>`;
+            }
+          });
+        }
+        
+        if (html) {
+          tickerContent.innerHTML = html + html; // duplicate for smooth scrolling
+        } else {
+          tickerContent.innerHTML = '<span style="color: #64748b;">ไม่พบข้อมูลราคาน้ำมัน</span>';
+        }
+      } catch (err) {
+        console.error('Error fetching oil prices:', err);
+        tickerContent.innerHTML = '<span style="color: #ef4444;">ไม่สามารถโหลดข้อมูลราคาน้ำมันได้</span>';
+      }
+    }
+
     /* Page load init triggers */
     window.addEventListener('load', () => {
       loadPositions();
@@ -6442,6 +6521,8 @@
       setInterval(updateTicketsFromSheet, 60000); // refresh every 1 minute
       fetchCNOBudget();
       setInterval(fetchCNOBudget, 60000); // refresh every 1 minute
+      fetchOilPrices();
+      setInterval(fetchOilPrices, 3600000); // refresh every 1 hour
       initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
