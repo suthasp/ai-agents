@@ -1534,15 +1534,15 @@
       5: {
         id: 5,
         name: "LUNA 🎨 (หญิง)",
-        role: "Presentation Specialist (หญิง)",
-        bio: "สร้างโครงร่างพรีเซนเตชันสไลด์ 8 หน้าจากผลสรุปของ Ken หรือระบุหัวข้อนำเสนอเอง",
+        role: "Incident Report Specialist (หญิง)",
+        bio: "ดึงข้อมูลและสรุปรายงานตั๋วปัญหา (Tickets) จาก Google Sheets เป็น Slide Presentation",
         avatar: "🎨",
         theme: "#f43f5e",
         themeOp: "rgba(244, 63, 94, 0.15)",
         themeGlow: "rgba(244, 63, 94, 0.4)",
         themeGlowSolid: "rgba(244, 63, 94, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน Luna นักออกแบบ Outline Presentation นำเสนอค่ะ 🎨\nฉันสามารถใช้ผลงาน Insights ที่ Ken วิเคราะห์ไว้มาสร้างโครงสร้างสไลด์นำเสนอ หรือถ้าคุณมีหัวข้ออื่นๆ ที่อยากสร้างสไลด์ใหม่เอง ก็พิมพ์บอกฉันได้เลยค่ะ!",
-        quickReplies: ["สร้างสไลด์จาก Insights ล่าสุดของ Ken", "สไลด์เรื่อง 'แนวโน้มการลงทุนยุค AI 2026'", "แนะนำธีมการนำเสนอ"]
+        intro: "สวัสดีค่ะ! ฉัน Luna ผู้เชี่ยวชาญด้านการสรุปรายงานปัญหา 🎨\nฉันมีหน้าที่หลักเพียงอย่างเดียวคือการดึงข้อมูลจาก Google Sheets (ระบบ Tickets) มาประมวลผลและสร้างเป็นโครงร่างสไลด์นำเสนอให้คุณค่ะ เพียงแค่คลิกหรือพิมพ์สั่งให้ฉันเริ่มทำงานได้เลย!",
+        quickReplies: ["สรุปรายงานปัญหา (Tickets) ล่าสุด", "วิเคราะห์ปัญหาความรุนแรงสูง (SEV 1)"]
       },
       6: {
         id: 6,
@@ -2038,17 +2038,7 @@
         `;
       } 
       else if (id === 5) { // LUNA (Presentation maker)
-        const hasData = !!sharedInsightsData;
-        const color = hasData ? '#10b981' : '#ff5555';
-        
-        wrapper.innerHTML = `
-          <div style="background: rgba(20,20,30,0.8); border: 1px solid ${hasData ? 'rgba(16,185,129,0.3)' : 'rgba(255,59,147,0.3)'}; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 9.5px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span>ข้อมูล Insights จาก Ken: <strong style="color: ${color}">${hasData ? 'พร้อมใช้งาน (' + sharedInsightsFilename + ')' : 'ไม่มีข้อมูล'}</strong></span>
-              ${hasData ? `<button class="btn-pill" style="font-size: 7px; padding: 2px 6px;" onclick="clearSharedData()">ล้าง</button>` : ''}
-            </div>
-          </div>
-        `;
+        wrapper.innerHTML = '';
       }
     }
 
@@ -2547,54 +2537,51 @@
 - ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`;
       }
       else if (agentId === 5) { // LUNA (Presentation maker)
-        if (prompt.includes('docs.google.com/spreadsheets') && prompt.includes('csv')) {
-          const urlMatch = prompt.match(/https:\/\/docs\.google\.com[^\s]+/);
-          if (urlMatch) {
-            try {
-              const res = await fetch(urlMatch[0]);
-              if (!res.ok) throw new Error("Fetch failed");
-              const text = await res.text();
-              const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-              
-              function parseCSVRow(str) {
-                var arr = [], quote = false, col = "";
-                for (var i = 0; i < str.length; i++) {
-                  var c = str[i];
-                  if (c === '"' && quote && str[i+1] === '"') { col += '"'; i++; }
-                  else if (c === '"') { quote = !quote; }
-                  else if (c === ',' && !quote) { arr.push(col.trim()); col = ""; }
-                  else { col += c; }
-                }
-                arr.push(col.trim());
-                return arr;
-              }
+        try {
+          const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv');
+          if (!res.ok) throw new Error("Fetch failed");
+          const text = await res.text();
+          const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+          
+          function parseCSVRow(str) {
+            var arr = [], quote = false, col = "";
+            for (var i = 0; i < str.length; i++) {
+              var c = str[i];
+              if (c === '"' && quote && str[i+1] === '"') { col += '"'; i++; }
+              else if (c === '"') { quote = !quote; }
+              else if (c === ',' && !quote) { arr.push(col.trim()); col = ""; }
+              else { col += c; }
+            }
+            arr.push(col.trim());
+            return arr;
+          }
 
-              const headers = parseCSVRow(lines[0]);
-              const statusIdx = headers.indexOf('STATUS');
-              const sevIdx = headers.indexOf('SEVERITY');
-              const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
-              
-              let highSevCount = 0;
-              let totalTickets = lines.length - 1;
-              let openTickets = 0;
-              let teams = {};
+          const headers = parseCSVRow(lines[0]);
+          const statusIdx = headers.indexOf('STATUS');
+          const sevIdx = headers.indexOf('SEVERITY');
+          const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
+          
+          let highSevCount = 0;
+          let totalTickets = lines.length - 1;
+          let openTickets = 0;
+          let teams = {};
 
-              for (let i = 1; i < lines.length; i++) {
-                const row = parseCSVRow(lines[i]);
-                const sev = sevIdx !== -1 ? row[sevIdx] : '';
-                const status = statusIdx !== -1 ? row[statusIdx] : '';
-                const owner = ownerIdx !== -1 ? row[ownerIdx] : 'Unknown';
+          for (let i = 1; i < lines.length; i++) {
+            const row = parseCSVRow(lines[i]);
+            const sev = sevIdx !== -1 ? row[sevIdx] : '';
+            const status = statusIdx !== -1 ? row[statusIdx] : '';
+            const owner = ownerIdx !== -1 ? row[ownerIdx] : 'Unknown';
 
-                if (sev.includes('1') || sev.includes('High') || sev.includes('NSA1')) highSevCount++;
-                if (status !== 'CLOSED' && status !== 'RESOLVED' && status !== 'COMPLETED') openTickets++;
-                if (owner) teams[owner] = (teams[owner] || 0) + 1;
-              }
-              
-              const sortedTeams = Object.keys(teams).sort((a,b) => teams[b] - teams[a]);
-              const topTeam = sortedTeams[0] || 'N/A';
-              const topTeamCount = teams[topTeam] || 0;
+            if (sev.includes('1') || sev.includes('High') || sev.includes('NSA1')) highSevCount++;
+            if (status !== 'CLOSED' && status !== 'RESOLVED' && status !== 'COMPLETED') openTickets++;
+            if (owner) teams[owner] = (teams[owner] || 0) + 1;
+          }
+          
+          const sortedTeams = Object.keys(teams).sort((a,b) => teams[b] - teams[a]);
+          const topTeam = sortedTeams[0] || 'N/A';
+          const topTeamCount = teams[topTeam] || 0;
 
-              return `วิเคราะห์ข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets และสร้างเป็นโครงร่างสไลด์นำเสนอเสร็จเรียบร้อยค่ะ 🎨:
+          return `วิเคราะห์ข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets และสร้างเป็นโครงร่างสไลด์นำเสนอเสร็จเรียบร้อยค่ะ 🎨:
 
 [SLIDE 1]
 🖼️ หน้าปกสไลด์: รายงานสรุปสถานะการแก้ไขปัญหา (Incident Ticket Report)
@@ -2618,53 +2605,9 @@
 📝 1. เร่งจัดการปัญหา High Severity ทั้ง ${highSevCount} รายการให้เสร็จสิ้นก่อน
 2. กระจายโหลดงานจากทีม ${topTeam} ให้ทีมอื่นช่วย Support
 🎨 วางไอคอนเช็คลิสต์เพื่อให้ดูเป็น Action Item ที่ชัดเจนและนำไปปฏิบัติได้ทันทีค่ะ`;
-            } catch (err) {
-              return `ขออภัยค่ะ ฉันไม่สามารถโหลดข้อมูลจากลิงก์ที่ให้มาได้ (Error: ${err.message})`;
-            }
-          }
+        } catch (err) {
+          return `ขออภัยค่ะ ฉันไม่สามารถโหลดข้อมูลจาก Google Sheets ได้ในขณะนี้ (Error: ${err.message})`;
         }
-
-        return `โครงร่างสารบัญสไลด์พรีเซนเตชัน 8 หน้า จัดทำเสร็จเรียบร้อยแล้วค่ะ 🎨:
-
-[SLIDE 1]
-🖼️ หน้าปกสไลด์: แผนการจัดสรรพอร์ตโฟลิโอและเป้าหมายการเติบโตปี 2026
-📝 สรุปความต้องการภาพรวมพอร์ต และทิศทางจัดสินทรัพย์เพื่อเป้าหมายผลตอบแทนหลัก
-🎨 โทนสีน้ำเงินเข้มและสีเขียวอมเงิน สะท้อนความน่าเชื่อถือมั่นคงทางการเงิน
-
-[SLIDE 2]
-🖼️ วาระการประชุม (Agenda) และเป้าหมายสินทรัพย์
-📝 แนวทางการกระจายความเสี่ยง, สรุปผลงานย้อนหลัง YTD, และแผนการปรับพอร์ตประจำไตรมาส
-🎨 ใช้การจัดวางโครงสร้างแบ่ง 3 ส่วนการ์ดเรียงแนวนอน
-
-[SLIDE 3]
-🖼️ สถิติสินทรัพย์และการประเมินผลตอบแทนสะสม
-📝 นำเสนอตัวเลขสินทรัพย์รวม 1.24 ล้านบาท และอัตราเติบโตเอาชนะตลาดอ้างอิง 3.8%
-🎨 ตัวอักษรดัชนีขนาดใหญ่เน้นเด่นชัดตรงกลางสไลด์
-
-[SLIDE 4]
-🖼️ โครงสร้างการกระจายสัดส่วนการลงทุนรายกลุ่ม
-📝 อุตสาหกรรมเทคโนโลยีครองน้ำหนัก 45% พลังงาน 20% การเงิน 15% และสัดส่วนปันผลอื่นๆ
-🎨 แผนภูมิวงกลม (Pie Chart) พร้อมขีดไฮไลท์ชี้รายละเอียดรายกลุ่มเด่นชัด
-
-[SLIDE 5]
-🖼️ วิเคราะห์หุ้นสร้างผลงานเด่น: AAPL นำกระแสเทรนด์
-📝 หุ้นหลักสร้างกำไรสะสมสูงสุดกว่า 25% ขานรับยอดรอบอัปเกรดเครื่องและรายได้บริการ
-🎨 วางโลโก้และสถิติคู่การ์ดเปรียบเทียบความคุ้มค่าราคา
-
-[SLIDE 6]
-🖼️ แผนการปรับพอร์ตป้องกันความเสี่ยง (Rebalancing Plan)
-📝 ขั้นตอนย้ายสัดส่วนกำไรเทคโนโลยีส่วนเกินมาสำรองในกลุ่ม Defensive เพื่อเตรียมรับตลาดแกว่งตัว
-🎨 ลูกศรการไหลของน้ำหนักสัดส่วน แสดงลำดับขั้นตอนง่ายและเข้าใจเร็ว
-
-[SLIDE 7]
-🖼️ ข้อเสนอแนะ 3 ข้อสำคัญเพื่อความมั่นคงพอร์ตระยะยาว
-📝 1. ทยอยทำกำไรตามเป้า, 2. ล็อกเป้าปันผลสะสมเฉลี่ย 4.2% ต่อปี, 3. รักษากระแสเงินสดสำรอง 10%
-🎨 ลำดับเลขกล่องการ์ดสีเขียว สื่อสว่างถึงแนวทางความสำเร็จ
-
-[SLIDE 8]
-🖼️ บทสรุปและช่องทางถามตอบปัญหา (Q&A)
-📝 สรุปกำหนดวันเริ่มทำการปรับจัดสัดส่วนพอร์ต และรายละเอียดติดต่อผู้ดูแล
-🎨 ดีไซน์มินิมอล พื้นหลังสว่างเพื่อจบพรีเซนเตชันสไลด์อย่างน่าประทับใจ`;
       }
       else if (agentId === 6) { // ROBO (Vacuum Cleaner)
         if (prompt.includes('เริ่ม') || prompt.includes('clean') || prompt.includes('ทำงาน')) {
