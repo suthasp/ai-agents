@@ -1381,10 +1381,6 @@
           <span class="stat-label">ราคาทองคำ</span>
           <span class="stat-value" id="index-gold" style="color: #64748b;">กำลังโหลด...</span>
         </div>
-        <!-- Progress Bar -->
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: 72%;"></div>
-        </div>
       </div>
 
       <!-- Cryptocurrencies Panel -->
@@ -2919,9 +2915,9 @@
       
       logActivity("REFRESHING MARKET INDICES: Fetching real-time quotes...");
       
-      for (const index of indices) {
+      await Promise.all(indices.map(async (index) => {
         const el = document.getElementById(index.elementId);
-        if (!el) continue;
+        if (!el) return;
         
         try {
           const data = await fetchRealTimeStock(index.symbol);
@@ -2943,7 +2939,7 @@
           el.textContent = 'N/A';
           el.style.color = '#64748b';
         }
-      }
+      }));
       logActivity("MARKET INDICES UPDATED: Real-time quotes loaded.");
     }
 
