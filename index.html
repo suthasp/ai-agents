@@ -1383,6 +1383,17 @@
         </div>
       </div>
 
+      <!-- Tickets Panel (Google Sheets) -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">ACTIVE TICKETS</span>
+          <span style="color: #64748b; font-size: 6px;">●●</span>
+        </div>
+        <div id="tickets-container" style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="color: #64748b; font-size: 10px;">กำลังโหลดข้อมูลจาก Google Sheets...</span>
+        </div>
+      </div>
+
       <!-- Cryptocurrencies Panel -->
       <div class="panel">
         <div class="panel-header">
@@ -3108,6 +3119,79 @@
       }, walkDuration);
     }
 
+    /* Update Tickets from Google Sheets CSV */
+    async function updateTicketsFromSheet() {
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv';
+      const container = document.getElementById('tickets-container');
+      if (!container) return;
+
+      try {
+        const res = await fetch(csvUrl);
+        if (!res.ok) throw new Error('Network response was not ok');
+        const text = await res.text();
+        
+        function parseCSVRow(str) {
+          var arr = [], quote = false, col = "";
+          for (var i = 0; i < str.length; i++) {
+            var c = str[i];
+            if (c === '"' && quote && str[i+1] === '"') { col += '"'; i++; }
+            else if (c === '"') { quote = !quote; }
+            else if (c === ',' && !quote) { arr.push(col.trim()); col = ""; }
+            else { col += c; }
+          }
+          arr.push(col.trim());
+          return arr;
+        }
+
+        const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+        if (lines.length <= 1) {
+          container.innerHTML = '<span style="color:#64748b; font-size:10px;">ไม่มีข้อมูลทิคเก็ต</span>';
+          return;
+        }
+
+        const headers = parseCSVRow(lines[0]);
+        const idIdx = headers.indexOf('TICKETID');
+        const statusIdx = headers.indexOf('STATUS');
+        const sevIdx = headers.indexOf('SEVERITY');
+        const probIdx = headers.indexOf('Sub_Problem_2') !== -1 ? headers.indexOf('Sub_Problem_2') : headers.indexOf('SUBJECT');
+
+        if (idIdx === -1) throw new Error("Invalid CSV format");
+
+        container.innerHTML = '';
+        const maxTickets = Math.min(lines.length - 1, 5);
+        for (let i = 1; i <= maxTickets; i++) {
+          const row = parseCSVRow(lines[i]);
+          const tId = row[idIdx] || 'UNKNOWN';
+          const tStatus = (statusIdx !== -1 ? row[statusIdx] : '');
+          const tSev = (sevIdx !== -1 ? row[sevIdx] : '');
+          const tProb = (probIdx !== -1 ? row[probIdx] : '');
+
+          let sevColor = '#94a3b8';
+          if (tSev.includes('1') || tSev.includes('High')) sevColor = '#ef4444';
+          else if (tSev.includes('2') || tSev.includes('Med')) sevColor = '#f59e0b';
+          else if (tSev.includes('3') || tSev.includes('Low')) sevColor = '#eab308';
+
+          const probText = tProb.length > 20 ? tProb.substring(0,20) + '...' : tProb;
+
+          container.innerHTML += `
+            <div class="stat-row" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; margin-bottom: 2px;">
+              <div style="display:flex; flex-direction:column; gap:2px; overflow:hidden;">
+                <span style="color:#f1f5f9; font-weight:bold;">${tId}</span>
+                <span style="color:#94a3b8; font-size:8px; white-space:nowrap;">${probText}</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
+                <span style="color:${sevColor}; font-size:8px; font-weight:bold;">SEV: ${tSev}</span>
+                <span style="color:#10b981; font-size:8px; background:rgba(16,185,129,0.1); padding:1px 4px; border-radius:3px;">${tStatus}</span>
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error('Error fetching sheets:', err);
+        container.innerHTML = '<span style="color:#ef4444; font-size:10px;">เกิดข้อผิดพลาดในการโหลดข้อมูล</span>';
+      }
+    }
+
     /* Page load init triggers */
     window.addEventListener('load', () => {
       loadPositions();
@@ -3117,6 +3201,8 @@
       setInterval(updateMarketIndices, 60000); // refresh every 1 minute
       updateCryptoPrices();
       setInterval(updateCryptoPrices, 15000); // refresh crypto every 15 seconds
+      updateTicketsFromSheet();
+      setInterval(updateTicketsFromSheet, 60000); // refresh every 1 minute
       initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
