@@ -396,6 +396,11 @@
       color: #cbd5e0;
       line-height: 1.4;
       font-size: 9px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Office Canvas & Draggable Engine */
@@ -5193,7 +5198,7 @@
 
         // Push agent bubble text above head
         triggerAgentBubble(currentAgentId, queryText.slice(0, 15) + "...");
-        postTeamChatMsg(currentAgentId, "RUNNING", agentResponse.slice(0, 30).replace(/\[.*?\]/g, '') + "...");
+        postTeamChatMsg(currentAgentId, "RUNNING", agentResponse.replace(/\[.*?\]/g, '').replace(/\*+/g, '').trim());
         playSuccessSound();
       } catch (err) {
         console.error("API Call error:", err);
