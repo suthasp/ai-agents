@@ -1542,7 +1542,7 @@
         themeGlow: "rgba(244, 63, 94, 0.4)",
         themeGlowSolid: "rgba(244, 63, 94, 0.7)",
         intro: "สวัสดีค่ะ! ฉัน Luna ผู้เชี่ยวชาญด้านการสรุปรายงานปัญหา 🎨\nฉันมีหน้าที่หลักเพียงอย่างเดียวคือการดึงข้อมูลจาก Google Sheets (ระบบ Tickets) มาประมวลผลและสร้างเป็นโครงร่างสไลด์นำเสนอให้คุณค่ะ เพียงแค่คลิกหรือพิมพ์สั่งให้ฉันเริ่มทำงานได้เลย!",
-        quickReplies: ["สรุปรายงานปัญหา (Tickets) ล่าสุด", "วิเคราะห์ปัญหาความรุนแรงสูง (SEV 1)"]
+        quickReplies: ["สรุปรายงานปัญหา (Tickets) ล่าสุด", "แสดงรายละเอียดตั๋วปัญหา (Tickets) ทั้งหมด"]
       },
       6: {
         id: 6,
@@ -2208,7 +2208,7 @@
           const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv');
           if (res.ok) {
             const csvText = await res.text();
-            systemInstruction += `\nนี่คือข้อมูลตั๋วปัญหา (Tickets) ล่าสุดจากระบบ (รูปแบบ CSV):\n\n${csvText}\n\nกรุณาวิเคราะห์สถิติปัญหา โดยจำแนกตามความรุนแรงทุกระดับ (เช่น SEV 1, SEV 2, SEV 3, High, Medium, Low ฯลฯ) รวมทั้งจำนวนที่ยังเปิดอยู่ และทีมที่รับผิดชอบหลัก แล้วสรุปออกมาเป็นโครงสร้าง Slide Presentation ให้กระชับ ชัดเจน พร้อมข้อเสนอแนะที่จับต้องได้จริง`;
+            systemInstruction += `\nนี่คือข้อมูลตั๋วปัญหา (Tickets) ล่าสุดจากระบบ (รูปแบบ CSV):\n\n${csvText}\n\nกรุณาวิเคราะห์สถิติปัญหา โดยจำแนกตามความรุนแรงทุกระดับ (เช่น SEV 1, SEV 2, SEV 3, High, Medium, Low ฯลฯ) รวมทั้งจำนวนที่ยังเปิดอยู่ และทีมที่รับผิดชอบหลัก แล้วสรุปออกมาเป็นโครงสร้าง Slide Presentation ให้กระชับ ชัดเจน\n\nข้อสำคัญ: คุณต้องแสดงรายการรายละเอียดของตั๋วปัญหา (Tickets) **ทุกรายการและทุกระดับความรุนแรง (ทุก Severity ที่มีในข้อมูล)** อย่างครบถ้วน โดยแต่ละรายการต้องแสดงฟิลด์ข้อมูลต่อไปนี้ด้วย: TICKETID, SUBJECT, CREATIONDATE, TARGETFINISH, และ SLA_Flag_Group พร้อมให้ข้อเสนอแนะที่จับต้องได้จริงทิ้งท้าย`;
           }
         } catch(e) {
           console.error("Failed to fetch tickets CSV", e);
