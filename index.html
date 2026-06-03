@@ -1333,6 +1333,10 @@
           <span class="stat-label">S&P 500</span>
           <span class="stat-value" id="index-sp500" style="color: #64748b;">กำลังโหลด...</span>
         </div>
+        <div class="stat-row">
+          <span class="stat-label">ราคาทองคำ</span>
+          <span class="stat-value" id="index-gold" style="color: #64748b;">กำลังโหลด...</span>
+        </div>
         <!-- Progress Bar -->
         <div class="progress-bar-container">
           <div class="progress-bar-fill" style="width: 72%;"></div>
@@ -2876,7 +2880,8 @@
       const indices = [
         { symbol: '^SET.BK',  label: 'SET INDEX', elementId: 'index-set' },
         { symbol: '^IXIC',    label: 'NASDAQ',    elementId: 'index-nasdaq' },
-        { symbol: '^GSPC',    label: 'S&P 500',   elementId: 'index-sp500' }
+        { symbol: '^GSPC',    label: 'S&P 500',   elementId: 'index-sp500' },
+        { symbol: 'GC=F',     label: 'GOLD',      elementId: 'index-gold' }
       ];
       
       logActivity("REFRESHING MARKET INDICES: Fetching real-time quotes...");
