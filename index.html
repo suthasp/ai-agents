@@ -399,6 +399,12 @@
       border-radius: 3px;
     }
 
+    .team-chat-badge.offline {
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid #f43f5e;
+      color: #f43f5e;
+    }
+
     .team-chat-text {
       color: #cbd5e0;
       line-height: 1.4;
@@ -4832,7 +4838,7 @@
       div.innerHTML = `
         <div class="team-chat-meta">
           <span class="team-chat-sender ${classTag}">${agent.name}</span>
-          <span class="team-chat-badge">${status}</span>
+          <span class="team-chat-badge ${status === 'OFFLINE' ? 'offline' : ''}">${status}</span>
         </div>
         <p class="team-chat-text">${text}</p>
       `;
