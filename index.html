@@ -2203,8 +2203,16 @@
       const agent = AGENTS_DATA[agentId];
       let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
       
-      if (agentId === 5 && sharedInsightsData) {
-        systemInstruction += `\nมีข้อมูลสรุปวิเคราะห์เชิงลึกจาก Ken Data Analyst ดังนี้:\n${sharedInsightsData}\nกรุณานำข้อมูลการคำนวณสถิตินี้มาใช้ออกแบบโครงสไลด์ตามสมควร`;
+      if (agentId === 5) {
+        try {
+          const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv');
+          if (res.ok) {
+            const csvText = await res.text();
+            systemInstruction += `\nนี่คือข้อมูลตั๋วปัญหา (Tickets) ล่าสุดจากระบบ (รูปแบบ CSV):\n\n${csvText}\n\nกรุณาวิเคราะห์สถิติปัญหา (จำนวนที่ยังเปิดอยู่, ปัญหาความรุนแรงสูง) ทีมที่รับผิดชอบหลัก แล้วสรุปออกมาเป็นโครงสร้าง Slide Presentation ให้กระชับ ชัดเจน พร้อมข้อเสนอแนะที่จับต้องได้จริง`;
+          }
+        } catch(e) {
+          console.error("Failed to fetch tickets CSV", e);
+        }
       }
 
       const combinedPrompt = `${systemInstruction}\n\nคำขอจากผู้ใช้: ${prompt}`;
