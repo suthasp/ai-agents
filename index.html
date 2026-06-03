@@ -3151,7 +3151,7 @@
 
         const headers = parseCSVRow(lines[0]);
         const idIdx = headers.indexOf('TICKETID');
-        const statusIdx = headers.indexOf('STATUS');
+        const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
         const sevIdx = headers.indexOf('SEVERITY');
         const probIdx = headers.indexOf('Sub_Problem_2') !== -1 ? headers.indexOf('Sub_Problem_2') : headers.indexOf('SUBJECT');
 
@@ -3162,7 +3162,7 @@
         for (let i = 1; i <= maxTickets; i++) {
           const row = parseCSVRow(lines[i]);
           const tId = row[idIdx] || 'UNKNOWN';
-          const tStatus = (statusIdx !== -1 ? row[statusIdx] : '');
+          const tOwner = (ownerIdx !== -1 ? row[ownerIdx] : '');
           const tSev = (sevIdx !== -1 ? row[sevIdx] : '');
           const tProb = (probIdx !== -1 ? row[probIdx] : '');
 
@@ -3172,6 +3172,7 @@
           else if (tSev.includes('3') || tSev.includes('Low')) sevColor = '#eab308';
 
           const probText = tProb.length > 20 ? tProb.substring(0,20) + '...' : tProb;
+          const ownerText = tOwner.length > 20 ? tOwner.substring(0,20) + '...' : tOwner;
 
           container.innerHTML += `
             <div class="stat-row" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; margin-bottom: 2px;">
@@ -3181,7 +3182,7 @@
               </div>
               <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;">
                 <span style="color:${sevColor}; font-size:8px; font-weight:bold;">SEV: ${tSev}</span>
-                <span style="color:#10b981; font-size:8px; background:rgba(16,185,129,0.1); padding:1px 4px; border-radius:3px;">${tStatus}</span>
+                <span style="color:#10b981; font-size:8px; background:rgba(16,185,129,0.1); padding:1px 4px; border-radius:3px; white-space:nowrap;">${ownerText}</span>
               </div>
             </div>
           `;
