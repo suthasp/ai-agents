@@ -3346,13 +3346,34 @@
     }
 
     /* Dynamic Agent Wandering / Movement System */
+    const waypoints = [
+      { id: 0, left: 47, top: 38 }, // Top Center (near CEO)
+      { id: 1, left: 30, top: 48 }, // Top Left 
+      { id: 2, left: 32, top: 65 }, // Bottom Left
+      { id: 3, left: 45, top: 75 }, // Bottom Center-Left
+      { id: 4, left: 65, top: 75 }, // Bottom Center-Right
+      { id: 5, left: 74, top: 62 }, // Mid Right (near Maya)
+      { id: 6, left: 70, top: 44 }  // Top Right
+    ];
+
+    const waypointGraph = {
+      0: [1, 6],
+      1: [0, 2],
+      2: [1, 3],
+      3: [2, 4],
+      4: [3, 5],
+      5: [4, 6],
+      6: [5, 0]
+    };
+
     const agentWalkStates = {
-      1: { timer: null },
-      2: { timer: null },
-      3: { timer: null },
-      4: { timer: null },
-      5: { timer: null },
-      6: { timer: null }
+      1: { timer: null, currentWP: 1 },
+      2: { timer: null, currentWP: 2 },
+      3: { timer: null, currentWP: 5 },
+      4: { timer: null, currentWP: 3 },
+      5: { timer: null, currentWP: 4 },
+      6: { timer: null, currentWP: 0 },
+      99: { timer: null, currentWP: 6 } // CEO (if he ever wanders)
     };
 
     function initAgentWandering() {
@@ -3430,10 +3451,25 @@
       // Get current positions to determine target direction
       const currentLeft = parseFloat(el.style.left || '50');
 
-      // Random walkable coordinates (isometric floor bounds)
-      // Walkable area: left: 28% to 76%, top: 32% to 78%
-      const newLeft = 28 + Math.random() * 48;
-      const newTop = 32 + Math.random() * 46;
+      let newLeft, newTop;
+      
+      if (agentWalkStates[agentId].currentWP !== undefined) {
+        // Waypoint navigation to avoid tables
+        const currentWP = agentWalkStates[agentId].currentWP;
+        const neighbors = waypointGraph[currentWP];
+        const nextWPId = neighbors[Math.floor(Math.random() * neighbors.length)];
+        const nextWP = waypoints.find(w => w.id === nextWPId);
+        
+        // Add slight randomization (+/- 2%) to prevent exact stacking
+        newLeft = nextWP.left + (Math.random() * 4 - 2);
+        newTop = nextWP.top + (Math.random() * 4 - 2);
+        
+        agentWalkStates[agentId].currentWP = nextWPId;
+      } else {
+        // Fallback random box
+        newLeft = 28 + Math.random() * 48;
+        newTop = 32 + Math.random() * 46;
+      }
 
       // Set facing direction based on horizontal movement direction
       if (newLeft < currentLeft) {
