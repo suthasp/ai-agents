@@ -1213,7 +1213,8 @@
       position: absolute;
       left: 240px;
       bottom: 38px;
-      width: 450px;
+      width: fit-content;
+      min-width: 350px;
       max-width: calc(100vw - 260px);
       height: 250px;
       max-height: calc(100vh - 120px);
@@ -1262,9 +1263,6 @@
       text-align: left;
       color: #cbd5e0;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100px;
     }
 
     .pm-table th {
