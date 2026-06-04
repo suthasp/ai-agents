@@ -524,8 +524,8 @@
     .draggable[data-type="agent"]:not([data-id="6"]) svg,
     .draggable[data-type="agent"]:not([data-id="6"]) img {
       object-fit: contain;
-      width: 90px;
-      height: 110px;
+      width: 120px;
+      height: 140px;
       transform: scaleX(var(--scale-x, 1));
       transition: transform 0.2s ease-in-out;
     }
@@ -633,6 +633,11 @@
       white-space: nowrap;
       pointer-events: none;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .draggable[data-type="agent"]:not([data-id="6"]) .agent-tag {
+      bottom: auto;
+      top: -20px;
     }
 
     .agent-tag-dot {
