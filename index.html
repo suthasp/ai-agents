@@ -4797,13 +4797,13 @@
         id: 5,
         name: "LUNA 🎨 (หญิง)",
         role: "Incident Report Specialist (หญิง)",
-        bio: "ดึงข้อมูลและสรุปรายงานตั๋วปัญหา (Tickets) จาก Google Sheets เป็น Slide Presentation",
+        bio: "ดึงข้อมูลและสรุปรายงานตั๋วปัญหา (Tickets) จาก Google Sheets ตามคอลัมน์สำคัญ",
         avatar: "🎨",
         theme: "#f43f5e",
         themeOp: "rgba(244, 63, 94, 0.15)",
         themeGlow: "rgba(244, 63, 94, 0.4)",
         themeGlowSolid: "rgba(244, 63, 94, 0.7)",
-        intro: "สวัสดีค่ะ! ฉัน Luna ผู้เชี่ยวชาญด้านการสรุปรายงานปัญหา 🎨\nฉันมีหน้าที่หลักเพียงอย่างเดียวคือการดึงข้อมูลจาก Google Sheets (ระบบ Tickets) มาประมวลผลและสร้างเป็นโครงร่างสไลด์นำเสนอให้คุณค่ะ เพียงแค่คลิกหรือพิมพ์สั่งให้ฉันเริ่มทำงานได้เลย!",
+        intro: "สวัสดีค่ะ! ฉัน Luna ผู้เชี่ยวชาญด้านรายงานตั๋วปัญหา 🎨\nฉันมีหน้าที่ดึงข้อมูลจาก Google Sheets (ระบบ Tickets) มาประมวลผลและสรุปรายละเอียดของตั๋วปัญหาทุกรายการตามคอลัมน์สำคัญให้คุณค่ะ เพียงแค่คลิกหรือพิมพ์สั่งให้ฉันเริ่มทำงานได้เลย!",
         quickReplies: ["สรุปรายงานปัญหา (Tickets) ล่าสุด", "แสดงรายละเอียดตั๋วปัญหา (Tickets) ทั้งหมด"]
       },
       6: {
@@ -5419,8 +5419,6 @@
         let outputHTML = formatMarkdown(agentResponse);
         if (currentAgentId === 2) { // ALEX Buy/Sell/Hold Signal Parser
           outputHTML = parseStockSignal(agentResponse) + outputHTML;
-        } else if (currentAgentId === 5) { // LUNA Presentation outline formatter
-          outputHTML = parsePresentationSlides(agentResponse);
         }
 
         appendMessageUI('agent', outputHTML, true);
@@ -5475,7 +5473,7 @@
           const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT_vPqObw-uOYA7tieLnMMg3XZ8SmfshzCO-I8qaAjshSOi2j_vC2OE28tcm19-_I54MDT0Uo273sP_/pub?gid=2146479152&single=true&output=csv');
           if (res.ok) {
             const csvText = await res.text();
-            systemInstruction += `\nนี่คือข้อมูลตั๋วปัญหา (Tickets) ล่าสุดจากระบบ (รูปแบบ CSV):\n\n${csvText}\n\nกรุณาวิเคราะห์สถิติปัญหา โดยจำแนกตามความรุนแรงทุกระดับ (เช่น SEV 1, SEV 2, SEV 3, High, Medium, Low ฯลฯ) รวมทั้งจำนวนที่ยังเปิดอยู่ และทีมที่รับผิดชอบหลัก แล้วสรุปออกมาเป็นโครงสร้าง Slide Presentation ให้กระชับ ชัดเจน\n\nข้อสำคัญ: คุณต้องแสดงรายการรายละเอียดของตั๋วปัญหา (Tickets) **ทุกรายการและทุกระดับความรุนแรง (ทุก Severity ที่มีในข้อมูล)** อย่างครบถ้วน โดยแต่ละรายการต้องแสดงฟิลด์ข้อมูลต่อไปนี้ด้วย: TICKETID, SUBJECT, CREATIONDATE, TARGETFINISH, และ SLA_Flag_Group พร้อมให้ข้อเสนอแนะที่จับต้องได้จริงทิ้งท้าย`;
+            systemInstruction += `\nนี่คือข้อมูลตั๋วปัญหา (Tickets) ล่าสุดจากระบบ (รูปแบบ CSV):\n\n${csvText}\n\nไม่ต้องทำ Slide ให้สรุปข้อความจากชีตโดยดึงข้อมูลเฉพาะ Column D, H, I, M, U, W ทุก tickets ออกมาเป็นข้อๆ อย่างเป็นระเบียบให้อ่านง่าย`;
           }
         } catch (e) {
           console.error("Failed to fetch tickets CSV", e);
@@ -5832,54 +5830,28 @@
           }
 
           const headers = parseCSVRow(lines[0]);
-          const statusIdx = headers.indexOf('STATUS');
-          const sevIdx = headers.indexOf('SEVERITY');
-          const ownerIdx = headers.indexOf('TRUEOWNERGROUP');
-
-          let highSevCount = 0;
-          let totalTickets = lines.length - 1;
-          let openTickets = 0;
-          let teams = {};
+          let outputText = `สรุปข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets (เฉพาะคอลัมน์ D, H, I, M, U, W) ค่ะ 📝:\n\n`;
+          const colsToExtract = [3, 7, 8, 12, 20, 22];
 
           for (let i = 1; i < lines.length; i++) {
             const row = parseCSVRow(lines[i]);
-            const sev = sevIdx !== -1 ? row[sevIdx] : '';
-            const status = statusIdx !== -1 ? row[statusIdx] : '';
-            const owner = ownerIdx !== -1 ? row[ownerIdx] : 'Unknown';
+            if (row.length < 23) continue;
 
-            if (sev.includes('1') || sev.includes('High') || sev.includes('NSA1')) highSevCount++;
-            if (status !== 'CLOSED' && status !== 'RESOLVED' && status !== 'COMPLETED') openTickets++;
-            if (owner) teams[owner] = (teams[owner] || 0) + 1;
+            outputText += `**Ticket ${i}:**\n`;
+            colsToExtract.forEach(colIdx => {
+              const colName = headers[colIdx] || `Col ${colIdx+1}`;
+              let colVal = row[colIdx] || '-';
+              if (colVal.length > 300) colVal = colVal.substring(0, 300) + '...';
+              outputText += `- **${colName}:** ${colVal}\n`;
+            });
+            outputText += `\n`;
           }
 
-          const sortedTeams = Object.keys(teams).sort((a, b) => teams[b] - teams[a]);
-          const topTeam = sortedTeams[0] || 'N/A';
-          const topTeamCount = teams[topTeam] || 0;
+          if (outputText === `สรุปข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets (เฉพาะคอลัมน์ D, H, I, M, U, W) ค่ะ 📝:\n\n`) {
+              return `ขออภัยค่ะ ไม่พบข้อมูลที่ครบถ้วนจาก Google Sheets`;
+          }
 
-          return `วิเคราะห์ข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets และสร้างเป็นโครงร่างสไลด์นำเสนอเสร็จเรียบร้อยค่ะ 🎨:
-
-[SLIDE 1]
-🖼️ หน้าปกสไลด์: รายงานสรุปสถานะการแก้ไขปัญหา (Incident Ticket Report)
-📝 ภาพรวมสรุปปัญหาทั้งหมด ${totalTickets} รายการที่กำลังดำเนินการ
-🎨 โทนสีน้ำเงินเข้มและสีแดง เพื่อสะท้อนถึงการปฏิบัติงานและความเร่งด่วน
-
-[SLIDE 2]
-🖼️ สรุปตัวเลขสำคัญ (Key Metrics)
-📝 • จำนวน Ticket ทั้งหมด: ${totalTickets} รายการ
-• จำนวน Ticket ที่ยังเปิดอยู่: ${openTickets} รายการ
-• ปัญหาที่มีความรุนแรงสูง (SEV 1/High): ${highSevCount} รายการ
-🎨 นำเสนอด้วยสถิติตัวเลขขนาดใหญ่ (Big Numbers) ให้เห็นเด่นชัด
-
-[SLIDE 3]
-🖼️ ทีมที่รับผิดชอบหลัก (Top Assigned Teams)
-📝 ทีมที่มีปริมาณงานสูงสุดในขณะนี้คือ: ${topTeam} (${topTeamCount} ทิคเก็ต)
-🎨 แผนภูมิแท่ง (Bar Chart) แสดงปริมาณงานของแต่ละทีม
-
-[SLIDE 4]
-🖼️ ข้อเสนอแนะและแนวทาง (Action Items)
-📝 1. เร่งจัดการปัญหา High Severity ทั้ง ${highSevCount} รายการให้เสร็จสิ้นก่อน
-2. กระจายโหลดงานจากทีม ${topTeam} ให้ทีมอื่นช่วย Support
-🎨 วางไอคอนเช็คลิสต์เพื่อให้ดูเป็น Action Item ที่ชัดเจนและนำไปปฏิบัติได้ทันทีค่ะ`;
+          return outputText;
         } catch (err) {
           return `ขออภัยค่ะ ฉันไม่สามารถโหลดข้อมูลจาก Google Sheets ได้ในขณะนี้ (Error: ${err.message})`;
         }
