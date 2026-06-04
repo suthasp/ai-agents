@@ -5959,7 +5959,7 @@
 
     /* Presentation Slide Deck Formatter */
     function parsePresentationSlides(text) {
-      const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      const formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       const parts = formattedText.split(/\[SLIDE\s+\d+\]/i);
       const matches = [...formattedText.matchAll(/\[SLIDE\s+(\d+)]/gi)];
 
@@ -5982,10 +5982,10 @@
 
           let bulletsHTML = '';
           if (bulletsRaw) {
-            const listItems = bulletsRaw.split(/<br>\s*-\s*|<br>\s*•\s*/g);
+            const listItems = bulletsRaw.split(/<br>\s*-\s*|<br>\s*•\s*|<br>\s*\d+\.\s*/g);
             bulletsHTML = '<ul>';
             listItems.forEach(item => {
-              const cleanItem = item.replace(/^[•\-\s]*/, '').trim();
+              const cleanItem = item.replace(/^[•\-\s\d\.]+/, '').trim();
               if (cleanItem) bulletsHTML += `<li>${cleanItem}</li>`;
             });
             bulletsHTML += '</ul>';
