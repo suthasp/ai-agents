@@ -1555,7 +1555,7 @@
           </div>
         </div>
         <!-- SAM (ID: 1) - ชาย - สรุปข่าวหุ้นล่าสุด -->
-        <div class="draggable" data-type="agent" data-id="1" style="left: 32%; top: 52%;" onclick="handleAgentClick(1)">
+        <div class="draggable" data-type="agent" data-id="1" style="left: 30%; top: 48%;" onclick="handleAgentClick(1)">
           <div class="agent-bubble" id="bubble-1" style="--theme-color: var(--color-sam); display:none;">
             <div class="agent-bubble-title">SAM</div>
             <div class="agent-bubble-text" id="bubble-text-1">สรุปข่าวหุ้น...</div>
@@ -1568,7 +1568,7 @@
         </div>
 
         <!-- ALEX (ID: 2) - ชาย - ticker วิเคราะห์ ซื้อ/ขาย/ถือ -->
-        <div class="draggable" data-type="agent" data-id="2" style="left: 45%; top: 46%;" onclick="handleAgentClick(2)">
+        <div class="draggable" data-type="agent" data-id="2" style="left: 32%; top: 65%;" onclick="handleAgentClick(2)">
           <div class="agent-bubble" id="bubble-2" style="--theme-color: var(--color-alex); display:none;">
             <div class="agent-bubble-title">ALEX</div>
             <div class="agent-bubble-text" id="bubble-text-2">วิเคราะห์ Ticker...</div>
@@ -1581,7 +1581,7 @@
         </div>
 
         <!-- MAYA (ID: 3) - หญิง - สแกน SET/NASDAQ/NYSE -->
-        <div class="draggable" data-type="agent" data-id="3" style="left: 36%; top: 70%;" onclick="handleAgentClick(3)">
+        <div class="draggable" data-type="agent" data-id="3" style="left: 74%; top: 62%;" onclick="handleAgentClick(3)">
           <div class="agent-bubble" id="bubble-3" style="--theme-color: var(--color-maya); display:none;">
             <div class="agent-bubble-title">MAYA</div>
             <div class="agent-bubble-text" id="bubble-text-3">สแกนตลาด...</div>
@@ -1594,7 +1594,7 @@
         </div>
 
         <!-- KEN (ID: 4) - ชาย - วิเคราะห์ Insights ดึงกราฟ -->
-        <div class="draggable" data-type="agent" data-id="4" style="left: 64%; top: 54%;" onclick="handleAgentClick(4)">
+        <div class="draggable" data-type="agent" data-id="4" style="left: 45%; top: 75%;" onclick="handleAgentClick(4)">
           <div class="agent-bubble" id="bubble-4" style="--theme-color: var(--color-ken); display:none;">
             <div class="agent-bubble-title">KEN</div>
             <div class="agent-bubble-text" id="bubble-text-4">วิเคราะห์ Insights...</div>
@@ -1607,7 +1607,7 @@
         </div>
 
         <!-- LUNA (ID: 5) - หญิง - สร้าง Presentation -->
-        <div class="draggable" data-type="agent" data-id="5" style="left: 60%; top: 72%;" onclick="handleAgentClick(5)">
+        <div class="draggable" data-type="agent" data-id="5" style="left: 65%; top: 75%;" onclick="handleAgentClick(5)">
           <div class="agent-bubble" id="bubble-5" style="--theme-color: var(--color-luna); display:none;">
             <div class="agent-bubble-title">LUNA</div>
             <div class="agent-bubble-text" id="bubble-text-5">ดึงข้อมูล...</div>
@@ -3407,7 +3407,7 @@
 
     function tryWander(agentId) {
       const el = document.querySelector(`.draggable[data-type="agent"][data-id="${agentId}"]`);
-      if (!el) {
+      if (!el || agentId === 99) {
         planNextWalk(agentId);
         return;
       }
