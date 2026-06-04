@@ -5452,6 +5452,10 @@
 
     /* API Call Integrations (Supports Gemini & Claude) */
     async function callAgentAPI(agentId, prompt) {
+      if (agentId === 5 && (prompt.includes("สรุป") || prompt.includes("รายงาน") || prompt.includes("ticket") || (activeProvider === 'gemini' && !geminiApiKey))) {
+        return await callMockBackend(agentId, prompt);
+      }
+
       const agent = AGENTS_DATA[agentId];
       let systemInstruction = `คุณเป็น AI Agent ชื่อ ${agent.name} ใน Virtual Office (${agent.role}). ${agent.bio}. ให้ข้อมูลวิเคราะห์อย่างมืออาชีพ ตอบเป็นภาษาไทย ให้กระชับ สรุปใจความสำคัญชัดเจน`;
 
