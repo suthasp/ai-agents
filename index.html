@@ -3471,7 +3471,38 @@
         newTop = 32 + Math.random() * 46;
       }
 
-      // Set facing direction based on horizontal movement direction
+      // Determine movement direction for sprite selection
+      const currentTop = parseFloat(el.style.top || '50');
+
+      // Map agent IDs to their sprite base names
+      const agentSpriteMap = {
+        1: 'sam_iso',
+        2: 'alex_iso',
+        3: 'maya_iso',
+        4: 'ken_iso',
+        5: 'luna_iso'
+      };
+
+      const imgEl = el.querySelector('img.agent-img');
+      if (imgEl && agentSpriteMap[agentId]) {
+        const baseName = agentSpriteMap[agentId];
+        const movingUp = newTop < currentTop; // smaller top % = higher on screen = moving away from camera
+        const backSprite = baseName + '_back.png';
+        const frontSprite = baseName + '.png';
+
+        // Check if back sprite exists by attempting to load it (use front as fallback)
+        if (movingUp) {
+          // Try to use back sprite
+          const testImg = new Image();
+          testImg.onload = () => { imgEl.src = backSprite; };
+          testImg.onerror = () => { imgEl.src = frontSprite; };
+          testImg.src = backSprite;
+        } else {
+          imgEl.src = frontSprite;
+        }
+      }
+
+      // Set horizontal facing based on left/right movement
       if (newLeft < currentLeft) {
         el.style.setProperty('--scale-x', '-1');
       } else {
