@@ -6675,17 +6675,17 @@
       setupDragEngine();
       refreshWeather();
       updateMarketIndices();
-      setInterval(updateMarketIndices, 60000); // refresh every 1 minute
+      setInterval(updateMarketIndices, 300000); // refresh every 5 minutes
       updateCryptoPrices();
-      setInterval(updateCryptoPrices, 15000); // refresh crypto every 15 seconds
+      setInterval(updateCryptoPrices, 60000); // refresh crypto every 1 minute
       updateTicketsFromSheet();
-      setInterval(updateTicketsFromSheet, 60000); // refresh every 1 minute
+      setInterval(updateTicketsFromSheet, 300000); // refresh every 5 minutes
       fetchCNOBudget();
-      setInterval(fetchCNOBudget, 60000); // refresh every 1 minute
+      setInterval(fetchCNOBudget, 300000); // refresh every 5 minutes
       fetchOilPrices();
       setInterval(fetchOilPrices, 3600000); // refresh every 1 hour
       fetchPMData();
-      setInterval(fetchPMData, 60000); // refresh every 1 minute
+      setInterval(fetchPMData, 300000); // refresh every 5 minutes
       initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
