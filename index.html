@@ -1240,7 +1240,11 @@
       flex: 1;
       overflow-y: auto;
       padding: 8px;
-      scrollbar-width: thin;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .pm-table-container::-webkit-scrollbar {
+      display: none;
     }
 
     .pm-table {
