@@ -2754,13 +2754,26 @@
       }
       else if (agentId === 2) { // ALEX (Ticker Analyzer)
         const words = prompt.match(/[A-Za-z.]{2,8}/g) || [];
-        let ticker = 'AAPL';
+        let ticker = null;
+        
         if (words.length > 0) {
           const potentialTicker = words.find(w => {
             const cleanW = w.toUpperCase();
             return cleanW !== 'BUY' && cleanW !== 'SELL' && cleanW !== 'HOLD' && cleanW !== 'STOCK' && cleanW !== 'TICKER';
           });
           if (potentialTicker) ticker = potentialTicker.toUpperCase();
+        }
+
+        // Keyword matching for quick buttons or common Thai words
+        if (!ticker) {
+          if (prompt.includes('ชิป') || prompt.includes('เซมิคอนดักเตอร์')) ticker = 'NVDA';
+          else if (prompt.includes('แบงก์') || prompt.includes('ธนาคาร')) ticker = 'SCB.BK';
+          else if (prompt.includes('พลังงาน') || prompt.includes('น้ำมัน')) ticker = 'PTT.BK';
+          else if (prompt.includes('รถ') || prompt.includes('ev')) ticker = 'TSLA';
+        }
+
+        if (!ticker) {
+          return `⚠️ ขออภัยครับ เนื่องจากเราใช้โหมดจำลอง (ไม่ใช้ API Key) ตัวผมเลยไม่สามารถแปลภาษาไทยเป็นชื่อหุ้นได้ครับ \n\nรบกวนพิมพ์ **ชื่อย่อหุ้นภาษาอังกฤษ (Ticker)** ที่ต้องการให้ผมวิเคราะห์มาด้วยครับ เช่น **AAPL, TSLA, NVDA หรือ PTT** ครับ!`;
         }
 
         const cleanTicker = ticker.replace('.BK', '');
