@@ -1484,7 +1484,7 @@
       </div>
 
       <!-- Budget Table Panel (Next to PM) -->
-      <div id="budget-table-panel" class="pm-panel" style="left: 610px;">
+      <div id="budget-table-panel" class="pm-panel" style="left: 610px; max-width: calc(100vw - 870px);">
         <div class="panel-header" style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);" onclick="toggleBudgetTablePanel()">
           <span class="panel-title" style="color: #3b82f6;">CNO BUDGET</span>
           <span id="budget-toggle-icon" style="color: #cbd5e0; font-size: 10px;">▼</span>
@@ -4044,17 +4044,18 @@
           if (cols.every(c => !c.trim())) continue;
           
           html += '<tr>' + cols.map((c, index) => {
+            let style = 'white-space: normal; word-wrap: break-word;';
+            if (index === 1) style += ' max-width: 80px;';
+            if (index === 2) style += ' max-width: 250px;';
+
             if (index === 1) {
               let content = c;
               if (c.includes('00.Reject')) {
                 content = `<span style="border: 1px solid #ef4444; color: #ef4444; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
               }
-              return `<td title="${c}" style="white-space: normal; word-wrap: break-word; max-width: 80px;">${content}</td>`;
+              return `<td title="${c}" style="${style}">${content}</td>`;
             }
-            if (index === 2) {
-              return `<td title="${c}" style="white-space: normal; word-wrap: break-word; max-width: 250px;">${c}</td>`;
-            }
-            return `<td title="${c}">${c}</td>`;
+            return `<td title="${c}" style="${style}">${c}</td>`;
           }).join('') + '</tr>';
         }
         
