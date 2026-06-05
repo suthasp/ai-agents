@@ -4031,6 +4031,7 @@
         thead.innerHTML = headers.map(h => {
           let displayH = h;
           if (h === 'Record Reference Code (Auto)') displayH = 'Record Ref...';
+          if (h === 'Last Status (Auto)') displayH = 'Last Status...';
           return `<th title="${h}">${displayH}</th>`;
         }).join('');
 
@@ -4043,8 +4044,12 @@
           if (cols.every(c => !c.trim())) continue;
           
           html += '<tr>' + cols.map((c, index) => {
-            if (index === 1 && c.includes('00.Reject')) {
-              return `<td title="${c}"><span style="border: 1px solid #ef4444; color: #ef4444; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span></td>`;
+            if (index === 1) {
+              let content = c;
+              if (c.includes('00.Reject')) {
+                content = `<span style="border: 1px solid #ef4444; color: #ef4444; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
+              }
+              return `<td title="${c}" style="white-space: normal; word-wrap: break-word; max-width: 140px;">${content}</td>`;
             }
             if (index === 2) {
               return `<td title="${c}" style="white-space: normal; word-wrap: break-word; max-width: 250px;">${c}</td>`;
