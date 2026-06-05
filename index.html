@@ -3401,13 +3401,13 @@
 
     /* Dynamic Agent Wandering / Movement System */
     const waypoints = [
-      { id: 0, left: 47, top: 38 }, // Top Center (near CEO)
-      { id: 1, left: 30, top: 48 }, // Top Left 
-      { id: 2, left: 32, top: 65 }, // Bottom Left
-      { id: 3, left: 45, top: 75 }, // Bottom Center-Left
-      { id: 4, left: 65, top: 75 }, // Bottom Center-Right
-      { id: 5, left: 74, top: 62 }, // Mid Right (near Maya)
-      { id: 6, left: 70, top: 44 }  // Top Right
+      { id: 0, left: 47, top: 34 }, // Top Center (near CEO) - expanded up
+      { id: 1, left: 22, top: 45 }, // Top Left - expanded left
+      { id: 2, left: 24, top: 75 }, // Bottom Left - expanded left and down
+      { id: 3, left: 45, top: 83 }, // Bottom Center-Left - expanded down
+      { id: 4, left: 65, top: 83 }, // Bottom Center-Right - expanded down
+      { id: 5, left: 82, top: 65 }, // Mid Right - expanded right
+      { id: 6, left: 78, top: 40 }  // Top Right - expanded right and up
     ];
 
     const waypointGraph = {
@@ -3520,9 +3520,9 @@
         
         agentWalkStates[agentId].currentWP = nextWPId;
       } else {
-        // Fallback random box
-        newLeft = 28 + Math.random() * 48;
-        newTop = 32 + Math.random() * 46;
+        // Fallback random box - expanded area
+        newLeft = 20 + Math.random() * 65; // 20 to 85
+        newTop = 30 + Math.random() * 55;  // 30 to 85
       }
 
       // Determine movement direction for sprite selection
