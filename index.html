@@ -646,7 +646,8 @@
     .draggable[data-type="agent"][data-id="96"] .agent-tag,
     .draggable[data-type="agent"][data-id="95"] .agent-tag,
     .draggable[data-type="agent"][data-id="94"] .agent-tag,
-    .draggable[data-type="agent"][data-id="91"] .agent-tag {
+    .draggable[data-type="agent"][data-id="91"] .agent-tag,
+    .draggable[data-type="agent"][data-id="90"] .agent-tag {
       top: -25px;
     }
 
@@ -1658,6 +1659,19 @@
           </div>
         </div>
 
+        <!-- AUDITOR (ID: 90) - นั่งโซฟา -->
+        <div class="draggable" data-type="agent" data-id="90" style="left: 82%; top: 60%;">
+          <div class="agent-bubble" id="bubble-90" style="--theme-color: #8b5cf6; display:none;">
+            <div class="agent-bubble-title" style="color: #fff;">AUDITOR</div>
+            <div class="agent-bubble-text" id="bubble-text-90">ตรวจสอบบัญชี...</div>
+          </div>
+          <img src="auditor_sitting.png" class="agent-img" style="transform: scale(1.0) translateY(-10px);" />
+          <div class="agent-tag" id="tag-90" style="--theme-color: #8b5cf6;">
+            <span class="agent-tag-dot" id="dot-90" style="background: #8b5cf6; box-shadow: 0 0 6px #8b5cf6;"></span>
+            <span class="agent-tag-text">AUDITOR</span>
+          </div>
+        </div>
+
         <!-- SAM (ID: 1) - ชาย - สรุปข่าวหุ้นล่าสุด -->
         <div class="draggable" data-type="agent" data-id="1" style="left: 30%; top: 48%;" onclick="handleAgentClick(1)">
           <div class="agent-bubble" id="bubble-1" style="--theme-color: var(--color-sam); display:none;">
@@ -2022,7 +2036,8 @@
         97: { left: "40%", top: "55%" },  // CTO
         96: { left: "72%", top: "46%" },  // MANAGER
         95: { left: "17%", top: "47%" },  // SECRETARY
-        91: { left: "88%", top: "66%" }   // RNSA
+        91: { left: "88%", top: "66%" },  // RNSA
+        90: { left: "82%", top: "60%" }   // AUDITOR
       },
       decor: {
         1: { left: "53%", top: "38%" }, // Water Dispenser
