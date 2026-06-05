@@ -2533,6 +2533,9 @@
 
     /* API Call Integrations (Supports Gemini & Claude) */
     async function callAgentAPI(agentId, prompt) {
+      if (agentId === 1) {
+        return await callMockBackend(agentId, prompt);
+      }
       if (agentId === 5 && (prompt.includes("สรุป") || prompt.includes("รายงาน") || prompt.includes("ticket") || (activeProvider === 'gemini' && !geminiApiKey))) {
         return await callMockBackend(agentId, prompt);
       }
