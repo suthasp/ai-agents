@@ -3575,7 +3575,7 @@
         if (idIdx === -1) throw new Error("Invalid CSV format");
 
         container.innerHTML = '';
-        const maxTickets = Math.min(lines.length - 1, 5);
+        const maxTickets = lines.length - 1;
         for (let i = 1; i <= maxTickets; i++) {
           const row = parseCSVRow(lines[i]);
           const tId = row[idIdx] || 'UNKNOWN';
