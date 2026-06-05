@@ -347,10 +347,12 @@
     #cno-budget-list::-webkit-scrollbar {
       display: none;
     }
+
     #cno-budget-list {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
     .budget-item {
       background: rgba(30, 41, 59, 0.4);
       border-left: 3px solid #3b82f6;
@@ -358,38 +360,45 @@
       border-radius: 4px;
       font-family: var(--font-sans);
     }
+
     .budget-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 4px;
     }
+
     .budget-site {
       font-size: 8px;
       font-weight: bold;
       color: #38bdf8;
     }
+
     .budget-status {
       font-size: 7px;
       padding: 2px 4px;
       border-radius: 3px;
       font-weight: bold;
     }
+
     .budget-status.approved {
       background: rgba(16, 185, 129, 0.15);
       color: #10b981;
       border: 1px solid #10b981;
     }
+
     .budget-status.reject {
       background: rgba(244, 63, 94, 0.15);
       color: #f43f5e;
       border: 1px solid #f43f5e;
     }
+
     .budget-status.inprogress {
       background: rgba(245, 158, 11, 0.15);
       color: #f59e0b;
       border: 1px solid #f59e0b;
     }
+
     .budget-desc {
       font-size: 8px;
       color: #cbd5e0;
@@ -402,6 +411,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .budget-amount {
       font-size: 9px;
       font-weight: bold;
@@ -638,7 +648,7 @@
 
     .draggable[data-type="agent"]:not([data-id="6"]) .agent-tag {
       bottom: auto;
-      top: -75px;
+      top: 0px;
     }
 
     .draggable[data-type="agent"][data-id="99"] .agent-tag,
@@ -649,7 +659,7 @@
     .draggable[data-type="agent"][data-id="94"] .agent-tag,
     .draggable[data-type="agent"][data-id="91"] .agent-tag,
     .draggable[data-type="agent"][data-id="90"] .agent-tag {
-      top: -65px;
+      top: 30px;
     }
 
     .agent-tag-dot {
@@ -935,25 +945,51 @@
       display: flex;
       align-items: center;
     }
+
     .oil-ticker-content {
       display: inline-block;
       animation: ticker 40s linear infinite;
     }
+
     .oil-ticker-content:hover {
       animation-play-state: paused;
     }
+
     @keyframes ticker {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
+      0% {
+        transform: translateX(0%);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
     }
+
     .oil-item {
       display: inline-block;
       margin-right: 15px;
     }
-    .oil-station-ptt { color: #0ea5e9; font-weight: bold; }
-    .oil-station-bcp { color: #22c55e; font-weight: bold; }
-    .oil-station-caltex { color: #ef4444; font-weight: bold; }
-    .oil-price { color: #f8fafc; font-weight: bold; margin-left: 2px; }
+
+    .oil-station-ptt {
+      color: #0ea5e9;
+      font-weight: bold;
+    }
+
+    .oil-station-bcp {
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .oil-station-caltex {
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    .oil-price {
+      color: #f8fafc;
+      font-weight: bold;
+      margin-left: 2px;
+    }
 
     /* Realtime Console Feed at Bottom */
     #activity-feed {
@@ -1269,6 +1305,7 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
+
     .pm-table-container::-webkit-scrollbar {
       display: none;
     }
@@ -1280,7 +1317,8 @@
       font-family: var(--font-sans);
     }
 
-    .pm-table th, .pm-table td {
+    .pm-table th,
+    .pm-table td {
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 4px;
       text-align: left;
@@ -1298,21 +1336,26 @@
     }
 
     @keyframes dotPulse {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: scale(0.8);
         opacity: 0.5;
       }
+
       50% {
         transform: scale(1.2);
         opacity: 1;
       }
     }
+
     #tickets-container {
       max-height: 350px;
       overflow-y: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
+
     #tickets-container::-webkit-scrollbar {
       display: none;
     }
@@ -1386,9 +1429,11 @@
       <div class="panel" style="margin-top: 10px; max-height: 250px; display: flex; flex-direction: column;">
         <div class="panel-header">
           <span class="panel-title">CNO BUDGET</span>
-          <button class="action-btn" onclick="fetchCNOBudget()" style="padding: 2px 5px; font-size: 7px;">RELOAD</button>
+          <button class="action-btn" onclick="fetchCNOBudget()"
+            style="padding: 2px 5px; font-size: 7px;">RELOAD</button>
         </div>
-        <div class="budget-list" id="cno-budget-list" style="overflow-y: auto; flex: 1; padding-right: 4px; display: flex; flex-direction: column; gap: 8px;">
+        <div class="budget-list" id="cno-budget-list"
+          style="overflow-y: auto; flex: 1; padding-right: 4px; display: flex; flex-direction: column; gap: 8px;">
           <div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">Loading...</div>
         </div>
       </div>
@@ -1466,7 +1511,9 @@
 
       <!-- Preventive Maintenance Panel -->
       <div id="pm-panel" class="pm-panel">
-        <div class="panel-header" style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);" onclick="togglePMPanel()">
+        <div class="panel-header"
+          style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);"
+          onclick="togglePMPanel()">
           <span class="panel-title" style="color: #10b981;">PREVENTIVE MAINTENANCE</span>
           <span id="pm-toggle-icon" style="color: #cbd5e0; font-size: 10px;">▼</span>
         </div>
@@ -1478,7 +1525,9 @@
               </tr>
             </thead>
             <tbody id="pm-table-body">
-              <tr><td colspan="6" style="text-align: center; color: #64748b;">Loading PM Data...</td></tr>
+              <tr>
+                <td colspan="6" style="text-align: center; color: #64748b;">Loading PM Data...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1486,7 +1535,9 @@
 
       <!-- Budget Table Panel (Next to PM) -->
       <div id="budget-table-panel" class="pm-panel" style="left: 610px; max-width: calc(100vw - 870px);">
-        <div class="panel-header" style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);" onclick="toggleBudgetTablePanel()">
+        <div class="panel-header"
+          style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);"
+          onclick="toggleBudgetTablePanel()">
           <span class="panel-title" style="color: #3b82f6;">CNO BUDGET</span>
           <span id="budget-toggle-icon" style="color: #cbd5e0; font-size: 10px;">▼</span>
         </div>
@@ -1498,7 +1549,9 @@
               </tr>
             </thead>
             <tbody id="budget-table-body">
-              <tr><td colspan="5" style="text-align: center; color: #64748b;">Loading Budget Data...</td></tr>
+              <tr>
+                <td colspan="5" style="text-align: center; color: #64748b;">Loading Budget Data...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1579,7 +1632,8 @@
 
         <!-- Decor 93 (Gaming Chair) -->
         <div class="draggable" data-type="decor" data-id="93" style="left: 48%; top: 35%;">
-          <img src="gaming_chair_brown.png" class="agent-img" style="transform: translateY(0px); width: 130px; height: auto;" />
+          <img src="gaming_chair_brown.png" class="agent-img"
+            style="transform: translateY(0px); width: 130px; height: auto;" />
         </div>
 
         <!-- Decor 92 (Brown Sofa) -->
@@ -1896,7 +1950,8 @@
         <span style="color: #64748b;">กำลังโหลดราคาน้ำมัน...</span>
       </div>
     </div>
-    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">6TOUCH 1.0</div>
+    <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">6TOUCH 1.0
+    </div>
   </div>
 
   <!-- API Key & Settings Dialog Modal -->
@@ -2906,7 +2961,7 @@
       else if (agentId === 2) { // ALEX (Ticker Analyzer)
         const words = prompt.match(/[A-Za-z.]{2,8}/g) || [];
         let ticker = null;
-        
+
         if (words.length > 0) {
           const potentialTicker = words.find(w => {
             const cleanW = w.toUpperCase();
@@ -2934,7 +2989,7 @@
         }
 
         let stock = await fetchRealTimeStock(ticker);
-        
+
         // Auto-retry for Thai stocks if the user forgot .BK and the first attempt failed
         if (!stock.success && !ticker.endsWith('.BK')) {
           const retryStock = await fetchRealTimeStock(ticker + '.BK');
@@ -3089,7 +3144,7 @@
 
             outputText += `**Ticket ${i}:**\n`;
             colsToExtract.forEach(colIdx => {
-              const colName = headers[colIdx] || `Col ${colIdx+1}`;
+              const colName = headers[colIdx] || `Col ${colIdx + 1}`;
               let colVal = row[colIdx] || '-';
               if (colVal.length > 300) colVal = colVal.substring(0, 300) + '...';
               outputText += `- **${colName}:** ${colVal}\n`;
@@ -3098,7 +3153,7 @@
           }
 
           if (outputText === `สรุปข้อมูลรายละเอียดปัญหา (Tickets) ค่ะ 📝:\n\n`) {
-              return `ขออภัยค่ะ ไม่พบข้อมูลที่ครบถ้วนจาก Google Sheets`;
+            return `ขออภัยค่ะ ไม่พบข้อมูลที่ครบถ้วนจาก Google Sheets`;
           }
 
           return outputText;
@@ -3628,18 +3683,18 @@
       const currentLeft = parseFloat(el.style.left || '50');
 
       let newLeft, newTop;
-      
+
       if (agentWalkStates[agentId].currentWP !== undefined) {
         // Waypoint navigation to avoid tables
         const currentWP = agentWalkStates[agentId].currentWP;
         const neighbors = waypointGraph[currentWP];
         const nextWPId = neighbors[Math.floor(Math.random() * neighbors.length)];
         const nextWP = waypoints.find(w => w.id === nextWPId);
-        
+
         // Add slight randomization (+/- 2%) to prevent exact stacking
         newLeft = nextWP.left + (Math.random() * 4 - 2);
         newTop = nextWP.top + (Math.random() * 4 - 2);
-        
+
         agentWalkStates[agentId].currentWP = nextWPId;
       } else {
         // Fallback random box - expanded area
@@ -3781,31 +3836,31 @@
     async function fetchCNOBudget() {
       const list = document.getElementById('cno-budget-list');
       if (!list) return;
-      
+
       list.innerHTML = '<div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">Loading...</div>';
-      
+
       try {
         const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT1wdQs-QYgFhkMh3ik1wwkIwhi40UsFFthLSx0Er3K-piRHgJgJABwhN7lBUnMP5dN1A9LF5oUk_QK/pub?gid=1993846865&single=true&output=csv';
         const res = await fetch(url);
         if (!res.ok) throw new Error('Network response was not ok');
         const text = await res.text();
-        
+
         function parseFullCSV(str) {
           var arr = [];
           var quote = false;
           var row = 0, col = 0;
           for (var i = 0; i < str.length; i++) {
-            var c = str[i], nc = str[i+1];
+            var c = str[i], nc = str[i + 1];
             arr[row] = arr[row] || [];
             arr[row][col] = arr[row][col] || '';
-            
+
             if (c === '"' && quote && nc === '"') { arr[row][col] += c; i++; continue; }
             if (c === '"') { quote = !quote; continue; }
             if (c === ',' && !quote) { col++; continue; }
             if (c === '\r' && nc === '\n' && !quote) { row++; col = 0; i++; continue; }
             if (c === '\n' && !quote) { row++; col = 0; continue; }
             if (c === '\r' && !quote) { row++; col = 0; continue; }
-            
+
             arr[row][col] += c;
           }
           return arr;
@@ -3821,12 +3876,12 @@
         // Skip header row
         for (let i = 1; i < data.length; i++) {
           if (data[i].length < 15 || !data[i][2]) continue;
-          
+
           const status = data[i][2].trim(); // Column C
           const desc = data[i][8].trim(); // Column I
           const site = data[i][9].trim(); // Column J
           const amount = data[i][14].trim(); // Column O
-          
+
           let badgeClass = 'inprogress';
           const lowerStatus = status.toLowerCase();
           if (lowerStatus.includes('approve') || lowerStatus.includes('completed')) badgeClass = 'approved';
@@ -3847,7 +3902,7 @@
             </div>
           `;
         }
-        
+
         list.innerHTML = html || '<div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">No valid items</div>';
       } catch (err) {
         console.error('Error fetching budget:', err);
@@ -3862,7 +3917,7 @@
         const response = await fetch('https://api.chnwt.dev/thai-oil-api/latest');
         if (!response.ok) throw new Error('API failed');
         const data = await response.json();
-        
+
         let html = '';
         if (data.status === 'success' && data.response && data.response.stations) {
           const stations = data.response.stations;
@@ -3871,7 +3926,7 @@
             { id: 'bcp', name: 'บางจาก', class: 'oil-station-bcp' },
             { id: 'caltex', name: 'Caltex', class: 'oil-station-caltex' }
           ];
-          
+
           displayStations.forEach(station => {
             const stData = stations[station.id];
             if (stData) {
@@ -3880,14 +3935,14 @@
               const fuels = ['gasohol_95', 'gasohol_91', 'gasohol_e20', 'diesel'];
               fuels.forEach(fuel => {
                 if (stData[fuel]) {
-                   html += `<span class="oil-item">${stData[fuel].name}: <span class="oil-price">${stData[fuel].price} ฿</span></span>`;
+                  html += `<span class="oil-item">${stData[fuel].name}: <span class="oil-price">${stData[fuel].price} ฿</span></span>`;
                 }
               });
               html += `<span style="margin-right: 20px;"></span>`;
             }
           });
         }
-        
+
         if (html) {
           tickerContent.innerHTML = html + html; // duplicate for smooth scrolling
         } else {
@@ -3930,7 +3985,7 @@
           let inQuotes = false;
           for (let i = 0; i < line.length; i++) {
             let char = line[i];
-            if (char === '"' && line[i+1] === '"') {
+            if (char === '"' && line[i + 1] === '"') {
               current += '"';
               i++;
             } else if (char === '"') {
@@ -3958,12 +4013,12 @@
         let html = '';
         for (let i = 1; i < lines.length; i++) {
           const row = parseCSVLine(lines[i]);
-          const cols = [0,1,2,3,4,5].map(idx => row[idx] || '');
+          const cols = [0, 1, 2, 3, 4, 5].map(idx => row[idx] || '');
           if (cols.every(c => !c.trim())) continue;
-          
+
           html += '<tr>' + cols.map(c => `<td title="${c}">${c}</td>`).join('') + '</tr>';
         }
-        
+
         tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;">No rows</td></tr>';
       } catch (err) {
         console.error('Error fetching PM data:', err);
@@ -4002,7 +4057,7 @@
           let inQuotes = false;
           for (let i = 0; i < line.length; i++) {
             let char = line[i];
-            if (char === '"' && line[i+1] === '"') {
+            if (char === '"' && line[i + 1] === '"') {
               current += '"';
               i++;
             } else if (char === '"') {
@@ -4028,7 +4083,7 @@
         // Columns B, C, I, J, O map to indices 1, 2, 8, 9, 14
         const targetIndices = [1, 2, 8, 9, 14];
         const headers = targetIndices.map(i => headerRow[i] || '-');
-        
+
         thead.innerHTML = headers.map(h => {
           let displayH = h;
           if (h === 'Record Reference Code (Auto)') displayH = 'Record Ref...';
@@ -4040,10 +4095,10 @@
         for (let i = 1; i < lines.length; i++) {
           const row = parseCSVLine(lines[i]);
           if (row.length < 15) continue;
-          
+
           const cols = targetIndices.map(idx => row[idx] || '');
           if (cols.every(c => !c.trim())) continue;
-          
+
           html += '<tr>' + cols.map((c, index) => {
             let style = 'white-space: normal; word-wrap: break-word;';
             if (index === 1) style += ' max-width: 80px;';
@@ -4059,7 +4114,7 @@
             return `<td title="${c}" style="${style}">${c}</td>`;
           }).join('') + '</tr>';
         }
-        
+
         tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No rows</td></tr>';
       } catch (err) {
         console.error('Error fetching Budget Table data:', err);
