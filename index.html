@@ -4028,7 +4028,11 @@
         const targetIndices = [1, 2, 8, 9, 14];
         const headers = targetIndices.map(i => headerRow[i] || '-');
         
-        thead.innerHTML = headers.map(h => `<th>${h}</th>`).join('');
+        thead.innerHTML = headers.map(h => {
+          let displayH = h;
+          if (h === 'Record Reference Code (Auto)') displayH = 'Record Ref...';
+          return `<th title="${h}">${displayH}</th>`;
+        }).join('');
 
         let html = '';
         for (let i = 1; i < lines.length; i++) {
