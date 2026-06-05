@@ -1483,6 +1483,26 @@
         </div>
       </div>
 
+      <!-- Budget Table Panel (Next to PM) -->
+      <div id="budget-table-panel" class="pm-panel" style="left: 610px;">
+        <div class="panel-header" style="cursor: pointer; padding: 8px 12px; margin-bottom: 0; border-bottom: 1px solid rgba(80, 70, 160, 0.4);" onclick="toggleBudgetTablePanel()">
+          <span class="panel-title" style="color: #3b82f6;">BUDGET TABLE</span>
+          <span id="budget-toggle-icon" style="color: #cbd5e0; font-size: 10px;">▼</span>
+        </div>
+        <div class="pm-table-container">
+          <table class="pm-table">
+            <thead>
+              <tr id="budget-table-head">
+                <!-- Headers will be injected here -->
+              </tr>
+            </thead>
+            <tbody id="budget-table-body">
+              <tr><td colspan="5" style="text-align: center; color: #64748b;">Loading Budget Data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Office Map Container -->
       <div id="office-canvas">
 
@@ -3950,6 +3970,84 @@
       }
     }
 
+    /* Budget Table Logic */
+    function toggleBudgetTablePanel() {
+      const panel = document.getElementById('budget-table-panel');
+      const icon = document.getElementById('budget-toggle-icon');
+      panel.classList.toggle('hide-down');
+      if (panel.classList.contains('hide-down')) {
+        icon.textContent = '▲';
+        logActivity('Budget Table Panel minimized.');
+      } else {
+        icon.textContent = '▼';
+        logActivity('Budget Table Panel expanded.');
+      }
+    }
+
+    async function fetchBudgetTableData() {
+      const tbody = document.getElementById('budget-table-body');
+      const thead = document.getElementById('budget-table-head');
+      if (!tbody || !thead) return;
+
+      try {
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT1wdQs-QYgFhkMh3ik1wwkIwhi40UsFFthLSx0Er3K-piRHgJgJABwhN7lBUnMP5dN1A9LF5oUk_QK/pub?gid=1993846865&single=true&output=csv';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Network error');
+        const text = await res.text();
+
+        function parseCSVLine(line) {
+          let result = [];
+          let current = '';
+          let inQuotes = false;
+          for (let i = 0; i < line.length; i++) {
+            let char = line[i];
+            if (char === '"' && line[i+1] === '"') {
+              current += '"';
+              i++;
+            } else if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+              result.push(current);
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          result.push(current);
+          return result;
+        }
+
+        const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
+        if (lines.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>';
+          return;
+        }
+
+        const headerRow = parseCSVLine(lines[0]);
+        // Columns B, C, I, J, O map to indices 1, 2, 8, 9, 14
+        const targetIndices = [1, 2, 8, 9, 14];
+        const headers = targetIndices.map(i => headerRow[i] || '-');
+        
+        thead.innerHTML = headers.map(h => `<th>${h}</th>`).join('');
+
+        let html = '';
+        for (let i = 1; i < lines.length; i++) {
+          const row = parseCSVLine(lines[i]);
+          if (row.length < 15) continue;
+          
+          const cols = targetIndices.map(idx => row[idx] || '');
+          if (cols.every(c => !c.trim())) continue;
+          
+          html += '<tr>' + cols.map(c => `<td title="${c}">${c}</td>`).join('') + '</tr>';
+        }
+        
+        tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No rows</td></tr>';
+      } catch (err) {
+        console.error('Error fetching Budget Table data:', err);
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #ef4444;">Failed to load data</td></tr>';
+      }
+    }
+
     /* Page load init triggers */
     window.addEventListener('load', () => {
       loadPositions();
@@ -3967,6 +4065,8 @@
       setInterval(fetchOilPrices, 3600000); // refresh every 1 hour
       fetchPMData();
       setInterval(fetchPMData, 300000); // refresh every 5 minutes
+      fetchBudgetTableData();
+      setInterval(fetchBudgetTableData, 300000); // refresh every 5 minutes
       initAgentWandering();
       logActivity("SYSTEM ONLINE: Co-working office is ready. Click on departments to chat!");
     });
