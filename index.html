@@ -2929,7 +2929,7 @@
           }
 
           const headers = parseCSVRow(lines[0]);
-          let outputText = `สรุปข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets (เฉพาะคอลัมน์ D, H, I, M, U, W) ค่ะ 📝:\n\n`;
+          let outputText = `สรุปข้อมูลรายละเอียดปัญหา (Tickets) ค่ะ 📝:\n\n`;
           const colsToExtract = [3, 7, 8, 12, 20, 22];
 
           for (let i = 1; i < lines.length; i++) {
@@ -2946,7 +2946,7 @@
             outputText += `\n`;
           }
 
-          if (outputText === `สรุปข้อมูลตั๋วปัญหา (Tickets) จาก Google Sheets (เฉพาะคอลัมน์ D, H, I, M, U, W) ค่ะ 📝:\n\n`) {
+          if (outputText === `สรุปข้อมูลรายละเอียดปัญหา (Tickets) ค่ะ 📝:\n\n`) {
               return `ขออภัยค่ะ ไม่พบข้อมูลที่ครบถ้วนจาก Google Sheets`;
           }
 
