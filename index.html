@@ -4038,7 +4038,12 @@
           const cols = targetIndices.map(idx => row[idx] || '');
           if (cols.every(c => !c.trim())) continue;
           
-          html += '<tr>' + cols.map(c => `<td title="${c}">${c}</td>`).join('') + '</tr>';
+          html += '<tr>' + cols.map((c, index) => {
+            if (index === 2) {
+              return `<td title="${c}" style="white-space: normal; word-wrap: break-word; max-width: 250px;">${c}</td>`;
+            }
+            return `<td title="${c}">${c}</td>`;
+          }).join('') + '</tr>';
         }
         
         tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No rows</td></tr>';
