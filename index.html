@@ -2782,7 +2782,17 @@
           ticker = cleanTicker + '.BK';
         }
 
-        const stock = await fetchRealTimeStock(ticker);
+        let stock = await fetchRealTimeStock(ticker);
+        
+        // Auto-retry for Thai stocks if the user forgot .BK and the first attempt failed
+        if (!stock.success && !ticker.endsWith('.BK')) {
+          const retryStock = await fetchRealTimeStock(ticker + '.BK');
+          if (retryStock.success) {
+            stock = retryStock;
+            ticker = ticker + '.BK';
+          }
+        }
+
         if (stock.success) {
           const changeVal = parseFloat(stock.change);
           const signal = changeVal >= 0.0 ? 'BUY' : 'HOLD';
@@ -2805,18 +2815,8 @@
 *ข้อมูลอ้างอิงสดส่งตรงจาก Yahoo Finance*`;
         }
 
-        // Fallback
-        return `[SIGNAL: BUY]
-🎯 หุ้นย่อย: Apple Inc. (AAPL)
-🏆 คำแนะนำการลงทุน: ซื้อสะสม (BUY)
-
-📊 วิเคราะห์ทางเทคนิค:
-1. การเปิดตัวระบบ AI 'Apple Intelligence' บนระบบ iOS ใหม่ ดันรอบยอดเปลี่ยนเครื่องโทรศัพท์สูงขึ้นอย่างรวดเร็ว
-2. รายได้สัดส่วนบริการ (Services: iCloud, Apple Music) สร้างความมั่นคงด้วยกระแสเงินสดเกือบ 70% Gross Margin
-3. กราฟเริ่มสร้างแนวรับที่ชัดเจนบริเวณเส้นค่าเฉลี่ย 50 วัน (50-EMA) เป็นจังหวะดีในการซื้อสะสม
-
-⚠️ ระดับความเสี่ยง: ต่ำ
-🎯 ราคาเป้าหมายปีหน้า: $245.00`;
+        // Fallback Error Message instead of fake AAPL data
+        return `⚠️ ขออภัยครับ ไม่พบข้อมูลแบบเรียลไทม์สำหรับหุ้น **${ticker}** \nกรุณาตรวจสอบความถูกต้องของชื่อย่อหุ้น หรือหากเป็นหุ้นไทยที่ระบบยังไม่รู้จัก ลองพิมพ์แบบมี .BK ต่อท้ายดูนะครับ (เช่น SMT.BK)`;
       }
       else if (agentId === 3) { // MAYA (Market Scanner)
         let marketName = 'NASDAQ';
