@@ -1830,6 +1830,7 @@
         role: "News Summarizer (ชาย)",
         bio: "ทำหน้าที่สรุปข่าวเด่นและสภาวะความเคลื่อนไหวทางเศรษฐกิจประจำวัน",
         avatar: "📰",
+        imgSrc: "sam_iso.png",
         theme: "#22d3ee",
         themeOp: "rgba(34, 211, 238, 0.15)",
         themeGlow: "rgba(34, 211, 238, 0.4)",
@@ -1843,6 +1844,7 @@
         role: "Ticker Analyst (ชาย)",
         bio: "ทำหน้าที่สแกนหุ้นระบุรายตัว วิเคราะห์สัญญาณเทคนิค และฟันธงคำแนะนำ ซื้อ/ขาย/ถือ",
         avatar: "📊",
+        imgSrc: "alex_iso.png",
         theme: "#3b82f6",
         themeOp: "rgba(59, 130, 246, 0.15)",
         themeGlow: "rgba(59, 130, 246, 0.4)",
@@ -1856,6 +1858,7 @@
         role: "Market Scanner (หญิง)",
         bio: "ค้นหาหุ้นเด่นที่มีศักยภาพ หุ้นเติบโต หุ้นปันผล จากตลาดหลักทรัพย์ SET / NASDAQ / NYSE",
         avatar: "🔍",
+        imgSrc: "maya_iso.png",
         theme: "#8b5cf6",
         themeOp: "rgba(139, 92, 246, 0.15)",
         themeGlow: "rgba(139, 92, 246, 0.4)",
@@ -1869,6 +1872,7 @@
         role: "Budget Analyst (ชาย)",
         bio: "สรุปและวิเคราะห์รายงาน Budget ของหน่วยงาน CNO จาก Google Sheets",
         avatar: "📊",
+        imgSrc: "ken_iso.png",
         theme: "#10b981",
         themeOp: "rgba(16, 185, 129, 0.15)",
         themeGlow: "rgba(16, 185, 129, 0.4)",
@@ -1882,6 +1886,7 @@
         role: "Incident Report Specialist (หญิง)",
         bio: "ดึงข้อมูลและสรุปรายงานตั๋วปัญหา (Tickets) จาก Google Sheets ตามคอลัมน์สำคัญ",
         avatar: "🎨",
+        imgSrc: "luna_iso.png",
         theme: "#f43f5e",
         themeOp: "rgba(244, 63, 94, 0.15)",
         themeGlow: "rgba(244, 63, 94, 0.4)",
@@ -2258,7 +2263,14 @@
       drawer.style.setProperty('--theme-color-glow', a.themeGlow);
       drawer.style.setProperty('--theme-color-glow-solid', a.themeGlowSolid);
 
-      document.getElementById('agent-icon').textContent = a.avatar;
+      const agentIcon = document.getElementById('agent-icon');
+      if (a.imgSrc) {
+        // Zoom into the face of the character (top center) using CSS
+        agentIcon.innerHTML = `<img src="${a.imgSrc}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; transform: scale(2.0) translateY(4px); border-radius: 4px;">`;
+      } else {
+        agentIcon.innerHTML = '';
+        agentIcon.textContent = a.avatar;
+      }
       document.getElementById('agent-name').textContent = a.name;
       document.getElementById('agent-role').textContent = a.role;
 
