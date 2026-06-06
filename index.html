@@ -4108,6 +4108,8 @@
               let content = c;
               if (c.includes('00.Reject') || c.includes('00.Cancel (FC)')) {
                 content = `<span style="border: 1px solid #ef4444; color: #ef4444; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
+              } else if (c.includes('09.GR Completed')) {
+                content = `<span style="border: 1px solid #10b981; color: #10b981; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
               }
               return `<td title="${c}" style="${style}">${content}</td>`;
             }
