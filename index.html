@@ -4112,6 +4112,8 @@
                 content = `<span style="border: 1px solid #10b981; color: #10b981; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
               } else if (c.includes('01.รอ FSO,RNSA Approve') || c.includes('06.PR Created')) {
                 content = `<span style="border: 1px solid #f59e0b; color: #f59e0b; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
+              } else if (c.includes('07.PO Approved')) {
+                content = `<span style="border: 1px solid #3b82f6; color: #3b82f6; padding: 2px 6px; border-radius: 4px; display: inline-block;">${c}</span>`;
               }
               return `<td title="${c}" style="${style}">${content}</td>`;
             }
