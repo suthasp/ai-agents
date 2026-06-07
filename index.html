@@ -2076,7 +2076,7 @@
         themeGlow: "rgba(16, 185, 129, 0.4)",
         themeGlowSolid: "rgba(16, 185, 129, 0.7)",
         intro: "สวัสดีครับ! ผม Ken ผู้เชี่ยวชาญด้านวิเคราะห์งบประมาณ (Budget) ของ CNO 📊\nผมมีหน้าที่ดึงข้อมูลจาก Google Sheets เพื่อสรุปและวิเคราะห์ให้คุณแบบเรียลไทม์ครับ สั่งงานผมได้เลย!",
-        quickReplies: ["สรุปสถานะงบประมาณ CNO ล่าสุด", "วิเคราะห์การใช้งบประมาณ"]
+        quickReplies: ["Last Status"]
       },
       5: {
         id: 5,
@@ -2589,7 +2589,11 @@
         `;
       }
       else if (id === 4) { // KEN (Budget Analyser)
-        wrapper.innerHTML = '';
+        wrapper.innerHTML = `
+          <div style="font-size: 9px; color: #718096; margin-bottom: 8px; font-family: 'Noto Sans Thai', sans-serif">
+            พิมพ์ชื่อ Site Name หรือเลือก Last Status เพื่อดึงข้อมูลสถานะล่าสุด
+          </div>
+        `;
       }
       else if (id === 5) { // LUNA (Presentation maker)
         wrapper.innerHTML = '';
@@ -3170,28 +3174,87 @@
         }
       }
       else if (agentId === 4) { // KEN (Data Insights)
-        return `วิเคราะห์ Insights สรุปสถิติข้อมูลพอร์ตการลงทุนเรียบร้อยครับ! 📊
+        try {
+          const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT1wdQs-QYgFhkMh3ik1wwkIwhi40UsFFthLSx0Er3K-piRHgJgJABwhN7lBUnMP5dN1A9LF5oUk_QK/pub?gid=1993846865&single=true&output=csv';
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Fetch failed");
+          const text = await res.text();
+          
+          function parseFullCSV(str) {
+            var arr = [];
+            var quote = false;
+            var row = 0, col = 0;
+            for (var i = 0; i < str.length; i++) {
+              var c = str[i], nc = str[i + 1];
+              arr[row] = arr[row] || [];
+              arr[row][col] = arr[row][col] || '';
+              if (c === '"' && quote && nc === '"') { arr[row][col] += c; i++; continue; }
+              if (c === '"') { quote = !quote; continue; }
+              if (c === ',' && !quote) { col++; continue; }
+              if (c === '\r' && nc === '\n' && !quote) { row++; col = 0; i++; continue; }
+              if (c === '\n' && !quote) { row++; col = 0; continue; }
+              if (c === '\r' && !quote) { row++; col = 0; continue; }
+              arr[row][col] += c;
+            }
+            return arr;
+          }
+          const data = parseFullCSV(text);
+          if (data.length <= 1) return "ไม่พบข้อมูลงบประมาณ CNO ครับ";
 
-📋 **ภาพรวมข้อมูล**:
-- แหล่งที่มา: ไฟล์พอร์ตลงทุน (Portfolio Report)
-- ข้อมูลที่ประมวลผล: สินทรัพย์หลัก, ผลงานเปรียบเทียบเทียบดัชนีอ้างอิง, อัตราส่วนปันผล
+          const lowerPrompt = prompt.toLowerCase().trim();
+          let targetSite = lowerPrompt === 'last status' ? '' : prompt.trim().toLowerCase();
+          
+          let html = `📊 **ข้อมูล CNO Budget**`;
+          if (targetSite) html += ` (Site: ${prompt.trim().toUpperCase()})`;
+          else html += ` (Last Status)`;
+          html += `\n\n`;
 
-📊 ** Insights หลักที่ค้นพบ**:
-1. น้ำหนักการลงทุนหลักกระจุกตัวในกลุ่ม **อุตสาหกรรมเทคโนโลยี** (45%) รองลงมาคือ พลังงาน (20%) และการเงิน (15%)
-2. พอร์ตโฟลิโอนี้สามารถเอาชนะผลตอบแทนของดัชนีตลาดอ้างอิง (Benchmark) ได้เฉลี่ย 3.8% ในไตรมาสที่ผ่านมา
-3. สินทรัพย์ประมาณ 30% จัดอยู่ในประเภทหาส่วนต่างส่วนเพิ่ม และอีก 70% เน้นความมั่นคงด้านรายได้ปันผล
+          let count = 0;
+          for (let i = 1; i < data.length; i++) {
+            const row = data[i];
+            if (row.length < 20 || !row[1]) continue; 
 
-📈 **ดัชนีทางสถิติ**:
-- มูลค่าสินทรัพย์สุทธิ: 1,245,900 บาท
-- อัตราผลตอบแทนเฉลี่ยสะสม: +12.8% YTD
-- อัตราการจ่ายเงินปันผลรวม: 4.2% ต่อปี
-- หุ้นเด่นสูงสุด: AAPL (+25% กำไรสูงสุดสะสม)
-- หุ้นผลงานต่ำสุด: กลุ่มพลังงานบางส่วน (-4% ดรอปตัวระยะสั้น)
+            const siteName = (row[9] || '').trim(); // J
+            if (targetSite && !siteName.toLowerCase().includes(targetSite)) continue;
+            
+            const lastStatus = (row[8] || '').trim(); // I
+            if (lowerPrompt === 'last status' && !lastStatus) continue;
 
-💡 **ข้อเสนอแนะสำหรับการจัดทัพพอร์ต**:
-- แนะนำทำการปรับสมดุล (Rebalance) เพื่อขายทำกำไรหุ้นเทคโนโลยีบางส่วนออกไปถือสินทรัพย์เชิงรับป้องพอร์ตช่วงตลาดแกว่ง
-- ทยอยเพิ่มสะสมหุ้นปันผลระดับ 5% ขึ้นไปเพื่อพยุงกระแสเงินสดรายปี
-- ส่งข้อมูลสรุป Insights นี้ไปให้ Luna ช่วยเขียนหัวข้อพรีเซนเตชันแผนงานสไลด์ต่อได้เลยครับ!`;
+            const recordRef = (row[1] || '').trim(); // B
+            const desc = (row[2] || '').trim(); // C
+            const detail = (row[3] || '').trim(); // D
+            const reqAmount = (row[14] || '').trim(); // O
+            const note = (row[19] || '').trim(); // T
+
+            let statusHtml = `**${lastStatus}**`;
+            if (lastStatus.includes('09.GR Completed') || lastStatus.includes('Completed')) {
+               statusHtml = `<span style="color: #10b981; font-weight: bold;">${lastStatus}</span>`;
+            } else if (lastStatus.includes('Reject') || lastStatus.includes('Cancel')) {
+               statusHtml = `<span style="color: #ef4444; font-weight: bold;">${lastStatus}</span>`;
+            } else if (lastStatus) {
+               statusHtml = `<span style="color: #f59e0b; font-weight: bold;">${lastStatus}</span>`;
+            } else {
+               statusHtml = `<span style="color: #94a3b8; font-weight: bold;">-</span>`;
+            }
+
+            html += `- **Site (J):** ${siteName || '-'}\n`;
+            html += `  - **Ref (B):** ${recordRef}\n`;
+            html += `  - **Desc (C):** ${desc}\n`;
+            html += `  - **Detail (D):** ${detail}\n`;
+            html += `  - **Last Status (I):** ${statusHtml}\n`;
+            html += `  - **Amount (O):** ${reqAmount} บาท\n`;
+            html += `  - **Note (T):** ${note}\n\n`;
+            count++;
+          }
+
+          if (count === 0) {
+            return `ไม่พบข้อมูล CNO Budget${targetSite ? ` สำหรับ Site: ${prompt.trim()}` : ''} ครับ`;
+          }
+          return html;
+        } catch (err) {
+          console.error("Error fetching Budget for KEN:", err);
+          return "เกิดข้อผิดพลาดในการดึงข้อมูลจาก Google Sheets ครับ";
+        }
       }
       else if (agentId === 5) { // LUNA (Presentation maker)
         try {
