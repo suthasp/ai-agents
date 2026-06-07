@@ -3014,7 +3014,14 @@
             if (targetStatus && status.toLowerCase() !== targetStatus) continue;
             if (targetSite && !site.toLowerCase().includes(targetSite.toLowerCase())) continue;
 
-            html += `- **${site}**: ${topic} (วันที่: ${date}) - สถานะ: **${status}**\n`;
+            let statusHtml = `**${status}**`;
+            if (status.toLowerCase() === 'done' || status.toLowerCase() === 'completed') {
+              statusHtml = `<span style="color: #10b981; font-weight: bold;">${status}</span>`;
+            } else if (status.toLowerCase() === 'pending' || status.toLowerCase() === 'รอ') {
+              statusHtml = `<span style="color: #f59e0b; font-weight: bold;">${status}</span>`;
+            }
+
+            html += `- **${site}**: ${topic} (วันที่: ${date}) - สถานะ: ${statusHtml}\n`;
             count++;
           }
 
