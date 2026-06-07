@@ -2076,7 +2076,7 @@
         themeGlow: "rgba(16, 185, 129, 0.4)",
         themeGlowSolid: "rgba(16, 185, 129, 0.7)",
         intro: "สวัสดีครับ! ผม Ken ผู้เชี่ยวชาญด้านวิเคราะห์งบประมาณ (Budget) ของ CNO 📊\nผมมีหน้าที่ดึงข้อมูลจาก Google Sheets เพื่อสรุปและวิเคราะห์ให้คุณแบบเรียลไทม์ครับ สั่งงานผมได้เลย!",
-        quickReplies: ["Last Status"]
+        quickReplies: ["01.รอ FSO,RNSA Approve", "04.รอ Budget Approve", "06.PR Created", "07.PO Approved", "09.GR Completed"]
       },
       5: {
         id: 5,
@@ -2591,7 +2591,7 @@
       else if (id === 4) { // KEN (Budget Analyser)
         wrapper.innerHTML = `
           <div style="font-size: 9px; color: #718096; margin-bottom: 8px; font-family: 'Noto Sans Thai', sans-serif">
-            พิมพ์ชื่อ Site Name หรือเลือก Last Status เพื่อดึงข้อมูลสถานะล่าสุด
+            พิมพ์ชื่อ Site Name หรือเลือกสถานะจาก Shortcut เพื่อกรองข้อมูลงบประมาณ
           </div>
         `;
       }
@@ -3202,11 +3202,18 @@
           if (data.length <= 1) return "ไม่พบข้อมูลงบประมาณ CNO ครับ";
 
           const lowerPrompt = prompt.toLowerCase().trim();
-          let targetSite = lowerPrompt === 'last status' ? '' : prompt.trim().toLowerCase();
+          
+          let targetSite = '';
+          let targetStatus = '';
+          if (/approve|created|completed|reject|cancel|\d{2}\./i.test(lowerPrompt)) {
+            targetStatus = lowerPrompt;
+          } else {
+            targetSite = lowerPrompt;
+          }
           
           let html = `📊 **ข้อมูล CNO Budget**`;
           if (targetSite) html += ` (Site: ${prompt.trim().toUpperCase()})`;
-          else html += ` (Last Status)`;
+          else if (targetStatus) html += ` (สถานะ: ${prompt.trim()})`;
           html += `\n\n`;
 
           let count = 0;
@@ -3217,12 +3224,12 @@
             const siteName = (row[9] || '').trim(); // J
             if (targetSite && !siteName.toLowerCase().includes(targetSite)) continue;
             
-            const lastStatus = (row[8] || '').trim(); // I
-            if (lowerPrompt === 'last status' && !lastStatus) continue;
+            const lastStatus = (row[2] || '').trim(); // C
+            if (targetStatus && !lastStatus.toLowerCase().includes(targetStatus)) continue;
 
             const recordRef = (row[1] || '').trim(); // B
-            const desc = (row[2] || '').trim(); // C
             const detail = (row[3] || '').trim(); // D
+            const desc = (row[8] || '').trim(); // I
             const reqAmount = (row[14] || '').trim(); // O
             const note = (row[19] || '').trim(); // T
 
@@ -3239,16 +3246,16 @@
 
             html += `- **Site (J):** ${siteName || '-'}\n`;
             html += `  - **Ref (B):** ${recordRef}\n`;
-            html += `  - **Desc (C):** ${desc}\n`;
+            html += `  - **Last Status (C):** ${statusHtml}\n`;
             html += `  - **Detail (D):** ${detail}\n`;
-            html += `  - **Last Status (I):** ${statusHtml}\n`;
+            html += `  - **Desc (I):** ${desc}\n`;
             html += `  - **Amount (O):** ${reqAmount} บาท\n`;
             html += `  - **Note (T):** ${note}\n\n`;
             count++;
           }
 
           if (count === 0) {
-            return `ไม่พบข้อมูล CNO Budget${targetSite ? ` สำหรับ Site: ${prompt.trim()}` : ''} ครับ`;
+            return `ไม่พบข้อมูล CNO Budget${targetSite ? ` สำหรับ Site: ${prompt.trim()}` : ''}${targetStatus ? ` สำหรับสถานะ: ${prompt.trim()}` : ''} ครับ`;
           }
           return html;
         } catch (err) {
