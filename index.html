@@ -343,12 +343,12 @@
       box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
     }
 
-    /* CNO Budget Panel */
-    #cno-budget-list::-webkit-scrollbar {
+    /* ERP Plan Panel */
+    #erp-plan-list::-webkit-scrollbar {
       display: none;
     }
 
-    #cno-budget-list {
+    #erp-plan-list {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
@@ -1425,14 +1425,14 @@
         </div>
       </div>
 
-      <!-- CNO Budget Panel -->
+      <!-- Emergency Response Plan (ERP) Panel -->
       <div class="panel" style="margin-top: 10px; max-height: 250px; display: flex; flex-direction: column;">
         <div class="panel-header">
-          <span class="panel-title">CNO BUDGET</span>
-          <button class="action-btn" onclick="fetchCNOBudget()"
+          <span class="panel-title">Emergency Response Plan (ERP)</span>
+          <button class="action-btn" onclick="fetchERPPlan()"
             style="padding: 2px 5px; font-size: 7px;">RELOAD</button>
         </div>
-        <div class="budget-list" id="cno-budget-list"
+        <div class="budget-list" id="erp-plan-list"
           style="overflow-y: auto; flex: 1; padding-right: 4px; display: flex; flex-direction: column; gap: 8px;">
           <div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">Loading...</div>
         </div>
@@ -3833,14 +3833,14 @@
       }
     }
 
-    async function fetchCNOBudget() {
-      const list = document.getElementById('cno-budget-list');
+    async function fetchERPPlan() {
+      const list = document.getElementById('erp-plan-list');
       if (!list) return;
 
       list.innerHTML = '<div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">Loading...</div>';
 
       try {
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT1wdQs-QYgFhkMh3ik1wwkIwhi40UsFFthLSx0Er3K-piRHgJgJABwhN7lBUnMP5dN1A9LF5oUk_QK/pub?gid=1993846865&single=true&output=csv';
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpdMCXJD3AUdiJr5xunWLTp_7aoQJOvpXPPYD5UiPPppB6b1ICZiDV14pGnQxnox_ZSx0g9PLO552d/pub?gid=499200311&single=true&output=csv';
         const res = await fetch(url);
         if (!res.ok) throw new Error('Network response was not ok');
         const text = await res.text();
@@ -3875,38 +3875,37 @@
         let html = '';
         // Skip header row
         for (let i = 1; i < data.length; i++) {
-          if (data[i].length < 15 || !data[i][2]) continue;
+          if (data[i].length < 4 || !data[i][0]) continue;
 
-          const status = data[i][2].trim(); // Column C
-          const desc = data[i][8].trim(); // Column I
-          const site = data[i][9].trim(); // Column J
-          const amount = data[i][14].trim(); // Column O
+          const site = data[i][0].trim();
+          const topic = data[i][1] ? data[i][1].trim() : '';
+          const date = data[i][2] ? data[i][2].trim() : '-';
+          const status = data[i][3] ? data[i][3].trim() : '';
 
           let badgeClass = 'inprogress';
           const lowerStatus = status.toLowerCase();
-          if (lowerStatus.includes('approve') || lowerStatus.includes('completed')) badgeClass = 'approved';
-          else if (lowerStatus.includes('reject') || lowerStatus.includes('cancel')) badgeClass = 'reject';
+          if (lowerStatus === 'done' || lowerStatus === 'completed') badgeClass = 'approved';
+          else if (lowerStatus === 'pending') badgeClass = 'inprogress';
 
-          // Truncate status if it's too long
           let displayStatus = status;
           if (displayStatus.length > 18) displayStatus = displayStatus.substring(0, 18) + '...';
 
           html += `
             <div class="budget-item">
               <div class="budget-meta">
-                <span class="budget-site">${site || 'Unknown Site'}</span>
+                <span class="budget-site" title="${site}">${site}</span>
                 <span class="budget-status ${badgeClass}" title="${status}">${displayStatus}</span>
               </div>
-              <p class="budget-desc" title="${desc}">${desc || 'No description'}</p>
-              <div class="budget-amount">${amount ? amount + ' ฿' : '- ฿'}</div>
+              <p class="budget-desc" title="${topic}">${topic || 'No description'}</p>
+              <div class="budget-amount">${date}</div>
             </div>
           `;
         }
 
         list.innerHTML = html || '<div style="color: #64748b; text-align: center; padding: 10px; font-size: 9px;">No valid items</div>';
       } catch (err) {
-        console.error('Error fetching budget:', err);
-        list.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 10px; font-size: 9px;">Error loading budget</div>';
+        console.error('Error fetching ERP Plan:', err);
+        list.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 10px; font-size: 9px;">Error loading data</div>';
       }
     }
 
@@ -4143,8 +4142,8 @@
       setInterval(updateCryptoPrices, 60000); // refresh crypto every 1 minute
       updateTicketsFromSheet();
       setInterval(updateTicketsFromSheet, 300000); // refresh every 5 minutes
-      fetchCNOBudget();
-      setInterval(fetchCNOBudget, 300000); // refresh every 5 minutes
+      fetchERPPlan();
+      setInterval(fetchERPPlan, 300000); // refresh every 5 minutes
       fetchOilPrices();
       setInterval(fetchOilPrices, 3600000); // refresh every 1 hour
       fetchPMData();
