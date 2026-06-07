@@ -2024,17 +2024,17 @@
     const AGENTS_DATA = {
       1: {
         id: 1,
-        name: "SAM 📰 (ชาย)",
-        role: "News Summarizer (ชาย)",
-        bio: "ทำหน้าที่สรุปข่าวเด่นและสภาวะความเคลื่อนไหวทางเศรษฐกิจประจำวัน",
-        avatar: "📰",
+        name: "SAM 📋 (ชาย)",
+        role: "ERP Data Specialist (ชาย)",
+        bio: "ทำหน้าที่ดึงข้อมูลแผนฉุกเฉิน (ERP) และตรวจสอบสถานะ Done หรือ Pending",
+        avatar: "📋",
         imgSrc: "sam_iso.png",
         theme: "#22d3ee",
         themeOp: "rgba(34, 211, 238, 0.15)",
         themeGlow: "rgba(34, 211, 238, 0.4)",
         themeGlowSolid: "rgba(34, 211, 238, 0.7)",
-        intro: "สวัสดีครับ! ผม Sam แผนกสรุปข่าวหุ้นประจำวัน 📰\nยินดีต้อนรับครับ พิมพ์ถามถึงข่าวล่ามาแรง วันนี้มีประเด็นอะไรสำคัญ หรือสรุปภาพรวมข่าวเด่นกลุ่มต่างๆ ได้เลยครับ!",
-        quickReplies: ["สรุปข่าวสภาวะตลาดเช้านี้", "ข่าวเด่นกลุ่มเทคโนโลยีวันนี้", "สถิติอัตราเงินเฟ้อล่าสุด"]
+        intro: "สวัสดีครับ! ผม Sam ผู้เชี่ยวชาญด้านข้อมูล ERP 📋\nพิมพ์สถานะที่ต้องการ เช่น Done หรือ Pending ผมจะดึงข้อมูลแผนฉุกเฉินล่าสุดมาแสดงให้ทันทีครับ!",
+        quickReplies: ["Done", "Pending"]
       },
       2: {
         id: 2,
@@ -2953,23 +2953,63 @@
 
     /* Mock Backend Simulation with Real-time Data Fetches */
     async function callMockBackend(agentId, prompt) {
-      if (agentId === 1) { // SAM (News Summarizer)
-        const liveNews = await fetchRealTimeNews();
-        if (liveNews.success && liveNews.news.length > 0) {
-          let newsText = `📰 **สรุปข่าวสารการเงินและแนวโน้มตลาดหุ้นหลักล่าสุดประจำวันนี้ (ข้อมูลจริงเรียลไทม์):**\n\n`;
-          liveNews.news.forEach((item, index) => {
-            newsText += `${index + 1}. **${item.title}**\n   - *คำอธิบาย*: ${item.description || 'ไม่มีรายละเอียดเพิ่มเติม'}\n   - [ลิงก์อ่านข่าวเต็ม](${item.link})\n\n`;
-          });
-          newsText += `*แหล่งข้อมูลเรียลไทม์: Yahoo Finance RSS feed*`;
-          return newsText;
-        }
+      if (agentId === 1) { // SAM (ERP Data Specialist)
+        try {
+          const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQpdMCXJD3AUdiJr5xunWLTp_7aoQJOvpXPPYD5UiPPppB6b1ICZiDV14pGnQxnox_ZSx0g9PLO552d/pub?gid=499200311&single=true&output=csv';
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('Network response was not ok');
+          const text = await res.text();
 
-        // Fallback
-        return `📰 **สรุปข่าวสารและแนวโน้มตลาดหุ้นหลักประจำวันนี้:**
-        
-1. **ตลาดหุ้นไทย (SET)**: ดัชนีฟื้นตัวยืนเหนือ 1,380 จุด ได้รับอานิสงส์จากแรงซื้อในกลุ่มพลังงานและกลุ่มท่องเที่ยวที่กลับมาร้อนแรงตามฤดูกาลท่องเที่ยวช่วงปลายปี
-2. **ตลาดสหรัฐฯ (NASDAQ/S&P 500)**: ดัชนีพุ่งสูงสุดใหม่ขานรับตัวเลขอัตราเงินเฟ้อที่ชะลอตัวเร็วกว่าคาด ช่วยคลายความกังวลเรื่องทิศทางอัตราดอกเบี้ยนโยบาย
-3. **ข่าวเศรษฐกิจอื่นๆ**: ดัชนีความเชื่อมั่นผู้บริโภคขยับสูงขึ้นขานรับมาตรการกระตุ้นเศรษฐกิจและการจ่ายเงินปันผลประจำไตรมาสของธนาคารหลัก`;
+          function parseFullCSV(str) {
+            var arr = [];
+            var quote = false;
+            var row = 0, col = 0;
+            for (var i = 0; i < str.length; i++) {
+              var c = str[i], nc = str[i + 1];
+              arr[row] = arr[row] || [];
+              arr[row][col] = arr[row][col] || '';
+
+              if (c === '"' && quote && nc === '"') { arr[row][col] += c; i++; continue; }
+              if (c === '"') { quote = !quote; continue; }
+              if (c === ',' && !quote) { col++; continue; }
+              if (c === '\r' && nc === '\n' && !quote) { row++; col = 0; i++; continue; }
+              if (c === '\n' && !quote) { row++; col = 0; continue; }
+              if (c === '\r' && !quote) { row++; col = 0; continue; }
+
+              arr[row][col] += c;
+            }
+            return arr;
+          }
+
+          const data = parseFullCSV(text);
+          if (data.length <= 1) return "ไม่พบข้อมูลในตาราง ERP ครับ";
+
+          let targetStatus = null;
+          const lowerPrompt = prompt.toLowerCase();
+          if (lowerPrompt.includes("done") || lowerPrompt.includes("เสร็จ")) targetStatus = "done";
+          else if (lowerPrompt.includes("pending") || lowerPrompt.includes("รอ")) targetStatus = "pending";
+
+          let html = `📋 **สรุปข้อมูลแผนฉุกเฉิน (ERP)**${targetStatus ? ` สถานะ: ${targetStatus.toUpperCase()}` : ' ทั้งหมด'}\n\n`;
+          let count = 0;
+          for (let i = 1; i < data.length; i++) {
+            if (data[i].length < 4 || !data[i][0]) continue;
+            const site = data[i][0].trim();
+            const topic = data[i][1] ? data[i][1].trim() : '';
+            const date = data[i][2] ? data[i][2].trim() : '-';
+            const status = data[i][3] ? data[i][3].trim() : '';
+            
+            if (targetStatus && status.toLowerCase() !== targetStatus) continue;
+
+            html += `- **${site}**: ${topic} (วันที่: ${date}) - สถานะ: **${status}**\n`;
+            count++;
+          }
+
+          if (count === 0) return `ไม่พบข้อมูลแผนฉุกเฉิน${targetStatus ? ` ที่มีสถานะ ${targetStatus.toUpperCase()}` : ''} ครับ`;
+          return html;
+        } catch (err) {
+          console.error("Error fetching ERP for SAM:", err);
+          return "เกิดข้อผิดพลาดในการดึงข้อมูลจาก Google Sheets ครับ";
+        }
       }
       else if (agentId === 2) { // ALEX (Ticker Analyzer)
         const words = prompt.match(/[A-Za-z.]{2,8}/g) || [];
