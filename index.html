@@ -2565,10 +2565,10 @@
       const wrapper = document.getElementById('agent-custom-controls');
       wrapper.innerHTML = '';
 
-      if (id === 1) { // SAM (News summarizer)
+      if (id === 1) { // SAM (ERP Data Specialist)
         wrapper.innerHTML = `
           <div style="font-size: 9px; color: #718096; margin-bottom: 8px; font-family: 'Noto Sans Thai', sans-serif">
-            ตัวเลือกด่วน: ข่าวหุ้นเด่นเช้านี้, ข่าวภาคบ่าย, ข่าวกลุ่มแบงก์
+            ตัวเลือกด่วน: ค้นหาสถานะ Done, Pending หรือพิมพ์ชื่อ Site (เช่น SNK, CLS-STN) เพื่อดูข้อมูลเฉพาะสาขานั้น
           </div>
         `;
       }
@@ -2985,11 +2985,24 @@
           if (data.length <= 1) return "ไม่พบข้อมูลในตาราง ERP ครับ";
 
           let targetStatus = null;
+          let targetSite = prompt.trim();
+          
           const lowerPrompt = prompt.toLowerCase();
-          if (lowerPrompt.includes("done") || lowerPrompt.includes("เสร็จ")) targetStatus = "done";
-          else if (lowerPrompt.includes("pending") || lowerPrompt.includes("รอ")) targetStatus = "pending";
+          if (lowerPrompt.includes("done") || lowerPrompt.includes("เสร็จ")) {
+            targetStatus = "done";
+            targetSite = targetSite.replace(/done|เสร็จ/ig, '').trim();
+          }
+          else if (lowerPrompt.includes("pending") || lowerPrompt.includes("รอ")) {
+            targetStatus = "pending";
+            targetSite = targetSite.replace(/pending|รอ/ig, '').trim();
+          }
 
-          let html = `📋 **สรุปข้อมูลแผนฉุกเฉิน (ERP)**${targetStatus ? ` สถานะ: ${targetStatus.toUpperCase()}` : ' ทั้งหมด'}\n\n`;
+          let html = `📋 **สรุปข้อมูลแผนฉุกเฉิน (ERP)**`;
+          if (targetSite) html += ` สาขา: ${targetSite.toUpperCase()}`;
+          if (targetStatus) html += ` สถานะ: ${targetStatus.toUpperCase()}`;
+          if (!targetSite && !targetStatus) html += ` ทั้งหมด`;
+          html += `\n\n`;
+
           let count = 0;
           for (let i = 1; i < data.length; i++) {
             if (data[i].length < 4 || !data[i][0]) continue;
@@ -2999,12 +3012,18 @@
             const status = data[i][3] ? data[i][3].trim() : '';
             
             if (targetStatus && status.toLowerCase() !== targetStatus) continue;
+            if (targetSite && !site.toLowerCase().includes(targetSite.toLowerCase())) continue;
 
             html += `- **${site}**: ${topic} (วันที่: ${date}) - สถานะ: **${status}**\n`;
             count++;
           }
 
-          if (count === 0) return `ไม่พบข้อมูลแผนฉุกเฉิน${targetStatus ? ` ที่มีสถานะ ${targetStatus.toUpperCase()}` : ''} ครับ`;
+          if (count === 0) {
+             let errMsg = `ไม่พบข้อมูลแผนฉุกเฉิน`;
+             if (targetSite) errMsg += ` สาขา ${targetSite.toUpperCase()}`;
+             if (targetStatus) errMsg += ` ที่มีสถานะ ${targetStatus.toUpperCase()}`;
+             return errMsg + ` ครับ`;
+          }
           return html;
         } catch (err) {
           console.error("Error fetching ERP for SAM:", err);
