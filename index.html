@@ -2892,26 +2892,33 @@
     async function fetchRealTimeStock(symbol) {
       const cleanSymbol = symbol.toUpperCase().trim();
       const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}?ts=${Date.now()}`;
-      const primaryUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-      const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      
+      const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+        `https://corsproxy.org/?${encodeURIComponent(targetUrl)}`
+      ];
 
-      let res, data;
+      let data;
       try {
-        res = await fetch(primaryUrl);
-        if (!res.ok) throw new Error("Primary raw fetch failed");
-        data = await res.json();
+        data = await Promise.any(proxies.map(async proxy => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+          try {
+            const res = await fetch(proxy, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error("Proxy error");
+            return await res.json();
+          } catch (e) {
+            clearTimeout(timeoutId);
+            throw e;
+          }
+        }));
       } catch (err) {
-        console.warn("Primary raw proxy failed, trying JSON fallback for symbol: " + cleanSymbol, err);
-        try {
-          res = await fetch(fallbackUrl);
-          if (!res.ok) throw new Error("Fallback fetch failed");
-          const wrappedData = await res.json();
-          data = JSON.parse(wrappedData.contents);
-        } catch (fallbackErr) {
-          console.error("All proxies failed for symbol: " + cleanSymbol, fallbackErr);
-          return { success: false, symbol: cleanSymbol };
-        }
+        console.error("All proxies failed for symbol: " + cleanSymbol, err);
+        return { success: false, symbol: cleanSymbol };
       }
+
 
       try {
         const result = data.chart?.result?.[0];
@@ -2946,25 +2953,31 @@
     /* Helper to fetch stock news from Yahoo Finance RSS via CORS proxy */
     async function fetchRealTimeNews() {
       const targetUrl = `https://finance.yahoo.com/rss/topstories?ts=${Date.now()}`;
-      const primaryUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-      const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+      
+      const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+        `https://corsproxy.org/?${encodeURIComponent(targetUrl)}`
+      ];
 
-      let res, xmlText;
+      let xmlText;
       try {
-        res = await fetch(primaryUrl);
-        if (!res.ok) throw new Error("Primary raw news fetch failed");
-        xmlText = await res.text();
+        xmlText = await Promise.any(proxies.map(async proxy => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          try {
+            const res = await fetch(proxy, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error("Proxy error");
+            return await res.text();
+          } catch (e) {
+            clearTimeout(timeoutId);
+            throw e;
+          }
+        }));
       } catch (err) {
-        console.warn("Primary news raw proxy failed, trying JSON fallback...", err);
-        try {
-          res = await fetch(fallbackUrl);
-          if (!res.ok) throw new Error("Fallback news fetch failed");
-          const wrappedData = await res.json();
-          xmlText = wrappedData.contents;
-        } catch (fallbackErr) {
-          console.error("All proxies failed for news", fallbackErr);
-          return { success: false };
-        }
+        console.error("All news proxies failed", err);
+        return { success: false };
       }
 
       try {
