@@ -2894,6 +2894,7 @@
       const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}?ts=${Date.now()}`;
       
       const proxies = [
+        `/api/stock?symbol=${encodeURIComponent(cleanSymbol)}`,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
         `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
         `https://corsproxy.org/?${encodeURIComponent(targetUrl)}`
@@ -2955,6 +2956,7 @@
       const targetUrl = `https://finance.yahoo.com/rss/topstories?ts=${Date.now()}`;
       
       const proxies = [
+        `/api/news`,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
         `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
         `https://corsproxy.org/?${encodeURIComponent(targetUrl)}`
