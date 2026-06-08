@@ -2892,7 +2892,7 @@
     async function fetchRealTimeStock(symbol) {
       const cleanSymbol = symbol.toUpperCase().trim();
       const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}?ts=${Date.now()}`;
-      const primaryUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+      const primaryUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
       const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
       let res, data;
