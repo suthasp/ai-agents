@@ -947,12 +947,12 @@
       align-items: center;
     }
 
-    .oil-ticker-content {
+    .active-ticker-content {
       display: inline-block;
       animation: ticker 40s linear infinite;
     }
 
-    .oil-ticker-content:hover {
+    .active-ticker-content:hover {
       animation-play-state: paused;
     }
 
@@ -2004,9 +2004,9 @@
       <span id="feed-log">[09:00:00] SYSTEM INITIALIZED: Stock AI Analyst Co-Workers are online and ready.</span>
     </div>
     <div class="oil-ticker-container">
-      <div class="oil-ticker-content" id="oil-ticker-content">
-        <!-- Oil prices will be loaded here -->
-        <span style="color: #64748b;">กำลังโหลดราคาน้ำมัน...</span>
+      <div class="active-ticker-content" id="active-ticker-content">
+        <!-- Tickets will be loaded here -->
+        <span style="color: #64748b;">กำลังโหลด ACTIVE TICKETS...</span>
       </div>
     </div>
     <div style="color: #4a4a75; font-family: var(--font-tech); font-weight: 700; letter-spacing: 0.5px;">6TOUCH 1.0
@@ -4010,6 +4010,7 @@
         if (idIdx === -1) throw new Error("Invalid CSV format");
 
         container.innerHTML = '';
+        let tickerHtml = '';
         const maxTickets = lines.length - 1;
         for (let i = 1; i <= maxTickets; i++) {
           const row = parseCSVRow(lines[i]);
@@ -4039,10 +4040,20 @@
               </div>
             </div>
           `;
+          
+          tickerHtml += `<span style="margin-right: 10px; font-weight: bold; color: #f1f5f9;">${tId}</span> <span style="margin-right: 10px; color: #cbd5e1;">${tProb}</span> <span style="margin-right: 10px; color: ${slaColor};">[${tSla}]</span> <span style="margin-right: 30px; color: #10b981;">(Owner: ${tOwner})</span> | `;
         }
+        
+        const tickerContent = document.getElementById('active-ticker-content');
+        if (tickerContent) {
+           tickerContent.innerHTML = tickerHtml + tickerHtml;
+        }
+
       } catch (err) {
         console.error('Error fetching sheets:', err);
         container.innerHTML = '<span style="color:#ef4444; font-size:10px;">เกิดข้อผิดพลาดในการโหลดข้อมูล</span>';
+        const tickerContent = document.getElementById('active-ticker-content');
+        if (tickerContent) tickerContent.innerHTML = '<span style="color:#ef4444; font-size:10px;">เกิดข้อผิดพลาดในการโหลด TICKETS</span>';
       }
     }
 
@@ -4361,8 +4372,7 @@
       setInterval(updateTicketsFromSheet, 300000); // refresh every 5 minutes
       fetchERPTableData();
       setInterval(fetchERPTableData, 300000); // refresh every 5 minutes
-      fetchOilPrices();
-      setInterval(fetchOilPrices, 3600000); // refresh every 1 hour
+
       fetchPMData();
       setInterval(fetchPMData, 300000); // refresh every 5 minutes
       fetchBudgetTableData();
