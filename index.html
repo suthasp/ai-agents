@@ -3997,7 +3997,11 @@
 
         const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
         if (lines.length <= 1) {
-          container.innerHTML = '<span style="color:#64748b; font-size:10px;">ไม่มีข้อมูลทิคเก็ต</span>';
+          container.innerHTML = '<span style="color:#64748b; font-size:10px;">No Pending Tickets</span>';
+          const tickerContent = document.getElementById('active-ticker-content');
+          if (tickerContent) {
+            tickerContent.innerHTML = '<span style="color:#64748b; font-size:12px;">No Pending Tickets</span>';
+          }
           return;
         }
 
