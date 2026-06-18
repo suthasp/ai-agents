@@ -3349,7 +3349,7 @@
 
           const headers = parseCSVRow(lines[0]);
           let outputText = `สรุปข้อมูลรายละเอียดปัญหา (Tickets) ค่ะ 📝:\n\n`;
-          const colsToExtract = [3, 7, 8, 12, 20, 22];
+          const colsToExtract = [3, 5, 6, 7, 8, 12, 20, 22];
 
           for (let i = 1; i < lines.length; i++) {
             const row = parseCSVRow(lines[i]);
